@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/anhao26/zero-cloud/service/system/rpc/internal/svc"
-	"github.com/anhao26/zero-cloud/service/system/rpc/types/rpc"
+	"github.com/anhao26/zero-cloud/service/system/rpc/types/system"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,8 +23,8 @@ func NewInitDatabaseLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Init
 	}
 }
 
-func (l *InitDatabaseLogic) InitDatabase(in *rpc.Empty) (*rpc.BaseResp, error) {
+func (l *InitDatabaseLogic) InitDatabase(in *system.Empty) (*system.BaseResp, error) {
 	// todo: add your logic here and delete this line
 
-	return &rpc.BaseResp{}, nil
+	return &system.BaseResp{}, nil
 }

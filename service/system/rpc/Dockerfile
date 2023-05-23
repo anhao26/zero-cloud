@@ -1,7 +1,7 @@
 FROM golang:1.20.3-alpine3.17 as builder
 
 # Define the project name | 定义项目名称
-ARG PROJECT=rpc
+ARG PROJECT=system
 
 WORKDIR /build
 COPY . .
@@ -15,9 +15,9 @@ RUN go env -w GO111MODULE=on \
 FROM alpine:latest
 
 # Define the project name | 定义项目名称
-ARG PROJECT=rpc
+ARG PROJECT=system
 # Define the config file name | 定义配置文件名
-ARG CONFIG_FILE=rpc.yaml
+ARG CONFIG_FILE=system.yaml
 # Define the author | 定义作者
 ARG AUTHOR="example@example.com"
 

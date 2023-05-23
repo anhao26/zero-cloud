@@ -4,8 +4,10 @@ import (
 	"github.com/anhao26/zero-cloud/service/system/api/internal/config"
 	i18n2 "github.com/anhao26/zero-cloud/service/system/api/internal/i18n"
 	"github.com/anhao26/zero-cloud/service/system/api/internal/middleware"
+	"github.com/anhao26/zero-cloud/service/system/rpc/systemclient"
 	"github.com/mojocn/base64Captcha"
 	"github.com/suyuan32/simple-admin-common/utils/captcha"
+	"github.com/zeromicro/go-zero/zrpc"
 
 	"github.com/suyuan32/simple-admin-common/i18n"
 
@@ -20,6 +22,7 @@ type ServiceContext struct {
 	Authority rest.Middleware
 	Trans     *i18n.Translator
 	Captcha   *base64Captcha.Captcha
+	SystemRpc systemclient.System
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -35,5 +38,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Authority: middleware.NewAuthorityMiddleware(cbn, rds, trans).Handle,
 		Trans:     trans,
 		Captcha:   captcha.MustNewRedisCaptcha(c.Captcha, rds),
+		SystemRpc: systemclient.NewSystem(zrpc.NewClientIfEnable(c.SystemRpc)),
 	}
 }

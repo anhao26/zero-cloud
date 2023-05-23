@@ -1,14 +1,14 @@
 # Custom configuration | 独立配置
 # Service name | 项目名称
-SERVICE=Rpc
+SERVICE=System
 # Service name in specific style | 项目经过style格式化的名称
-SERVICE_STYLE=rpc
+SERVICE_STYLE=system
 # Service name in lowercase | 项目名称全小写格式
-SERVICE_LOWER=rpc
+SERVICE_LOWER=system
 # Service name in snake format | 项目名称下划线格式
-SERVICE_SNAKE=rpc
+SERVICE_SNAKE=system
 # Service name in snake format | 项目名称短杠格式
-SERVICE_DASH=rpc
+SERVICE_DASH=system
 
 # The project version, if you don't use git, you should set it manually | 项目版本，如果不使用git请手动设置
 VERSION=$(shell git describe --tags --always)

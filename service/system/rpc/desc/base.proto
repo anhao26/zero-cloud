@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package rpc;
-option go_package="./rpc";
+package system;
+option go_package="./system";
 
 // base message
 message Empty {}
@@ -42,7 +42,7 @@ message BaseUUIDResp {
 }
 
 
-service Rpc {
+service System {
   // group: base
   rpc initDatabase (Empty) returns (BaseResp);
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/suyuan32/simple-admin-common/utils/captcha"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/rest"
+	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type Config struct {
@@ -15,4 +16,5 @@ type Config struct {
 	RedisConf    redis.RedisConf
 	CasbinConf   casbin.CasbinConf
 	Captcha      captcha.Conf
+	SystemRpc    zrpc.RpcClientConf
 }

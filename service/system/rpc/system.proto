@@ -1,0 +1,249 @@
+syntax = "proto3";
+
+package system;
+option go_package="./system";
+
+message BaseResp {
+  string msg = 1;
+}
+
+message BaseUUIDResp {
+  string id = 1;
+  string msg = 2;
+}
+
+message DepartmentListResp {
+  uint64 total = 1;
+  repeated DepartmentInfo data = 2;
+}
+
+message MenuListResp {
+  uint64 total = 1;
+  repeated MenuInfo data = 2;
+}
+
+message PositionListResp {
+  uint64 total = 1;
+  repeated PositionInfo data = 2;
+}
+
+message PositionListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string name = 3;
+  string code = 4;
+  string remark = 5;
+}
+
+message UserListResp {
+  uint64 total = 1;
+  repeated UserInfo data = 2;
+}
+
+//  base message
+message Empty {}
+
+message IDReq {
+  uint64 id = 1;
+}
+
+message IDsReq {
+  repeated uint64 ids = 1;
+}
+
+message UUIDReq {
+  string id = 1;
+}
+
+message DepartmentListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string name = 3;
+  string ancestors = 4;
+  string leader = 5;
+}
+
+message MenuListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string path = 3;
+  string name = 4;
+  string redirect = 5;
+}
+
+message UserInfo {
+  string id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint32 status = 4;
+  string username = 5;
+  string password = 6;
+  string nickname = 7;
+  string description = 8;
+  string home_path = 9;
+  string mobile = 10;
+  string email = 11;
+  string avatar = 12;
+  uint64 department_id = 13;
+}
+
+message UserListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string username = 3;
+  string password = 4;
+  string nickname = 5;
+}
+
+message UUIDsReq {
+  repeated string ids = 1;
+}
+
+message DepartmentInfo {
+  uint64 id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint32 status = 4;
+  uint32 sort = 5;
+  string name = 6;
+  string ancestors = 7;
+  string leader = 8;
+  string phone = 9;
+  string email = 10;
+  string remark = 11;
+  uint64 parent_id = 12;
+}
+
+message MenuInfo {
+  uint64 id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint32 sort = 4;
+  uint64 parent_id = 5;
+  uint32 menu_level = 6;
+  uint32 menu_type = 7;
+  string path = 8;
+  string name = 9;
+  string redirect = 10;
+  string component = 11;
+  bool disabled = 12;
+  string title = 13;
+  string icon = 14;
+  bool hide_menu = 15;
+  bool hide_breadcrumb = 16;
+  bool ignore_keep_alive = 17;
+  bool hide_tab = 18;
+  string frame_src = 19;
+  bool carry_param = 20;
+  bool hide_children_in_menu = 21;
+  bool affix = 22;
+  uint32 dynamic_level = 23;
+  string real_path = 24;
+}
+
+message RoleListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string name = 3;
+  string code = 4;
+  string default_router = 5;
+}
+
+message PageInfoReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+}
+
+message BaseIDResp {
+  uint64 id = 1;
+  string msg = 2;
+}
+
+message PositionInfo {
+  uint64 id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint32 status = 4;
+  uint32 sort = 5;
+  string name = 6;
+  string code = 7;
+  string remark = 8;
+}
+
+message RoleInfo {
+  uint64 id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint32 status = 4;
+  string name = 5;
+  string code = 6;
+  string default_router = 7;
+  string remark = 8;
+  uint32 sort = 9;
+}
+
+message RoleListResp {
+  uint64 total = 1;
+  repeated RoleInfo data = 2;
+}
+
+service System {
+  //  group: base
+  rpc initDatabase(Empty) returns (BaseResp);
+  //  Department management
+  //  group: department
+  rpc createDepartment(DepartmentInfo) returns (BaseIDResp);
+  //  group: department
+  rpc updateDepartment(DepartmentInfo) returns (BaseResp);
+  //  group: department
+  rpc getDepartmentList(DepartmentListReq) returns (DepartmentListResp);
+  //  group: department
+  rpc getDepartmentById(IDReq) returns (DepartmentInfo);
+  //  group: department
+  rpc deleteDepartment(IDsReq) returns (BaseResp);
+  //  Menu management
+  //  group: menu
+  rpc createMenu(MenuInfo) returns (BaseIDResp);
+  //  group: menu
+  rpc updateMenu(MenuInfo) returns (BaseResp);
+  //  group: menu
+  rpc getMenuList(MenuListReq) returns (MenuListResp);
+  //  group: menu
+  rpc getMenuById(IDReq) returns (MenuInfo);
+  //  group: menu
+  rpc deleteMenu(IDsReq) returns (BaseResp);
+  //  Position management
+  //  group: position
+  rpc createPosition(PositionInfo) returns (BaseIDResp);
+  //  group: position
+  rpc updatePosition(PositionInfo) returns (BaseResp);
+  //  group: position
+  rpc getPositionList(PositionListReq) returns (PositionListResp);
+  //  group: position
+  rpc getPositionById(IDReq) returns (PositionInfo);
+  //  group: position
+  rpc deletePosition(IDsReq) returns (BaseResp);
+  //  Role management
+  //  group: role
+  rpc createRole(RoleInfo) returns (BaseIDResp);
+  //  group: role
+  rpc updateRole(RoleInfo) returns (BaseResp);
+  //  group: role
+  rpc getRoleList(RoleListReq) returns (RoleListResp);
+  //  group: role
+  rpc getRoleById(IDReq) returns (RoleInfo);
+  //  group: role
+  rpc deleteRole(IDsReq) returns (BaseResp);
+  //  User management
+  //  group: user
+  rpc createUser(UserInfo) returns (BaseUUIDResp);
+  //  group: user
+  rpc updateUser(UserInfo) returns (BaseResp);
+  //  group: user
+  rpc getUserList(UserListReq) returns (UserListResp);
+  //  group: user
+  rpc getUserById(UUIDReq) returns (UserInfo);
+  //  group: user
+  rpc deleteUser(UUIDsReq) returns (BaseResp);
+}
+

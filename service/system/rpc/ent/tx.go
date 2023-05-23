@@ -12,8 +12,16 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// Rpc is the client for interacting with the Rpc builders.
-	Rpc *RPCClient
+	// Department is the client for interacting with the Department builders.
+	Department *DepartmentClient
+	// Menu is the client for interacting with the Menu builders.
+	Menu *MenuClient
+	// Position is the client for interacting with the Position builders.
+	Position *PositionClient
+	// Role is the client for interacting with the Role builders.
+	Role *RoleClient
+	// User is the client for interacting with the User builders.
+	User *UserClient
 
 	// lazily loaded.
 	client     *Client
@@ -145,7 +153,11 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
-	tx.Rpc = NewRPCClient(tx.config)
+	tx.Department = NewDepartmentClient(tx.config)
+	tx.Menu = NewMenuClient(tx.config)
+	tx.Position = NewPositionClient(tx.config)
+	tx.Role = NewRoleClient(tx.config)
+	tx.User = NewUserClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -155,7 +167,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Rpc.QueryXXX(), the query will be executed
+// applies a query, for example: Department.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

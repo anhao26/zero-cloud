@@ -1,13 +1,3 @@
-syntax = "v1"
-
-info(
-	title: "captcha api"
-	desc: "captcha api"
-	author: "anhao26"
-	email: "anhao1226@163.com"
-	version: "v1.0"
-)
-
 import "base.api"
 
 // The information of captcha | 验证码数据
@@ -28,7 +18,7 @@ type CaptchaResp {
 	group: captcha
 )
 
-service Api {
+service system {
 	// Get captcha | 获取验证码
 	@handler getCaptcha
 	get /captcha returns (CaptchaResp)

@@ -915,3 +915,123 @@ type RedirectInfo struct {
 	// Redirect URL | 跳转网址
 	URL string `json:"URL"`
 }
+
+// The response data of dictionary information | 字典信息
+// swagger:model DictionaryInfo
+type DictionaryInfo struct {
+	BaseIDInfo
+	// Translated Name | 字典多语言名称
+	Trans string `json:"trans,optional"`
+	// Title | 字典多语言名称
+	// min length : 1
+	// max length : 50
+	Title string `json:"title,optional" validate:"omitempty,min=1,max=50"`
+	// Name | 字典名称
+	// min length : 1
+	// max length : 50
+	Name string `json:"name,optional" validate:"omitempty,min=1,max=50"`
+	// Status | 状态
+	// max : 20
+	Status uint32 `json:"status,optional" validate:"omitempty,lt=20"`
+	// Description of dictionary | 字典描述
+	// max length : 200
+	Desc string `json:"desc,optional" validate:"omitempty,max=200"`
+}
+
+// The response data of dictionary list | 字典列表数据
+// swagger:model DictionaryListResp
+type DictionaryListResp struct {
+	BaseDataInfo
+	// Dictionary list data | 字典列表数据
+	Data DictionaryListInfo `json:"data"`
+}
+
+// Dictionary list data | 字典列表数据
+// swagger:model DictionaryListInfo
+type DictionaryListInfo struct {
+	BaseListInfo
+	// The API list data | 字典列表数据
+	Data []DictionaryInfo `json:"data"`
+}
+
+// Get dictionary list request params | 字典列表请求参数
+// swagger:model DictionaryListReq
+type DictionaryListReq struct {
+	PageInfo
+	// Name | 字典名称
+	// max length : 50
+	Name string `json:"name,optional" validate:"omitempty,max=50"`
+}
+
+// Dictionary information response | 字典信息返回体
+// swagger:model DictionaryInfoResp
+type DictionaryInfoResp struct {
+	BaseDataInfo
+	// Dictionary information | 字典数据
+	Data DictionaryInfo `json:"data"`
+}
+
+// The response data of dictionary detail information | 字典键值信息
+// swagger:model DictionaryDetailInfo
+type DictionaryDetailInfo struct {
+	BaseIDInfo
+	// Status | 状态
+	// max : 20
+	Status uint32 `json:"status,optional" validate:"omitempty,lt=20"`
+	// Title | 显示名称
+	// max length : 50
+	Title string `json:"title,optional" validate:"omitempty,max=50"`
+	// Key | 键
+	// max length : 80
+	Key string `json:"key,optional" validate:"omitempty,max=80"`
+	// Value | 值
+	// max length : 100
+	Value string `json:"value,optional" validate:"omitempty,max=100"`
+	// Dictionary ID | 所属字典ID
+	DictionaryId uint64 `json:"dictionaryId,optional"`
+	// Sort | 排序
+	// max : 10000
+	Sort uint32 `json:"sort,optional" validate:"omitempty,lt=10000"`
+}
+
+// The response data of dictionary detail list | 字典键值列表数据
+// swagger:model DictionaryDetailListResp
+type DictionaryDetailListResp struct {
+	BaseDataInfo
+	// DictionaryDetail list data | 字典键值列表数据
+	Data DictionaryDetailListInfo `json:"data"`
+}
+
+// DictionaryDetail list data | 字典键值列表数据
+// swagger:model DictionaryDetailListInfo
+type DictionaryDetailListInfo struct {
+	BaseListInfo
+	// The API list data | 字典键值列表数据
+	Data []DictionaryDetailInfo `json:"data"`
+}
+
+// Get dictionary detail list request params | 字典键值列表请求参数
+// swagger:model DictionaryDetailListReq
+type DictionaryDetailListReq struct {
+	PageInfo
+	// Key | 键
+	// max length : 80
+	Key string `json:"key,optional" validate:"omitempty,max=80"`
+	// Dictionary ID | 所属字典ID
+	DictionaryId uint64 `json:"dictionaryId,optional"`
+}
+
+// DictionaryDetail information response | 字典键值信息返回体
+// swagger:model DictionaryDetailInfoResp
+type DictionaryDetailInfoResp struct {
+	BaseDataInfo
+	// DictionaryDetail information | 字典键值数据
+	Data DictionaryDetailInfo `json:"data"`
+}
+
+// Dictionary name request | 字典名称请求
+// swagger:parameters GetDictionaryDetailByDictionaryName
+type DictionaryNameReq struct {
+	// in:path
+	Name string `json:"name,optional" path:"name"`
+}

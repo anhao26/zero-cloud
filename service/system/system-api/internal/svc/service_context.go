@@ -23,6 +23,7 @@ type ServiceContext struct {
 	Trans     *i18n.Translator
 	Captcha   *base64Captcha.Captcha
 	SystemRpc systemclient.System
+	Redis     *redis.Redis
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -37,6 +38,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:    c,
 		Authority: middleware.NewAuthorityMiddleware(cbn, rds, trans).Handle,
 		Trans:     trans,
+		Redis:     rds,
 		Captcha:   captcha.MustNewRedisCaptcha(c.Captcha, rds),
 		SystemRpc: systemclient.NewSystem(zrpc.NewClientIfEnable(c.SystemRpc)),
 	}

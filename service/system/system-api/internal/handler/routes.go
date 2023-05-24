@@ -8,6 +8,8 @@ import (
 	base "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/base"
 	captcha "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/captcha"
 	department "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/department"
+	dictionary "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/dictionary"
+	dictionarydetail "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/dictionarydetail"
 	menu "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/menu"
 	oauthprovider "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/oauthprovider"
 	position "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/position"
@@ -366,6 +368,79 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/oauth_provider",
 					Handler: oauthprovider.GetOauthProviderByIdHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/dictionary/create",
+					Handler: dictionary.CreateDictionaryHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dictionary/update",
+					Handler: dictionary.UpdateDictionaryHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dictionary/delete",
+					Handler: dictionary.DeleteDictionaryHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dictionary/list",
+					Handler: dictionary.GetDictionaryListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dictionary",
+					Handler: dictionary.GetDictionaryByIdHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/dictionary_detail/create",
+					Handler: dictionarydetail.CreateDictionaryDetailHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dictionary_detail/update",
+					Handler: dictionarydetail.UpdateDictionaryDetailHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dictionary_detail/delete",
+					Handler: dictionarydetail.DeleteDictionaryDetailHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dictionary_detail/list",
+					Handler: dictionarydetail.GetDictionaryDetailListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dictionary_detail",
+					Handler: dictionarydetail.GetDictionaryDetailByIdHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/dict/:name",
+					Handler: dictionarydetail.GetDictionaryDetailByDictionaryNameHandler(serverCtx),
 				},
 			}...,
 		),

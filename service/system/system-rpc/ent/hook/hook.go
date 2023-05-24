@@ -33,6 +33,30 @@ func (f DepartmentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DepartmentMutation", m)
 }
 
+// The DictionaryFunc type is an adapter to allow the use of ordinary
+// function as Dictionary mutator.
+type DictionaryFunc func(context.Context, *ent.DictionaryMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f DictionaryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.DictionaryMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DictionaryMutation", m)
+}
+
+// The DictionaryDetailFunc type is an adapter to allow the use of ordinary
+// function as DictionaryDetail mutator.
+type DictionaryDetailFunc func(context.Context, *ent.DictionaryDetailMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f DictionaryDetailFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.DictionaryDetailMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DictionaryDetailMutation", m)
+}
+
 // The MenuFunc type is an adapter to allow the use of ordinary
 // function as Menu mutator.
 type MenuFunc func(context.Context, *ent.MenuMutation) (ent.Value, error)
@@ -43,6 +67,18 @@ func (f MenuFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MenuMutation", m)
+}
+
+// The OauthProviderFunc type is an adapter to allow the use of ordinary
+// function as OauthProvider mutator.
+type OauthProviderFunc func(context.Context, *ent.OauthProviderMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f OauthProviderFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OauthProviderMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OauthProviderMutation", m)
 }
 
 // The PositionFunc type is an adapter to allow the use of ordinary

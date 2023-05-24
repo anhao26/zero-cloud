@@ -13,7 +13,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/api"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/department"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/dictionary"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/dictionarydetail"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/oauthprovider"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/predicate"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/role"
@@ -31,13 +34,16 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAPI        = "API"
-	TypeDepartment = "Department"
-	TypeMenu       = "Menu"
-	TypePosition   = "Position"
-	TypeRole       = "Role"
-	TypeToken      = "Token"
-	TypeUser       = "User"
+	TypeAPI              = "API"
+	TypeDepartment       = "Department"
+	TypeDictionary       = "Dictionary"
+	TypeDictionaryDetail = "DictionaryDetail"
+	TypeMenu             = "Menu"
+	TypeOauthProvider    = "OauthProvider"
+	TypePosition         = "Position"
+	TypeRole             = "Role"
+	TypeToken            = "Token"
+	TypeUser             = "User"
 )
 
 // APIMutation represents an operation that mutates the API nodes in the graph.
@@ -1844,6 +1850,1647 @@ func (m *DepartmentMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Department edge %s", name)
+}
+
+// DictionaryMutation represents an operation that mutates the Dictionary nodes in the graph.
+type DictionaryMutation struct {
+	config
+	op                        Op
+	typ                       string
+	id                        *uint64
+	created_at                *time.Time
+	updated_at                *time.Time
+	status                    *uint8
+	addstatus                 *int8
+	title                     *string
+	name                      *string
+	desc                      *string
+	clearedFields             map[string]struct{}
+	dictionary_details        map[uint64]struct{}
+	removeddictionary_details map[uint64]struct{}
+	cleareddictionary_details bool
+	done                      bool
+	oldValue                  func(context.Context) (*Dictionary, error)
+	predicates                []predicate.Dictionary
+}
+
+var _ ent.Mutation = (*DictionaryMutation)(nil)
+
+// dictionaryOption allows management of the mutation configuration using functional options.
+type dictionaryOption func(*DictionaryMutation)
+
+// newDictionaryMutation creates new mutation for the Dictionary entity.
+func newDictionaryMutation(c config, op Op, opts ...dictionaryOption) *DictionaryMutation {
+	m := &DictionaryMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeDictionary,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withDictionaryID sets the ID field of the mutation.
+func withDictionaryID(id uint64) dictionaryOption {
+	return func(m *DictionaryMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Dictionary
+		)
+		m.oldValue = func(ctx context.Context) (*Dictionary, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Dictionary.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withDictionary sets the old Dictionary of the mutation.
+func withDictionary(node *Dictionary) dictionaryOption {
+	return func(m *DictionaryMutation) {
+		m.oldValue = func(context.Context) (*Dictionary, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m DictionaryMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m DictionaryMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Dictionary entities.
+func (m *DictionaryMutation) SetID(id uint64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *DictionaryMutation) ID() (id uint64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *DictionaryMutation) IDs(ctx context.Context) ([]uint64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uint64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Dictionary.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *DictionaryMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *DictionaryMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Dictionary entity.
+// If the Dictionary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *DictionaryMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *DictionaryMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *DictionaryMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the Dictionary entity.
+// If the Dictionary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *DictionaryMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *DictionaryMutation) SetStatus(u uint8) {
+	m.status = &u
+	m.addstatus = nil
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *DictionaryMutation) Status() (r uint8, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the Dictionary entity.
+// If the Dictionary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryMutation) OldStatus(ctx context.Context) (v uint8, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// AddStatus adds u to the "status" field.
+func (m *DictionaryMutation) AddStatus(u int8) {
+	if m.addstatus != nil {
+		*m.addstatus += u
+	} else {
+		m.addstatus = &u
+	}
+}
+
+// AddedStatus returns the value that was added to the "status" field in this mutation.
+func (m *DictionaryMutation) AddedStatus() (r int8, exists bool) {
+	v := m.addstatus
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearStatus clears the value of the "status" field.
+func (m *DictionaryMutation) ClearStatus() {
+	m.status = nil
+	m.addstatus = nil
+	m.clearedFields[dictionary.FieldStatus] = struct{}{}
+}
+
+// StatusCleared returns if the "status" field was cleared in this mutation.
+func (m *DictionaryMutation) StatusCleared() bool {
+	_, ok := m.clearedFields[dictionary.FieldStatus]
+	return ok
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *DictionaryMutation) ResetStatus() {
+	m.status = nil
+	m.addstatus = nil
+	delete(m.clearedFields, dictionary.FieldStatus)
+}
+
+// SetTitle sets the "title" field.
+func (m *DictionaryMutation) SetTitle(s string) {
+	m.title = &s
+}
+
+// Title returns the value of the "title" field in the mutation.
+func (m *DictionaryMutation) Title() (r string, exists bool) {
+	v := m.title
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTitle returns the old "title" field's value of the Dictionary entity.
+// If the Dictionary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryMutation) OldTitle(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTitle is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTitle requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTitle: %w", err)
+	}
+	return oldValue.Title, nil
+}
+
+// ResetTitle resets all changes to the "title" field.
+func (m *DictionaryMutation) ResetTitle() {
+	m.title = nil
+}
+
+// SetName sets the "name" field.
+func (m *DictionaryMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *DictionaryMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the Dictionary entity.
+// If the Dictionary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *DictionaryMutation) ResetName() {
+	m.name = nil
+}
+
+// SetDesc sets the "desc" field.
+func (m *DictionaryMutation) SetDesc(s string) {
+	m.desc = &s
+}
+
+// Desc returns the value of the "desc" field in the mutation.
+func (m *DictionaryMutation) Desc() (r string, exists bool) {
+	v := m.desc
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDesc returns the old "desc" field's value of the Dictionary entity.
+// If the Dictionary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryMutation) OldDesc(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDesc is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDesc requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDesc: %w", err)
+	}
+	return oldValue.Desc, nil
+}
+
+// ResetDesc resets all changes to the "desc" field.
+func (m *DictionaryMutation) ResetDesc() {
+	m.desc = nil
+}
+
+// AddDictionaryDetailIDs adds the "dictionary_details" edge to the DictionaryDetail entity by ids.
+func (m *DictionaryMutation) AddDictionaryDetailIDs(ids ...uint64) {
+	if m.dictionary_details == nil {
+		m.dictionary_details = make(map[uint64]struct{})
+	}
+	for i := range ids {
+		m.dictionary_details[ids[i]] = struct{}{}
+	}
+}
+
+// ClearDictionaryDetails clears the "dictionary_details" edge to the DictionaryDetail entity.
+func (m *DictionaryMutation) ClearDictionaryDetails() {
+	m.cleareddictionary_details = true
+}
+
+// DictionaryDetailsCleared reports if the "dictionary_details" edge to the DictionaryDetail entity was cleared.
+func (m *DictionaryMutation) DictionaryDetailsCleared() bool {
+	return m.cleareddictionary_details
+}
+
+// RemoveDictionaryDetailIDs removes the "dictionary_details" edge to the DictionaryDetail entity by IDs.
+func (m *DictionaryMutation) RemoveDictionaryDetailIDs(ids ...uint64) {
+	if m.removeddictionary_details == nil {
+		m.removeddictionary_details = make(map[uint64]struct{})
+	}
+	for i := range ids {
+		delete(m.dictionary_details, ids[i])
+		m.removeddictionary_details[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedDictionaryDetails returns the removed IDs of the "dictionary_details" edge to the DictionaryDetail entity.
+func (m *DictionaryMutation) RemovedDictionaryDetailsIDs() (ids []uint64) {
+	for id := range m.removeddictionary_details {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// DictionaryDetailsIDs returns the "dictionary_details" edge IDs in the mutation.
+func (m *DictionaryMutation) DictionaryDetailsIDs() (ids []uint64) {
+	for id := range m.dictionary_details {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetDictionaryDetails resets all changes to the "dictionary_details" edge.
+func (m *DictionaryMutation) ResetDictionaryDetails() {
+	m.dictionary_details = nil
+	m.cleareddictionary_details = false
+	m.removeddictionary_details = nil
+}
+
+// Where appends a list predicates to the DictionaryMutation builder.
+func (m *DictionaryMutation) Where(ps ...predicate.Dictionary) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the DictionaryMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *DictionaryMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Dictionary, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *DictionaryMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *DictionaryMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Dictionary).
+func (m *DictionaryMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *DictionaryMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m.created_at != nil {
+		fields = append(fields, dictionary.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, dictionary.FieldUpdatedAt)
+	}
+	if m.status != nil {
+		fields = append(fields, dictionary.FieldStatus)
+	}
+	if m.title != nil {
+		fields = append(fields, dictionary.FieldTitle)
+	}
+	if m.name != nil {
+		fields = append(fields, dictionary.FieldName)
+	}
+	if m.desc != nil {
+		fields = append(fields, dictionary.FieldDesc)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *DictionaryMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case dictionary.FieldCreatedAt:
+		return m.CreatedAt()
+	case dictionary.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case dictionary.FieldStatus:
+		return m.Status()
+	case dictionary.FieldTitle:
+		return m.Title()
+	case dictionary.FieldName:
+		return m.Name()
+	case dictionary.FieldDesc:
+		return m.Desc()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *DictionaryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case dictionary.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case dictionary.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case dictionary.FieldStatus:
+		return m.OldStatus(ctx)
+	case dictionary.FieldTitle:
+		return m.OldTitle(ctx)
+	case dictionary.FieldName:
+		return m.OldName(ctx)
+	case dictionary.FieldDesc:
+		return m.OldDesc(ctx)
+	}
+	return nil, fmt.Errorf("unknown Dictionary field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *DictionaryMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case dictionary.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case dictionary.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case dictionary.FieldStatus:
+		v, ok := value.(uint8)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	case dictionary.FieldTitle:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTitle(v)
+		return nil
+	case dictionary.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case dictionary.FieldDesc:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDesc(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Dictionary field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *DictionaryMutation) AddedFields() []string {
+	var fields []string
+	if m.addstatus != nil {
+		fields = append(fields, dictionary.FieldStatus)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *DictionaryMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case dictionary.FieldStatus:
+		return m.AddedStatus()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *DictionaryMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case dictionary.FieldStatus:
+		v, ok := value.(int8)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddStatus(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Dictionary numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *DictionaryMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(dictionary.FieldStatus) {
+		fields = append(fields, dictionary.FieldStatus)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *DictionaryMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *DictionaryMutation) ClearField(name string) error {
+	switch name {
+	case dictionary.FieldStatus:
+		m.ClearStatus()
+		return nil
+	}
+	return fmt.Errorf("unknown Dictionary nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *DictionaryMutation) ResetField(name string) error {
+	switch name {
+	case dictionary.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case dictionary.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case dictionary.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case dictionary.FieldTitle:
+		m.ResetTitle()
+		return nil
+	case dictionary.FieldName:
+		m.ResetName()
+		return nil
+	case dictionary.FieldDesc:
+		m.ResetDesc()
+		return nil
+	}
+	return fmt.Errorf("unknown Dictionary field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *DictionaryMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.dictionary_details != nil {
+		edges = append(edges, dictionary.EdgeDictionaryDetails)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *DictionaryMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case dictionary.EdgeDictionaryDetails:
+		ids := make([]ent.Value, 0, len(m.dictionary_details))
+		for id := range m.dictionary_details {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *DictionaryMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removeddictionary_details != nil {
+		edges = append(edges, dictionary.EdgeDictionaryDetails)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *DictionaryMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case dictionary.EdgeDictionaryDetails:
+		ids := make([]ent.Value, 0, len(m.removeddictionary_details))
+		for id := range m.removeddictionary_details {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *DictionaryMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.cleareddictionary_details {
+		edges = append(edges, dictionary.EdgeDictionaryDetails)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *DictionaryMutation) EdgeCleared(name string) bool {
+	switch name {
+	case dictionary.EdgeDictionaryDetails:
+		return m.cleareddictionary_details
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *DictionaryMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Dictionary unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *DictionaryMutation) ResetEdge(name string) error {
+	switch name {
+	case dictionary.EdgeDictionaryDetails:
+		m.ResetDictionaryDetails()
+		return nil
+	}
+	return fmt.Errorf("unknown Dictionary edge %s", name)
+}
+
+// DictionaryDetailMutation represents an operation that mutates the DictionaryDetail nodes in the graph.
+type DictionaryDetailMutation struct {
+	config
+	op                  Op
+	typ                 string
+	id                  *uint64
+	created_at          *time.Time
+	updated_at          *time.Time
+	status              *uint8
+	addstatus           *int8
+	sort                *uint32
+	addsort             *int32
+	title               *string
+	key                 *string
+	value               *string
+	clearedFields       map[string]struct{}
+	dictionaries        *uint64
+	cleareddictionaries bool
+	done                bool
+	oldValue            func(context.Context) (*DictionaryDetail, error)
+	predicates          []predicate.DictionaryDetail
+}
+
+var _ ent.Mutation = (*DictionaryDetailMutation)(nil)
+
+// dictionarydetailOption allows management of the mutation configuration using functional options.
+type dictionarydetailOption func(*DictionaryDetailMutation)
+
+// newDictionaryDetailMutation creates new mutation for the DictionaryDetail entity.
+func newDictionaryDetailMutation(c config, op Op, opts ...dictionarydetailOption) *DictionaryDetailMutation {
+	m := &DictionaryDetailMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeDictionaryDetail,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withDictionaryDetailID sets the ID field of the mutation.
+func withDictionaryDetailID(id uint64) dictionarydetailOption {
+	return func(m *DictionaryDetailMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *DictionaryDetail
+		)
+		m.oldValue = func(ctx context.Context) (*DictionaryDetail, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().DictionaryDetail.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withDictionaryDetail sets the old DictionaryDetail of the mutation.
+func withDictionaryDetail(node *DictionaryDetail) dictionarydetailOption {
+	return func(m *DictionaryDetailMutation) {
+		m.oldValue = func(context.Context) (*DictionaryDetail, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m DictionaryDetailMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m DictionaryDetailMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of DictionaryDetail entities.
+func (m *DictionaryDetailMutation) SetID(id uint64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *DictionaryDetailMutation) ID() (id uint64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *DictionaryDetailMutation) IDs(ctx context.Context) ([]uint64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uint64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().DictionaryDetail.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *DictionaryDetailMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *DictionaryDetailMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the DictionaryDetail entity.
+// If the DictionaryDetail object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryDetailMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *DictionaryDetailMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *DictionaryDetailMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *DictionaryDetailMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the DictionaryDetail entity.
+// If the DictionaryDetail object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryDetailMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *DictionaryDetailMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *DictionaryDetailMutation) SetStatus(u uint8) {
+	m.status = &u
+	m.addstatus = nil
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *DictionaryDetailMutation) Status() (r uint8, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the DictionaryDetail entity.
+// If the DictionaryDetail object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryDetailMutation) OldStatus(ctx context.Context) (v uint8, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// AddStatus adds u to the "status" field.
+func (m *DictionaryDetailMutation) AddStatus(u int8) {
+	if m.addstatus != nil {
+		*m.addstatus += u
+	} else {
+		m.addstatus = &u
+	}
+}
+
+// AddedStatus returns the value that was added to the "status" field in this mutation.
+func (m *DictionaryDetailMutation) AddedStatus() (r int8, exists bool) {
+	v := m.addstatus
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearStatus clears the value of the "status" field.
+func (m *DictionaryDetailMutation) ClearStatus() {
+	m.status = nil
+	m.addstatus = nil
+	m.clearedFields[dictionarydetail.FieldStatus] = struct{}{}
+}
+
+// StatusCleared returns if the "status" field was cleared in this mutation.
+func (m *DictionaryDetailMutation) StatusCleared() bool {
+	_, ok := m.clearedFields[dictionarydetail.FieldStatus]
+	return ok
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *DictionaryDetailMutation) ResetStatus() {
+	m.status = nil
+	m.addstatus = nil
+	delete(m.clearedFields, dictionarydetail.FieldStatus)
+}
+
+// SetSort sets the "sort" field.
+func (m *DictionaryDetailMutation) SetSort(u uint32) {
+	m.sort = &u
+	m.addsort = nil
+}
+
+// Sort returns the value of the "sort" field in the mutation.
+func (m *DictionaryDetailMutation) Sort() (r uint32, exists bool) {
+	v := m.sort
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSort returns the old "sort" field's value of the DictionaryDetail entity.
+// If the DictionaryDetail object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryDetailMutation) OldSort(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSort is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSort requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSort: %w", err)
+	}
+	return oldValue.Sort, nil
+}
+
+// AddSort adds u to the "sort" field.
+func (m *DictionaryDetailMutation) AddSort(u int32) {
+	if m.addsort != nil {
+		*m.addsort += u
+	} else {
+		m.addsort = &u
+	}
+}
+
+// AddedSort returns the value that was added to the "sort" field in this mutation.
+func (m *DictionaryDetailMutation) AddedSort() (r int32, exists bool) {
+	v := m.addsort
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSort resets all changes to the "sort" field.
+func (m *DictionaryDetailMutation) ResetSort() {
+	m.sort = nil
+	m.addsort = nil
+}
+
+// SetTitle sets the "title" field.
+func (m *DictionaryDetailMutation) SetTitle(s string) {
+	m.title = &s
+}
+
+// Title returns the value of the "title" field in the mutation.
+func (m *DictionaryDetailMutation) Title() (r string, exists bool) {
+	v := m.title
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTitle returns the old "title" field's value of the DictionaryDetail entity.
+// If the DictionaryDetail object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryDetailMutation) OldTitle(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTitle is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTitle requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTitle: %w", err)
+	}
+	return oldValue.Title, nil
+}
+
+// ResetTitle resets all changes to the "title" field.
+func (m *DictionaryDetailMutation) ResetTitle() {
+	m.title = nil
+}
+
+// SetKey sets the "key" field.
+func (m *DictionaryDetailMutation) SetKey(s string) {
+	m.key = &s
+}
+
+// Key returns the value of the "key" field in the mutation.
+func (m *DictionaryDetailMutation) Key() (r string, exists bool) {
+	v := m.key
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldKey returns the old "key" field's value of the DictionaryDetail entity.
+// If the DictionaryDetail object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryDetailMutation) OldKey(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldKey is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldKey requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldKey: %w", err)
+	}
+	return oldValue.Key, nil
+}
+
+// ResetKey resets all changes to the "key" field.
+func (m *DictionaryDetailMutation) ResetKey() {
+	m.key = nil
+}
+
+// SetValue sets the "value" field.
+func (m *DictionaryDetailMutation) SetValue(s string) {
+	m.value = &s
+}
+
+// Value returns the value of the "value" field in the mutation.
+func (m *DictionaryDetailMutation) Value() (r string, exists bool) {
+	v := m.value
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldValue returns the old "value" field's value of the DictionaryDetail entity.
+// If the DictionaryDetail object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryDetailMutation) OldValue(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldValue is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldValue requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldValue: %w", err)
+	}
+	return oldValue.Value, nil
+}
+
+// ResetValue resets all changes to the "value" field.
+func (m *DictionaryDetailMutation) ResetValue() {
+	m.value = nil
+}
+
+// SetDictionaryID sets the "dictionary_id" field.
+func (m *DictionaryDetailMutation) SetDictionaryID(u uint64) {
+	m.dictionaries = &u
+}
+
+// DictionaryID returns the value of the "dictionary_id" field in the mutation.
+func (m *DictionaryDetailMutation) DictionaryID() (r uint64, exists bool) {
+	v := m.dictionaries
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDictionaryID returns the old "dictionary_id" field's value of the DictionaryDetail entity.
+// If the DictionaryDetail object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DictionaryDetailMutation) OldDictionaryID(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDictionaryID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDictionaryID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDictionaryID: %w", err)
+	}
+	return oldValue.DictionaryID, nil
+}
+
+// ClearDictionaryID clears the value of the "dictionary_id" field.
+func (m *DictionaryDetailMutation) ClearDictionaryID() {
+	m.dictionaries = nil
+	m.clearedFields[dictionarydetail.FieldDictionaryID] = struct{}{}
+}
+
+// DictionaryIDCleared returns if the "dictionary_id" field was cleared in this mutation.
+func (m *DictionaryDetailMutation) DictionaryIDCleared() bool {
+	_, ok := m.clearedFields[dictionarydetail.FieldDictionaryID]
+	return ok
+}
+
+// ResetDictionaryID resets all changes to the "dictionary_id" field.
+func (m *DictionaryDetailMutation) ResetDictionaryID() {
+	m.dictionaries = nil
+	delete(m.clearedFields, dictionarydetail.FieldDictionaryID)
+}
+
+// SetDictionariesID sets the "dictionaries" edge to the Dictionary entity by id.
+func (m *DictionaryDetailMutation) SetDictionariesID(id uint64) {
+	m.dictionaries = &id
+}
+
+// ClearDictionaries clears the "dictionaries" edge to the Dictionary entity.
+func (m *DictionaryDetailMutation) ClearDictionaries() {
+	m.cleareddictionaries = true
+}
+
+// DictionariesCleared reports if the "dictionaries" edge to the Dictionary entity was cleared.
+func (m *DictionaryDetailMutation) DictionariesCleared() bool {
+	return m.DictionaryIDCleared() || m.cleareddictionaries
+}
+
+// DictionariesID returns the "dictionaries" edge ID in the mutation.
+func (m *DictionaryDetailMutation) DictionariesID() (id uint64, exists bool) {
+	if m.dictionaries != nil {
+		return *m.dictionaries, true
+	}
+	return
+}
+
+// DictionariesIDs returns the "dictionaries" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// DictionariesID instead. It exists only for internal usage by the builders.
+func (m *DictionaryDetailMutation) DictionariesIDs() (ids []uint64) {
+	if id := m.dictionaries; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetDictionaries resets all changes to the "dictionaries" edge.
+func (m *DictionaryDetailMutation) ResetDictionaries() {
+	m.dictionaries = nil
+	m.cleareddictionaries = false
+}
+
+// Where appends a list predicates to the DictionaryDetailMutation builder.
+func (m *DictionaryDetailMutation) Where(ps ...predicate.DictionaryDetail) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the DictionaryDetailMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *DictionaryDetailMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.DictionaryDetail, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *DictionaryDetailMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *DictionaryDetailMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (DictionaryDetail).
+func (m *DictionaryDetailMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *DictionaryDetailMutation) Fields() []string {
+	fields := make([]string, 0, 8)
+	if m.created_at != nil {
+		fields = append(fields, dictionarydetail.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, dictionarydetail.FieldUpdatedAt)
+	}
+	if m.status != nil {
+		fields = append(fields, dictionarydetail.FieldStatus)
+	}
+	if m.sort != nil {
+		fields = append(fields, dictionarydetail.FieldSort)
+	}
+	if m.title != nil {
+		fields = append(fields, dictionarydetail.FieldTitle)
+	}
+	if m.key != nil {
+		fields = append(fields, dictionarydetail.FieldKey)
+	}
+	if m.value != nil {
+		fields = append(fields, dictionarydetail.FieldValue)
+	}
+	if m.dictionaries != nil {
+		fields = append(fields, dictionarydetail.FieldDictionaryID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *DictionaryDetailMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case dictionarydetail.FieldCreatedAt:
+		return m.CreatedAt()
+	case dictionarydetail.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case dictionarydetail.FieldStatus:
+		return m.Status()
+	case dictionarydetail.FieldSort:
+		return m.Sort()
+	case dictionarydetail.FieldTitle:
+		return m.Title()
+	case dictionarydetail.FieldKey:
+		return m.Key()
+	case dictionarydetail.FieldValue:
+		return m.Value()
+	case dictionarydetail.FieldDictionaryID:
+		return m.DictionaryID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *DictionaryDetailMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case dictionarydetail.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case dictionarydetail.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case dictionarydetail.FieldStatus:
+		return m.OldStatus(ctx)
+	case dictionarydetail.FieldSort:
+		return m.OldSort(ctx)
+	case dictionarydetail.FieldTitle:
+		return m.OldTitle(ctx)
+	case dictionarydetail.FieldKey:
+		return m.OldKey(ctx)
+	case dictionarydetail.FieldValue:
+		return m.OldValue(ctx)
+	case dictionarydetail.FieldDictionaryID:
+		return m.OldDictionaryID(ctx)
+	}
+	return nil, fmt.Errorf("unknown DictionaryDetail field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *DictionaryDetailMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case dictionarydetail.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case dictionarydetail.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case dictionarydetail.FieldStatus:
+		v, ok := value.(uint8)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	case dictionarydetail.FieldSort:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSort(v)
+		return nil
+	case dictionarydetail.FieldTitle:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTitle(v)
+		return nil
+	case dictionarydetail.FieldKey:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetKey(v)
+		return nil
+	case dictionarydetail.FieldValue:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetValue(v)
+		return nil
+	case dictionarydetail.FieldDictionaryID:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDictionaryID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown DictionaryDetail field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *DictionaryDetailMutation) AddedFields() []string {
+	var fields []string
+	if m.addstatus != nil {
+		fields = append(fields, dictionarydetail.FieldStatus)
+	}
+	if m.addsort != nil {
+		fields = append(fields, dictionarydetail.FieldSort)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *DictionaryDetailMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case dictionarydetail.FieldStatus:
+		return m.AddedStatus()
+	case dictionarydetail.FieldSort:
+		return m.AddedSort()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *DictionaryDetailMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case dictionarydetail.FieldStatus:
+		v, ok := value.(int8)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddStatus(v)
+		return nil
+	case dictionarydetail.FieldSort:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSort(v)
+		return nil
+	}
+	return fmt.Errorf("unknown DictionaryDetail numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *DictionaryDetailMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(dictionarydetail.FieldStatus) {
+		fields = append(fields, dictionarydetail.FieldStatus)
+	}
+	if m.FieldCleared(dictionarydetail.FieldDictionaryID) {
+		fields = append(fields, dictionarydetail.FieldDictionaryID)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *DictionaryDetailMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *DictionaryDetailMutation) ClearField(name string) error {
+	switch name {
+	case dictionarydetail.FieldStatus:
+		m.ClearStatus()
+		return nil
+	case dictionarydetail.FieldDictionaryID:
+		m.ClearDictionaryID()
+		return nil
+	}
+	return fmt.Errorf("unknown DictionaryDetail nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *DictionaryDetailMutation) ResetField(name string) error {
+	switch name {
+	case dictionarydetail.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case dictionarydetail.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case dictionarydetail.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case dictionarydetail.FieldSort:
+		m.ResetSort()
+		return nil
+	case dictionarydetail.FieldTitle:
+		m.ResetTitle()
+		return nil
+	case dictionarydetail.FieldKey:
+		m.ResetKey()
+		return nil
+	case dictionarydetail.FieldValue:
+		m.ResetValue()
+		return nil
+	case dictionarydetail.FieldDictionaryID:
+		m.ResetDictionaryID()
+		return nil
+	}
+	return fmt.Errorf("unknown DictionaryDetail field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *DictionaryDetailMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.dictionaries != nil {
+		edges = append(edges, dictionarydetail.EdgeDictionaries)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *DictionaryDetailMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case dictionarydetail.EdgeDictionaries:
+		if id := m.dictionaries; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *DictionaryDetailMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *DictionaryDetailMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *DictionaryDetailMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.cleareddictionaries {
+		edges = append(edges, dictionarydetail.EdgeDictionaries)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *DictionaryDetailMutation) EdgeCleared(name string) bool {
+	switch name {
+	case dictionarydetail.EdgeDictionaries:
+		return m.cleareddictionaries
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *DictionaryDetailMutation) ClearEdge(name string) error {
+	switch name {
+	case dictionarydetail.EdgeDictionaries:
+		m.ClearDictionaries()
+		return nil
+	}
+	return fmt.Errorf("unknown DictionaryDetail unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *DictionaryDetailMutation) ResetEdge(name string) error {
+	switch name {
+	case dictionarydetail.EdgeDictionaries:
+		m.ResetDictionaries()
+		return nil
+	}
+	return fmt.Errorf("unknown DictionaryDetail edge %s", name)
 }
 
 // MenuMutation represents an operation that mutates the Menu nodes in the graph.
@@ -4009,6 +5656,914 @@ func (m *MenuMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Menu edge %s", name)
+}
+
+// OauthProviderMutation represents an operation that mutates the OauthProvider nodes in the graph.
+type OauthProviderMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *uint64
+	created_at    *time.Time
+	updated_at    *time.Time
+	name          *string
+	client_id     *string
+	client_secret *string
+	redirect_url  *string
+	scopes        *string
+	auth_url      *string
+	token_url     *string
+	auth_style    *uint64
+	addauth_style *int64
+	info_url      *string
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*OauthProvider, error)
+	predicates    []predicate.OauthProvider
+}
+
+var _ ent.Mutation = (*OauthProviderMutation)(nil)
+
+// oauthproviderOption allows management of the mutation configuration using functional options.
+type oauthproviderOption func(*OauthProviderMutation)
+
+// newOauthProviderMutation creates new mutation for the OauthProvider entity.
+func newOauthProviderMutation(c config, op Op, opts ...oauthproviderOption) *OauthProviderMutation {
+	m := &OauthProviderMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeOauthProvider,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withOauthProviderID sets the ID field of the mutation.
+func withOauthProviderID(id uint64) oauthproviderOption {
+	return func(m *OauthProviderMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *OauthProvider
+		)
+		m.oldValue = func(ctx context.Context) (*OauthProvider, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().OauthProvider.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withOauthProvider sets the old OauthProvider of the mutation.
+func withOauthProvider(node *OauthProvider) oauthproviderOption {
+	return func(m *OauthProviderMutation) {
+		m.oldValue = func(context.Context) (*OauthProvider, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m OauthProviderMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m OauthProviderMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of OauthProvider entities.
+func (m *OauthProviderMutation) SetID(id uint64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *OauthProviderMutation) ID() (id uint64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *OauthProviderMutation) IDs(ctx context.Context) ([]uint64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uint64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().OauthProvider.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *OauthProviderMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *OauthProviderMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the OauthProvider entity.
+// If the OauthProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OauthProviderMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *OauthProviderMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *OauthProviderMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *OauthProviderMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the OauthProvider entity.
+// If the OauthProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OauthProviderMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *OauthProviderMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetName sets the "name" field.
+func (m *OauthProviderMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *OauthProviderMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the OauthProvider entity.
+// If the OauthProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OauthProviderMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *OauthProviderMutation) ResetName() {
+	m.name = nil
+}
+
+// SetClientID sets the "client_id" field.
+func (m *OauthProviderMutation) SetClientID(s string) {
+	m.client_id = &s
+}
+
+// ClientID returns the value of the "client_id" field in the mutation.
+func (m *OauthProviderMutation) ClientID() (r string, exists bool) {
+	v := m.client_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldClientID returns the old "client_id" field's value of the OauthProvider entity.
+// If the OauthProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OauthProviderMutation) OldClientID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldClientID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldClientID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldClientID: %w", err)
+	}
+	return oldValue.ClientID, nil
+}
+
+// ResetClientID resets all changes to the "client_id" field.
+func (m *OauthProviderMutation) ResetClientID() {
+	m.client_id = nil
+}
+
+// SetClientSecret sets the "client_secret" field.
+func (m *OauthProviderMutation) SetClientSecret(s string) {
+	m.client_secret = &s
+}
+
+// ClientSecret returns the value of the "client_secret" field in the mutation.
+func (m *OauthProviderMutation) ClientSecret() (r string, exists bool) {
+	v := m.client_secret
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldClientSecret returns the old "client_secret" field's value of the OauthProvider entity.
+// If the OauthProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OauthProviderMutation) OldClientSecret(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldClientSecret is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldClientSecret requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldClientSecret: %w", err)
+	}
+	return oldValue.ClientSecret, nil
+}
+
+// ResetClientSecret resets all changes to the "client_secret" field.
+func (m *OauthProviderMutation) ResetClientSecret() {
+	m.client_secret = nil
+}
+
+// SetRedirectURL sets the "redirect_url" field.
+func (m *OauthProviderMutation) SetRedirectURL(s string) {
+	m.redirect_url = &s
+}
+
+// RedirectURL returns the value of the "redirect_url" field in the mutation.
+func (m *OauthProviderMutation) RedirectURL() (r string, exists bool) {
+	v := m.redirect_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRedirectURL returns the old "redirect_url" field's value of the OauthProvider entity.
+// If the OauthProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OauthProviderMutation) OldRedirectURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRedirectURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRedirectURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRedirectURL: %w", err)
+	}
+	return oldValue.RedirectURL, nil
+}
+
+// ResetRedirectURL resets all changes to the "redirect_url" field.
+func (m *OauthProviderMutation) ResetRedirectURL() {
+	m.redirect_url = nil
+}
+
+// SetScopes sets the "scopes" field.
+func (m *OauthProviderMutation) SetScopes(s string) {
+	m.scopes = &s
+}
+
+// Scopes returns the value of the "scopes" field in the mutation.
+func (m *OauthProviderMutation) Scopes() (r string, exists bool) {
+	v := m.scopes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldScopes returns the old "scopes" field's value of the OauthProvider entity.
+// If the OauthProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OauthProviderMutation) OldScopes(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldScopes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldScopes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldScopes: %w", err)
+	}
+	return oldValue.Scopes, nil
+}
+
+// ResetScopes resets all changes to the "scopes" field.
+func (m *OauthProviderMutation) ResetScopes() {
+	m.scopes = nil
+}
+
+// SetAuthURL sets the "auth_url" field.
+func (m *OauthProviderMutation) SetAuthURL(s string) {
+	m.auth_url = &s
+}
+
+// AuthURL returns the value of the "auth_url" field in the mutation.
+func (m *OauthProviderMutation) AuthURL() (r string, exists bool) {
+	v := m.auth_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAuthURL returns the old "auth_url" field's value of the OauthProvider entity.
+// If the OauthProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OauthProviderMutation) OldAuthURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAuthURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAuthURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAuthURL: %w", err)
+	}
+	return oldValue.AuthURL, nil
+}
+
+// ResetAuthURL resets all changes to the "auth_url" field.
+func (m *OauthProviderMutation) ResetAuthURL() {
+	m.auth_url = nil
+}
+
+// SetTokenURL sets the "token_url" field.
+func (m *OauthProviderMutation) SetTokenURL(s string) {
+	m.token_url = &s
+}
+
+// TokenURL returns the value of the "token_url" field in the mutation.
+func (m *OauthProviderMutation) TokenURL() (r string, exists bool) {
+	v := m.token_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTokenURL returns the old "token_url" field's value of the OauthProvider entity.
+// If the OauthProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OauthProviderMutation) OldTokenURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTokenURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTokenURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTokenURL: %w", err)
+	}
+	return oldValue.TokenURL, nil
+}
+
+// ResetTokenURL resets all changes to the "token_url" field.
+func (m *OauthProviderMutation) ResetTokenURL() {
+	m.token_url = nil
+}
+
+// SetAuthStyle sets the "auth_style" field.
+func (m *OauthProviderMutation) SetAuthStyle(u uint64) {
+	m.auth_style = &u
+	m.addauth_style = nil
+}
+
+// AuthStyle returns the value of the "auth_style" field in the mutation.
+func (m *OauthProviderMutation) AuthStyle() (r uint64, exists bool) {
+	v := m.auth_style
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAuthStyle returns the old "auth_style" field's value of the OauthProvider entity.
+// If the OauthProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OauthProviderMutation) OldAuthStyle(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAuthStyle is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAuthStyle requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAuthStyle: %w", err)
+	}
+	return oldValue.AuthStyle, nil
+}
+
+// AddAuthStyle adds u to the "auth_style" field.
+func (m *OauthProviderMutation) AddAuthStyle(u int64) {
+	if m.addauth_style != nil {
+		*m.addauth_style += u
+	} else {
+		m.addauth_style = &u
+	}
+}
+
+// AddedAuthStyle returns the value that was added to the "auth_style" field in this mutation.
+func (m *OauthProviderMutation) AddedAuthStyle() (r int64, exists bool) {
+	v := m.addauth_style
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAuthStyle resets all changes to the "auth_style" field.
+func (m *OauthProviderMutation) ResetAuthStyle() {
+	m.auth_style = nil
+	m.addauth_style = nil
+}
+
+// SetInfoURL sets the "info_url" field.
+func (m *OauthProviderMutation) SetInfoURL(s string) {
+	m.info_url = &s
+}
+
+// InfoURL returns the value of the "info_url" field in the mutation.
+func (m *OauthProviderMutation) InfoURL() (r string, exists bool) {
+	v := m.info_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInfoURL returns the old "info_url" field's value of the OauthProvider entity.
+// If the OauthProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OauthProviderMutation) OldInfoURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInfoURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInfoURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInfoURL: %w", err)
+	}
+	return oldValue.InfoURL, nil
+}
+
+// ResetInfoURL resets all changes to the "info_url" field.
+func (m *OauthProviderMutation) ResetInfoURL() {
+	m.info_url = nil
+}
+
+// Where appends a list predicates to the OauthProviderMutation builder.
+func (m *OauthProviderMutation) Where(ps ...predicate.OauthProvider) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the OauthProviderMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *OauthProviderMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.OauthProvider, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *OauthProviderMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *OauthProviderMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (OauthProvider).
+func (m *OauthProviderMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *OauthProviderMutation) Fields() []string {
+	fields := make([]string, 0, 11)
+	if m.created_at != nil {
+		fields = append(fields, oauthprovider.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, oauthprovider.FieldUpdatedAt)
+	}
+	if m.name != nil {
+		fields = append(fields, oauthprovider.FieldName)
+	}
+	if m.client_id != nil {
+		fields = append(fields, oauthprovider.FieldClientID)
+	}
+	if m.client_secret != nil {
+		fields = append(fields, oauthprovider.FieldClientSecret)
+	}
+	if m.redirect_url != nil {
+		fields = append(fields, oauthprovider.FieldRedirectURL)
+	}
+	if m.scopes != nil {
+		fields = append(fields, oauthprovider.FieldScopes)
+	}
+	if m.auth_url != nil {
+		fields = append(fields, oauthprovider.FieldAuthURL)
+	}
+	if m.token_url != nil {
+		fields = append(fields, oauthprovider.FieldTokenURL)
+	}
+	if m.auth_style != nil {
+		fields = append(fields, oauthprovider.FieldAuthStyle)
+	}
+	if m.info_url != nil {
+		fields = append(fields, oauthprovider.FieldInfoURL)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *OauthProviderMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case oauthprovider.FieldCreatedAt:
+		return m.CreatedAt()
+	case oauthprovider.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case oauthprovider.FieldName:
+		return m.Name()
+	case oauthprovider.FieldClientID:
+		return m.ClientID()
+	case oauthprovider.FieldClientSecret:
+		return m.ClientSecret()
+	case oauthprovider.FieldRedirectURL:
+		return m.RedirectURL()
+	case oauthprovider.FieldScopes:
+		return m.Scopes()
+	case oauthprovider.FieldAuthURL:
+		return m.AuthURL()
+	case oauthprovider.FieldTokenURL:
+		return m.TokenURL()
+	case oauthprovider.FieldAuthStyle:
+		return m.AuthStyle()
+	case oauthprovider.FieldInfoURL:
+		return m.InfoURL()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *OauthProviderMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case oauthprovider.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case oauthprovider.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case oauthprovider.FieldName:
+		return m.OldName(ctx)
+	case oauthprovider.FieldClientID:
+		return m.OldClientID(ctx)
+	case oauthprovider.FieldClientSecret:
+		return m.OldClientSecret(ctx)
+	case oauthprovider.FieldRedirectURL:
+		return m.OldRedirectURL(ctx)
+	case oauthprovider.FieldScopes:
+		return m.OldScopes(ctx)
+	case oauthprovider.FieldAuthURL:
+		return m.OldAuthURL(ctx)
+	case oauthprovider.FieldTokenURL:
+		return m.OldTokenURL(ctx)
+	case oauthprovider.FieldAuthStyle:
+		return m.OldAuthStyle(ctx)
+	case oauthprovider.FieldInfoURL:
+		return m.OldInfoURL(ctx)
+	}
+	return nil, fmt.Errorf("unknown OauthProvider field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *OauthProviderMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case oauthprovider.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case oauthprovider.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case oauthprovider.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case oauthprovider.FieldClientID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetClientID(v)
+		return nil
+	case oauthprovider.FieldClientSecret:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetClientSecret(v)
+		return nil
+	case oauthprovider.FieldRedirectURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRedirectURL(v)
+		return nil
+	case oauthprovider.FieldScopes:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetScopes(v)
+		return nil
+	case oauthprovider.FieldAuthURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAuthURL(v)
+		return nil
+	case oauthprovider.FieldTokenURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTokenURL(v)
+		return nil
+	case oauthprovider.FieldAuthStyle:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAuthStyle(v)
+		return nil
+	case oauthprovider.FieldInfoURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInfoURL(v)
+		return nil
+	}
+	return fmt.Errorf("unknown OauthProvider field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *OauthProviderMutation) AddedFields() []string {
+	var fields []string
+	if m.addauth_style != nil {
+		fields = append(fields, oauthprovider.FieldAuthStyle)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *OauthProviderMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case oauthprovider.FieldAuthStyle:
+		return m.AddedAuthStyle()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *OauthProviderMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case oauthprovider.FieldAuthStyle:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAuthStyle(v)
+		return nil
+	}
+	return fmt.Errorf("unknown OauthProvider numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *OauthProviderMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *OauthProviderMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *OauthProviderMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown OauthProvider nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *OauthProviderMutation) ResetField(name string) error {
+	switch name {
+	case oauthprovider.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case oauthprovider.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case oauthprovider.FieldName:
+		m.ResetName()
+		return nil
+	case oauthprovider.FieldClientID:
+		m.ResetClientID()
+		return nil
+	case oauthprovider.FieldClientSecret:
+		m.ResetClientSecret()
+		return nil
+	case oauthprovider.FieldRedirectURL:
+		m.ResetRedirectURL()
+		return nil
+	case oauthprovider.FieldScopes:
+		m.ResetScopes()
+		return nil
+	case oauthprovider.FieldAuthURL:
+		m.ResetAuthURL()
+		return nil
+	case oauthprovider.FieldTokenURL:
+		m.ResetTokenURL()
+		return nil
+	case oauthprovider.FieldAuthStyle:
+		m.ResetAuthStyle()
+		return nil
+	case oauthprovider.FieldInfoURL:
+		m.ResetInfoURL()
+		return nil
+	}
+	return fmt.Errorf("unknown OauthProvider field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *OauthProviderMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *OauthProviderMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *OauthProviderMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *OauthProviderMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *OauthProviderMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *OauthProviderMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *OauthProviderMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown OauthProvider unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *OauthProviderMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown OauthProvider edge %s", name)
 }
 
 // PositionMutation represents an operation that mutates the Position nodes in the graph.

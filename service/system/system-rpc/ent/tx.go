@@ -16,8 +16,14 @@ type Tx struct {
 	API *APIClient
 	// Department is the client for interacting with the Department builders.
 	Department *DepartmentClient
+	// Dictionary is the client for interacting with the Dictionary builders.
+	Dictionary *DictionaryClient
+	// DictionaryDetail is the client for interacting with the DictionaryDetail builders.
+	DictionaryDetail *DictionaryDetailClient
 	// Menu is the client for interacting with the Menu builders.
 	Menu *MenuClient
+	// OauthProvider is the client for interacting with the OauthProvider builders.
+	OauthProvider *OauthProviderClient
 	// Position is the client for interacting with the Position builders.
 	Position *PositionClient
 	// Role is the client for interacting with the Role builders.
@@ -159,7 +165,10 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.API = NewAPIClient(tx.config)
 	tx.Department = NewDepartmentClient(tx.config)
+	tx.Dictionary = NewDictionaryClient(tx.config)
+	tx.DictionaryDetail = NewDictionaryDetailClient(tx.config)
 	tx.Menu = NewMenuClient(tx.config)
+	tx.OauthProvider = NewOauthProviderClient(tx.config)
 	tx.Position = NewPositionClient(tx.config)
 	tx.Role = NewRoleClient(tx.config)
 	tx.Token = NewTokenClient(tx.config)

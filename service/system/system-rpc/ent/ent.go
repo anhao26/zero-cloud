@@ -14,7 +14,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/api"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/department"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/dictionary"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/dictionarydetail"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/oauthprovider"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/role"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/token"
@@ -79,13 +82,16 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			api.Table:        api.ValidColumn,
-			department.Table: department.ValidColumn,
-			menu.Table:       menu.ValidColumn,
-			position.Table:   position.ValidColumn,
-			role.Table:       role.ValidColumn,
-			token.Table:      token.ValidColumn,
-			user.Table:       user.ValidColumn,
+			api.Table:              api.ValidColumn,
+			department.Table:       department.ValidColumn,
+			dictionary.Table:       dictionary.ValidColumn,
+			dictionarydetail.Table: dictionarydetail.ValidColumn,
+			menu.Table:             menu.ValidColumn,
+			oauthprovider.Table:    oauthprovider.ValidColumn,
+			position.Table:         position.ValidColumn,
+			role.Table:             role.ValidColumn,
+			token.Table:            token.ValidColumn,
+			user.Table:             user.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

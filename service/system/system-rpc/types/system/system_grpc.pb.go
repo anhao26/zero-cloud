@@ -19,44 +19,51 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	System_CreateApi_FullMethodName         = "/system.System/createApi"
-	System_UpdateApi_FullMethodName         = "/system.System/updateApi"
-	System_GetApiList_FullMethodName        = "/system.System/getApiList"
-	System_GetApiById_FullMethodName        = "/system.System/getApiById"
-	System_DeleteApi_FullMethodName         = "/system.System/deleteApi"
-	System_InitDatabase_FullMethodName      = "/system.System/initDatabase"
-	System_CreateDepartment_FullMethodName  = "/system.System/createDepartment"
-	System_UpdateDepartment_FullMethodName  = "/system.System/updateDepartment"
-	System_GetDepartmentList_FullMethodName = "/system.System/getDepartmentList"
-	System_GetDepartmentById_FullMethodName = "/system.System/getDepartmentById"
-	System_DeleteDepartment_FullMethodName  = "/system.System/deleteDepartment"
-	System_CreateMenu_FullMethodName        = "/system.System/createMenu"
-	System_UpdateMenu_FullMethodName        = "/system.System/updateMenu"
-	System_DeleteMenu_FullMethodName        = "/system.System/deleteMenu"
-	System_GetMenuListByRole_FullMethodName = "/system.System/getMenuListByRole"
-	System_GetMenuList_FullMethodName       = "/system.System/getMenuList"
-	System_CreatePosition_FullMethodName    = "/system.System/createPosition"
-	System_UpdatePosition_FullMethodName    = "/system.System/updatePosition"
-	System_GetPositionList_FullMethodName   = "/system.System/getPositionList"
-	System_GetPositionById_FullMethodName   = "/system.System/getPositionById"
-	System_DeletePosition_FullMethodName    = "/system.System/deletePosition"
-	System_CreateRole_FullMethodName        = "/system.System/createRole"
-	System_UpdateRole_FullMethodName        = "/system.System/updateRole"
-	System_GetRoleList_FullMethodName       = "/system.System/getRoleList"
-	System_GetRoleById_FullMethodName       = "/system.System/getRoleById"
-	System_DeleteRole_FullMethodName        = "/system.System/deleteRole"
-	System_CreateToken_FullMethodName       = "/system.System/createToken"
-	System_UpdateToken_FullMethodName       = "/system.System/updateToken"
-	System_GetTokenList_FullMethodName      = "/system.System/getTokenList"
-	System_GetTokenById_FullMethodName      = "/system.System/getTokenById"
-	System_DeleteToken_FullMethodName       = "/system.System/deleteToken"
-	System_BlockUserAllToken_FullMethodName = "/system.System/blockUserAllToken"
-	System_CreateUser_FullMethodName        = "/system.System/createUser"
-	System_UpdateUser_FullMethodName        = "/system.System/updateUser"
-	System_GetUserList_FullMethodName       = "/system.System/getUserList"
-	System_GetUserById_FullMethodName       = "/system.System/getUserById"
-	System_GetUserByUsername_FullMethodName = "/system.System/getUserByUsername"
-	System_DeleteUser_FullMethodName        = "/system.System/deleteUser"
+	System_CreateApi_FullMethodName            = "/system.System/createApi"
+	System_UpdateApi_FullMethodName            = "/system.System/updateApi"
+	System_GetApiList_FullMethodName           = "/system.System/getApiList"
+	System_GetApiById_FullMethodName           = "/system.System/getApiById"
+	System_DeleteApi_FullMethodName            = "/system.System/deleteApi"
+	System_InitDatabase_FullMethodName         = "/system.System/initDatabase"
+	System_CreateDepartment_FullMethodName     = "/system.System/createDepartment"
+	System_UpdateDepartment_FullMethodName     = "/system.System/updateDepartment"
+	System_GetDepartmentList_FullMethodName    = "/system.System/getDepartmentList"
+	System_GetDepartmentById_FullMethodName    = "/system.System/getDepartmentById"
+	System_DeleteDepartment_FullMethodName     = "/system.System/deleteDepartment"
+	System_CreateMenu_FullMethodName           = "/system.System/createMenu"
+	System_UpdateMenu_FullMethodName           = "/system.System/updateMenu"
+	System_DeleteMenu_FullMethodName           = "/system.System/deleteMenu"
+	System_GetMenuListByRole_FullMethodName    = "/system.System/getMenuListByRole"
+	System_GetMenuList_FullMethodName          = "/system.System/getMenuList"
+	System_CreateOauthProvider_FullMethodName  = "/system.System/createOauthProvider"
+	System_UpdateOauthProvider_FullMethodName  = "/system.System/updateOauthProvider"
+	System_GetOauthProviderList_FullMethodName = "/system.System/getOauthProviderList"
+	System_GetOauthProviderById_FullMethodName = "/system.System/getOauthProviderById"
+	System_DeleteOauthProvider_FullMethodName  = "/system.System/deleteOauthProvider"
+	System_OauthLogin_FullMethodName           = "/system.System/oauthLogin"
+	System_OauthCallback_FullMethodName        = "/system.System/oauthCallback"
+	System_CreatePosition_FullMethodName       = "/system.System/createPosition"
+	System_UpdatePosition_FullMethodName       = "/system.System/updatePosition"
+	System_GetPositionList_FullMethodName      = "/system.System/getPositionList"
+	System_GetPositionById_FullMethodName      = "/system.System/getPositionById"
+	System_DeletePosition_FullMethodName       = "/system.System/deletePosition"
+	System_CreateRole_FullMethodName           = "/system.System/createRole"
+	System_UpdateRole_FullMethodName           = "/system.System/updateRole"
+	System_GetRoleList_FullMethodName          = "/system.System/getRoleList"
+	System_GetRoleById_FullMethodName          = "/system.System/getRoleById"
+	System_DeleteRole_FullMethodName           = "/system.System/deleteRole"
+	System_CreateToken_FullMethodName          = "/system.System/createToken"
+	System_UpdateToken_FullMethodName          = "/system.System/updateToken"
+	System_GetTokenList_FullMethodName         = "/system.System/getTokenList"
+	System_GetTokenById_FullMethodName         = "/system.System/getTokenById"
+	System_DeleteToken_FullMethodName          = "/system.System/deleteToken"
+	System_BlockUserAllToken_FullMethodName    = "/system.System/blockUserAllToken"
+	System_CreateUser_FullMethodName           = "/system.System/createUser"
+	System_UpdateUser_FullMethodName           = "/system.System/updateUser"
+	System_GetUserList_FullMethodName          = "/system.System/getUserList"
+	System_GetUserById_FullMethodName          = "/system.System/getUserById"
+	System_GetUserByUsername_FullMethodName    = "/system.System/getUserByUsername"
+	System_DeleteUser_FullMethodName           = "/system.System/deleteUser"
 )
 
 // SystemClient is the client API for System service.
@@ -98,6 +105,21 @@ type SystemClient interface {
 	GetMenuListByRole(ctx context.Context, in *BaseMsg, opts ...grpc.CallOption) (*MenuInfoList, error)
 	// group: menu
 	GetMenuList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*MenuInfoList, error)
+	// OauthProvider management
+	// group: oauthprovider
+	CreateOauthProvider(ctx context.Context, in *OauthProviderInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
+	// group: oauthprovider
+	UpdateOauthProvider(ctx context.Context, in *OauthProviderInfo, opts ...grpc.CallOption) (*BaseResp, error)
+	// group: oauthprovider
+	GetOauthProviderList(ctx context.Context, in *OauthProviderListReq, opts ...grpc.CallOption) (*OauthProviderListResp, error)
+	// group: oauthprovider
+	GetOauthProviderById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*OauthProviderInfo, error)
+	// group: oauthprovider
+	DeleteOauthProvider(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
+	// group: oauthprovider
+	OauthLogin(ctx context.Context, in *OauthLoginReq, opts ...grpc.CallOption) (*OauthRedirectResp, error)
+	// group: oauthprovider
+	OauthCallback(ctx context.Context, in *CallbackReq, opts ...grpc.CallOption) (*UserInfo, error)
 	// Position management
 	// group: position
 	CreatePosition(ctx context.Context, in *PositionInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
@@ -294,6 +316,69 @@ func (c *systemClient) GetMenuListByRole(ctx context.Context, in *BaseMsg, opts 
 func (c *systemClient) GetMenuList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*MenuInfoList, error) {
 	out := new(MenuInfoList)
 	err := c.cc.Invoke(ctx, System_GetMenuList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) CreateOauthProvider(ctx context.Context, in *OauthProviderInfo, opts ...grpc.CallOption) (*BaseIDResp, error) {
+	out := new(BaseIDResp)
+	err := c.cc.Invoke(ctx, System_CreateOauthProvider_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) UpdateOauthProvider(ctx context.Context, in *OauthProviderInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, System_UpdateOauthProvider_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) GetOauthProviderList(ctx context.Context, in *OauthProviderListReq, opts ...grpc.CallOption) (*OauthProviderListResp, error) {
+	out := new(OauthProviderListResp)
+	err := c.cc.Invoke(ctx, System_GetOauthProviderList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) GetOauthProviderById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*OauthProviderInfo, error) {
+	out := new(OauthProviderInfo)
+	err := c.cc.Invoke(ctx, System_GetOauthProviderById_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) DeleteOauthProvider(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, System_DeleteOauthProvider_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) OauthLogin(ctx context.Context, in *OauthLoginReq, opts ...grpc.CallOption) (*OauthRedirectResp, error) {
+	out := new(OauthRedirectResp)
+	err := c.cc.Invoke(ctx, System_OauthLogin_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) OauthCallback(ctx context.Context, in *CallbackReq, opts ...grpc.CallOption) (*UserInfo, error) {
+	out := new(UserInfo)
+	err := c.cc.Invoke(ctx, System_OauthCallback_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -537,6 +622,21 @@ type SystemServer interface {
 	GetMenuListByRole(context.Context, *BaseMsg) (*MenuInfoList, error)
 	// group: menu
 	GetMenuList(context.Context, *PageInfoReq) (*MenuInfoList, error)
+	// OauthProvider management
+	// group: oauthprovider
+	CreateOauthProvider(context.Context, *OauthProviderInfo) (*BaseIDResp, error)
+	// group: oauthprovider
+	UpdateOauthProvider(context.Context, *OauthProviderInfo) (*BaseResp, error)
+	// group: oauthprovider
+	GetOauthProviderList(context.Context, *OauthProviderListReq) (*OauthProviderListResp, error)
+	// group: oauthprovider
+	GetOauthProviderById(context.Context, *IDReq) (*OauthProviderInfo, error)
+	// group: oauthprovider
+	DeleteOauthProvider(context.Context, *IDsReq) (*BaseResp, error)
+	// group: oauthprovider
+	OauthLogin(context.Context, *OauthLoginReq) (*OauthRedirectResp, error)
+	// group: oauthprovider
+	OauthCallback(context.Context, *CallbackReq) (*UserInfo, error)
 	// Position management
 	// group: position
 	CreatePosition(context.Context, *PositionInfo) (*BaseIDResp, error)
@@ -639,6 +739,27 @@ func (UnimplementedSystemServer) GetMenuListByRole(context.Context, *BaseMsg) (*
 }
 func (UnimplementedSystemServer) GetMenuList(context.Context, *PageInfoReq) (*MenuInfoList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMenuList not implemented")
+}
+func (UnimplementedSystemServer) CreateOauthProvider(context.Context, *OauthProviderInfo) (*BaseIDResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOauthProvider not implemented")
+}
+func (UnimplementedSystemServer) UpdateOauthProvider(context.Context, *OauthProviderInfo) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOauthProvider not implemented")
+}
+func (UnimplementedSystemServer) GetOauthProviderList(context.Context, *OauthProviderListReq) (*OauthProviderListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOauthProviderList not implemented")
+}
+func (UnimplementedSystemServer) GetOauthProviderById(context.Context, *IDReq) (*OauthProviderInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOauthProviderById not implemented")
+}
+func (UnimplementedSystemServer) DeleteOauthProvider(context.Context, *IDsReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteOauthProvider not implemented")
+}
+func (UnimplementedSystemServer) OauthLogin(context.Context, *OauthLoginReq) (*OauthRedirectResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OauthLogin not implemented")
+}
+func (UnimplementedSystemServer) OauthCallback(context.Context, *CallbackReq) (*UserInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OauthCallback not implemented")
 }
 func (UnimplementedSystemServer) CreatePosition(context.Context, *PositionInfo) (*BaseIDResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePosition not implemented")
@@ -1003,6 +1124,132 @@ func _System_GetMenuList_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(SystemServer).GetMenuList(ctx, req.(*PageInfoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_CreateOauthProvider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OauthProviderInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).CreateOauthProvider(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_CreateOauthProvider_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).CreateOauthProvider(ctx, req.(*OauthProviderInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_UpdateOauthProvider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OauthProviderInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).UpdateOauthProvider(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_UpdateOauthProvider_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).UpdateOauthProvider(ctx, req.(*OauthProviderInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_GetOauthProviderList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OauthProviderListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).GetOauthProviderList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_GetOauthProviderList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).GetOauthProviderList(ctx, req.(*OauthProviderListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_GetOauthProviderById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).GetOauthProviderById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_GetOauthProviderById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).GetOauthProviderById(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_DeleteOauthProvider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).DeleteOauthProvider(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_DeleteOauthProvider_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).DeleteOauthProvider(ctx, req.(*IDsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_OauthLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OauthLoginReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).OauthLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_OauthLogin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).OauthLogin(ctx, req.(*OauthLoginReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_OauthCallback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CallbackReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).OauthCallback(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_OauthCallback_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).OauthCallback(ctx, req.(*CallbackReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1473,6 +1720,34 @@ var System_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "getMenuList",
 			Handler:    _System_GetMenuList_Handler,
+		},
+		{
+			MethodName: "createOauthProvider",
+			Handler:    _System_CreateOauthProvider_Handler,
+		},
+		{
+			MethodName: "updateOauthProvider",
+			Handler:    _System_UpdateOauthProvider_Handler,
+		},
+		{
+			MethodName: "getOauthProviderList",
+			Handler:    _System_GetOauthProviderList_Handler,
+		},
+		{
+			MethodName: "getOauthProviderById",
+			Handler:    _System_GetOauthProviderById_Handler,
+		},
+		{
+			MethodName: "deleteOauthProvider",
+			Handler:    _System_DeleteOauthProvider_Handler,
+		},
+		{
+			MethodName: "oauthLogin",
+			Handler:    _System_OauthLogin_Handler,
+		},
+		{
+			MethodName: "oauthCallback",
+			Handler:    _System_OauthCallback_Handler,
 		},
 		{
 			MethodName: "createPosition",

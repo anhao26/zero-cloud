@@ -13,40 +13,46 @@ import (
 )
 
 type (
-	ApiInfo            = system.ApiInfo
-	ApiListReq         = system.ApiListReq
-	ApiListResp        = system.ApiListResp
-	BaseIDResp         = system.BaseIDResp
-	BaseMsg            = system.BaseMsg
-	BaseResp           = system.BaseResp
-	BaseUUIDResp       = system.BaseUUIDResp
-	DepartmentInfo     = system.DepartmentInfo
-	DepartmentListReq  = system.DepartmentListReq
-	DepartmentListResp = system.DepartmentListResp
-	Empty              = system.Empty
-	IDReq              = system.IDReq
-	IDsReq             = system.IDsReq
-	MenuInfo           = system.MenuInfo
-	MenuInfoList       = system.MenuInfoList
-	MenuRoleInfo       = system.MenuRoleInfo
-	MenuRoleListResp   = system.MenuRoleListResp
-	Meta               = system.Meta
-	PageInfoReq        = system.PageInfoReq
-	PositionInfo       = system.PositionInfo
-	PositionListReq    = system.PositionListReq
-	PositionListResp   = system.PositionListResp
-	RoleInfo           = system.RoleInfo
-	RoleListReq        = system.RoleListReq
-	RoleListResp       = system.RoleListResp
-	TokenInfo          = system.TokenInfo
-	TokenListReq       = system.TokenListReq
-	TokenListResp      = system.TokenListResp
-	UUIDReq            = system.UUIDReq
-	UUIDsReq           = system.UUIDsReq
-	UserInfo           = system.UserInfo
-	UserListReq        = system.UserListReq
-	UserListResp       = system.UserListResp
-	UsernameReq        = system.UsernameReq
+	ApiInfo               = system.ApiInfo
+	ApiListReq            = system.ApiListReq
+	ApiListResp           = system.ApiListResp
+	BaseIDResp            = system.BaseIDResp
+	BaseMsg               = system.BaseMsg
+	BaseResp              = system.BaseResp
+	BaseUUIDResp          = system.BaseUUIDResp
+	CallbackReq           = system.CallbackReq
+	DepartmentInfo        = system.DepartmentInfo
+	DepartmentListReq     = system.DepartmentListReq
+	DepartmentListResp    = system.DepartmentListResp
+	Empty                 = system.Empty
+	IDReq                 = system.IDReq
+	IDsReq                = system.IDsReq
+	MenuInfo              = system.MenuInfo
+	MenuInfoList          = system.MenuInfoList
+	MenuRoleInfo          = system.MenuRoleInfo
+	MenuRoleListResp      = system.MenuRoleListResp
+	Meta                  = system.Meta
+	OauthLoginReq         = system.OauthLoginReq
+	OauthProviderInfo     = system.OauthProviderInfo
+	OauthProviderListReq  = system.OauthProviderListReq
+	OauthProviderListResp = system.OauthProviderListResp
+	OauthRedirectResp     = system.OauthRedirectResp
+	PageInfoReq           = system.PageInfoReq
+	PositionInfo          = system.PositionInfo
+	PositionListReq       = system.PositionListReq
+	PositionListResp      = system.PositionListResp
+	RoleInfo              = system.RoleInfo
+	RoleListReq           = system.RoleListReq
+	RoleListResp          = system.RoleListResp
+	TokenInfo             = system.TokenInfo
+	TokenListReq          = system.TokenListReq
+	TokenListResp         = system.TokenListResp
+	UUIDReq               = system.UUIDReq
+	UUIDsReq              = system.UUIDsReq
+	UserInfo              = system.UserInfo
+	UserListReq           = system.UserListReq
+	UserListResp          = system.UserListResp
+	UsernameReq           = system.UsernameReq
 
 	System interface {
 		// API management
@@ -68,6 +74,14 @@ type (
 		DeleteMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
 		GetMenuListByRole(ctx context.Context, in *BaseMsg, opts ...grpc.CallOption) (*MenuInfoList, error)
 		GetMenuList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*MenuInfoList, error)
+		// OauthProvider management
+		CreateOauthProvider(ctx context.Context, in *OauthProviderInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
+		UpdateOauthProvider(ctx context.Context, in *OauthProviderInfo, opts ...grpc.CallOption) (*BaseResp, error)
+		GetOauthProviderList(ctx context.Context, in *OauthProviderListReq, opts ...grpc.CallOption) (*OauthProviderListResp, error)
+		GetOauthProviderById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*OauthProviderInfo, error)
+		DeleteOauthProvider(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
+		OauthLogin(ctx context.Context, in *OauthLoginReq, opts ...grpc.CallOption) (*OauthRedirectResp, error)
+		OauthCallback(ctx context.Context, in *CallbackReq, opts ...grpc.CallOption) (*UserInfo, error)
 		// Position management
 		CreatePosition(ctx context.Context, in *PositionInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
 		UpdatePosition(ctx context.Context, in *PositionInfo, opts ...grpc.CallOption) (*BaseResp, error)
@@ -188,6 +202,42 @@ func (m *defaultSystem) GetMenuListByRole(ctx context.Context, in *BaseMsg, opts
 func (m *defaultSystem) GetMenuList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*MenuInfoList, error) {
 	client := system.NewSystemClient(m.cli.Conn())
 	return client.GetMenuList(ctx, in, opts...)
+}
+
+// OauthProvider management
+func (m *defaultSystem) CreateOauthProvider(ctx context.Context, in *OauthProviderInfo, opts ...grpc.CallOption) (*BaseIDResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.CreateOauthProvider(ctx, in, opts...)
+}
+
+func (m *defaultSystem) UpdateOauthProvider(ctx context.Context, in *OauthProviderInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.UpdateOauthProvider(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetOauthProviderList(ctx context.Context, in *OauthProviderListReq, opts ...grpc.CallOption) (*OauthProviderListResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetOauthProviderList(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetOauthProviderById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*OauthProviderInfo, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetOauthProviderById(ctx, in, opts...)
+}
+
+func (m *defaultSystem) DeleteOauthProvider(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.DeleteOauthProvider(ctx, in, opts...)
+}
+
+func (m *defaultSystem) OauthLogin(ctx context.Context, in *OauthLoginReq, opts ...grpc.CallOption) (*OauthRedirectResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.OauthLogin(ctx, in, opts...)
+}
+
+func (m *defaultSystem) OauthCallback(ctx context.Context, in *CallbackReq, opts ...grpc.CallOption) (*UserInfo, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.OauthCallback(ctx, in, opts...)
 }
 
 // Position management

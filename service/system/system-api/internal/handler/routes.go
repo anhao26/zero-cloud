@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	api "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/api"
 	base "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/base"
 	captcha "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/captcha"
 	department "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/department"
@@ -286,6 +287,40 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/token/logout",
 					Handler: token.LogoutHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/api/create",
+					Handler: api.CreateApiHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/api/update",
+					Handler: api.UpdateApiHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/api/delete",
+					Handler: api.DeleteApiHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/api/list",
+					Handler: api.GetApiListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/api",
+					Handler: api.GetApiByIdHandler(serverCtx),
 				},
 			}...,
 		),

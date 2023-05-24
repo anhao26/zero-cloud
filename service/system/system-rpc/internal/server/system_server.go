@@ -10,6 +10,7 @@ import (
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/base"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/department"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/menu"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/oauthprovider"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/position"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/role"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/token"
@@ -110,6 +111,42 @@ func (s *SystemServer) GetMenuListByRole(ctx context.Context, in *system.BaseMsg
 func (s *SystemServer) GetMenuList(ctx context.Context, in *system.PageInfoReq) (*system.MenuInfoList, error) {
 	l := menu.NewGetMenuListLogic(ctx, s.svcCtx)
 	return l.GetMenuList(in)
+}
+
+// OauthProvider management
+func (s *SystemServer) CreateOauthProvider(ctx context.Context, in *system.OauthProviderInfo) (*system.BaseIDResp, error) {
+	l := oauthprovider.NewCreateOauthProviderLogic(ctx, s.svcCtx)
+	return l.CreateOauthProvider(in)
+}
+
+func (s *SystemServer) UpdateOauthProvider(ctx context.Context, in *system.OauthProviderInfo) (*system.BaseResp, error) {
+	l := oauthprovider.NewUpdateOauthProviderLogic(ctx, s.svcCtx)
+	return l.UpdateOauthProvider(in)
+}
+
+func (s *SystemServer) GetOauthProviderList(ctx context.Context, in *system.OauthProviderListReq) (*system.OauthProviderListResp, error) {
+	l := oauthprovider.NewGetOauthProviderListLogic(ctx, s.svcCtx)
+	return l.GetOauthProviderList(in)
+}
+
+func (s *SystemServer) GetOauthProviderById(ctx context.Context, in *system.IDReq) (*system.OauthProviderInfo, error) {
+	l := oauthprovider.NewGetOauthProviderByIdLogic(ctx, s.svcCtx)
+	return l.GetOauthProviderById(in)
+}
+
+func (s *SystemServer) DeleteOauthProvider(ctx context.Context, in *system.IDsReq) (*system.BaseResp, error) {
+	l := oauthprovider.NewDeleteOauthProviderLogic(ctx, s.svcCtx)
+	return l.DeleteOauthProvider(in)
+}
+
+func (s *SystemServer) OauthLogin(ctx context.Context, in *system.OauthLoginReq) (*system.OauthRedirectResp, error) {
+	l := oauthprovider.NewOauthLoginLogic(ctx, s.svcCtx)
+	return l.OauthLogin(in)
+}
+
+func (s *SystemServer) OauthCallback(ctx context.Context, in *system.CallbackReq) (*system.UserInfo, error) {
+	l := oauthprovider.NewOauthCallbackLogic(ctx, s.svcCtx)
+	return l.OauthCallback(in)
 }
 
 // Position management

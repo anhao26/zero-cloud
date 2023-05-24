@@ -7,7 +7,10 @@ import (
 
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/api"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/department"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/dictionary"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/dictionarydetail"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/oauthprovider"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/role"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/schema"
@@ -70,6 +73,54 @@ func init() {
 	departmentDescParentID := departmentFields[6].Descriptor()
 	// department.DefaultParentID holds the default value on creation for the parent_id field.
 	department.DefaultParentID = departmentDescParentID.Default.(uint64)
+	dictionaryMixin := schema.Dictionary{}.Mixin()
+	dictionaryMixinFields0 := dictionaryMixin[0].Fields()
+	_ = dictionaryMixinFields0
+	dictionaryMixinFields1 := dictionaryMixin[1].Fields()
+	_ = dictionaryMixinFields1
+	dictionaryFields := schema.Dictionary{}.Fields()
+	_ = dictionaryFields
+	// dictionaryDescCreatedAt is the schema descriptor for created_at field.
+	dictionaryDescCreatedAt := dictionaryMixinFields0[1].Descriptor()
+	// dictionary.DefaultCreatedAt holds the default value on creation for the created_at field.
+	dictionary.DefaultCreatedAt = dictionaryDescCreatedAt.Default.(func() time.Time)
+	// dictionaryDescUpdatedAt is the schema descriptor for updated_at field.
+	dictionaryDescUpdatedAt := dictionaryMixinFields0[2].Descriptor()
+	// dictionary.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	dictionary.DefaultUpdatedAt = dictionaryDescUpdatedAt.Default.(func() time.Time)
+	// dictionary.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	dictionary.UpdateDefaultUpdatedAt = dictionaryDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// dictionaryDescStatus is the schema descriptor for status field.
+	dictionaryDescStatus := dictionaryMixinFields1[0].Descriptor()
+	// dictionary.DefaultStatus holds the default value on creation for the status field.
+	dictionary.DefaultStatus = dictionaryDescStatus.Default.(uint8)
+	dictionarydetailMixin := schema.DictionaryDetail{}.Mixin()
+	dictionarydetailMixinFields0 := dictionarydetailMixin[0].Fields()
+	_ = dictionarydetailMixinFields0
+	dictionarydetailMixinFields1 := dictionarydetailMixin[1].Fields()
+	_ = dictionarydetailMixinFields1
+	dictionarydetailMixinFields2 := dictionarydetailMixin[2].Fields()
+	_ = dictionarydetailMixinFields2
+	dictionarydetailFields := schema.DictionaryDetail{}.Fields()
+	_ = dictionarydetailFields
+	// dictionarydetailDescCreatedAt is the schema descriptor for created_at field.
+	dictionarydetailDescCreatedAt := dictionarydetailMixinFields0[1].Descriptor()
+	// dictionarydetail.DefaultCreatedAt holds the default value on creation for the created_at field.
+	dictionarydetail.DefaultCreatedAt = dictionarydetailDescCreatedAt.Default.(func() time.Time)
+	// dictionarydetailDescUpdatedAt is the schema descriptor for updated_at field.
+	dictionarydetailDescUpdatedAt := dictionarydetailMixinFields0[2].Descriptor()
+	// dictionarydetail.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	dictionarydetail.DefaultUpdatedAt = dictionarydetailDescUpdatedAt.Default.(func() time.Time)
+	// dictionarydetail.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	dictionarydetail.UpdateDefaultUpdatedAt = dictionarydetailDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// dictionarydetailDescStatus is the schema descriptor for status field.
+	dictionarydetailDescStatus := dictionarydetailMixinFields1[0].Descriptor()
+	// dictionarydetail.DefaultStatus holds the default value on creation for the status field.
+	dictionarydetail.DefaultStatus = dictionarydetailDescStatus.Default.(uint8)
+	// dictionarydetailDescSort is the schema descriptor for sort field.
+	dictionarydetailDescSort := dictionarydetailMixinFields2[0].Descriptor()
+	// dictionarydetail.DefaultSort holds the default value on creation for the sort field.
+	dictionarydetail.DefaultSort = dictionarydetailDescSort.Default.(uint32)
 	menuMixin := schema.Menu{}.Mixin()
 	menuMixinFields0 := menuMixin[0].Fields()
 	_ = menuMixinFields0
@@ -151,6 +202,21 @@ func init() {
 	menuDescRealPath := menuFields[19].Descriptor()
 	// menu.DefaultRealPath holds the default value on creation for the real_path field.
 	menu.DefaultRealPath = menuDescRealPath.Default.(string)
+	oauthproviderMixin := schema.OauthProvider{}.Mixin()
+	oauthproviderMixinFields0 := oauthproviderMixin[0].Fields()
+	_ = oauthproviderMixinFields0
+	oauthproviderFields := schema.OauthProvider{}.Fields()
+	_ = oauthproviderFields
+	// oauthproviderDescCreatedAt is the schema descriptor for created_at field.
+	oauthproviderDescCreatedAt := oauthproviderMixinFields0[1].Descriptor()
+	// oauthprovider.DefaultCreatedAt holds the default value on creation for the created_at field.
+	oauthprovider.DefaultCreatedAt = oauthproviderDescCreatedAt.Default.(func() time.Time)
+	// oauthproviderDescUpdatedAt is the schema descriptor for updated_at field.
+	oauthproviderDescUpdatedAt := oauthproviderMixinFields0[2].Descriptor()
+	// oauthprovider.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	oauthprovider.DefaultUpdatedAt = oauthproviderDescUpdatedAt.Default.(func() time.Time)
+	// oauthprovider.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	oauthprovider.UpdateDefaultUpdatedAt = oauthproviderDescUpdatedAt.UpdateDefault.(func() time.Time)
 	positionMixin := schema.Position{}.Mixin()
 	positionMixinFields0 := positionMixin[0].Fields()
 	_ = positionMixinFields0

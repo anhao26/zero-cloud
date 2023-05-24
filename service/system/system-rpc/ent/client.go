@@ -17,7 +17,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/api"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/department"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/dictionary"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/dictionarydetail"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/oauthprovider"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/role"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/token"
@@ -33,8 +36,14 @@ type Client struct {
 	API *APIClient
 	// Department is the client for interacting with the Department builders.
 	Department *DepartmentClient
+	// Dictionary is the client for interacting with the Dictionary builders.
+	Dictionary *DictionaryClient
+	// DictionaryDetail is the client for interacting with the DictionaryDetail builders.
+	DictionaryDetail *DictionaryDetailClient
 	// Menu is the client for interacting with the Menu builders.
 	Menu *MenuClient
+	// OauthProvider is the client for interacting with the OauthProvider builders.
+	OauthProvider *OauthProviderClient
 	// Position is the client for interacting with the Position builders.
 	Position *PositionClient
 	// Role is the client for interacting with the Role builders.
@@ -58,7 +67,10 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.API = NewAPIClient(c.config)
 	c.Department = NewDepartmentClient(c.config)
+	c.Dictionary = NewDictionaryClient(c.config)
+	c.DictionaryDetail = NewDictionaryDetailClient(c.config)
 	c.Menu = NewMenuClient(c.config)
+	c.OauthProvider = NewOauthProviderClient(c.config)
 	c.Position = NewPositionClient(c.config)
 	c.Role = NewRoleClient(c.config)
 	c.Token = NewTokenClient(c.config)
@@ -143,15 +155,18 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:        ctx,
-		config:     cfg,
-		API:        NewAPIClient(cfg),
-		Department: NewDepartmentClient(cfg),
-		Menu:       NewMenuClient(cfg),
-		Position:   NewPositionClient(cfg),
-		Role:       NewRoleClient(cfg),
-		Token:      NewTokenClient(cfg),
-		User:       NewUserClient(cfg),
+		ctx:              ctx,
+		config:           cfg,
+		API:              NewAPIClient(cfg),
+		Department:       NewDepartmentClient(cfg),
+		Dictionary:       NewDictionaryClient(cfg),
+		DictionaryDetail: NewDictionaryDetailClient(cfg),
+		Menu:             NewMenuClient(cfg),
+		OauthProvider:    NewOauthProviderClient(cfg),
+		Position:         NewPositionClient(cfg),
+		Role:             NewRoleClient(cfg),
+		Token:            NewTokenClient(cfg),
+		User:             NewUserClient(cfg),
 	}, nil
 }
 
@@ -169,15 +184,18 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:        ctx,
-		config:     cfg,
-		API:        NewAPIClient(cfg),
-		Department: NewDepartmentClient(cfg),
-		Menu:       NewMenuClient(cfg),
-		Position:   NewPositionClient(cfg),
-		Role:       NewRoleClient(cfg),
-		Token:      NewTokenClient(cfg),
-		User:       NewUserClient(cfg),
+		ctx:              ctx,
+		config:           cfg,
+		API:              NewAPIClient(cfg),
+		Department:       NewDepartmentClient(cfg),
+		Dictionary:       NewDictionaryClient(cfg),
+		DictionaryDetail: NewDictionaryDetailClient(cfg),
+		Menu:             NewMenuClient(cfg),
+		OauthProvider:    NewOauthProviderClient(cfg),
+		Position:         NewPositionClient(cfg),
+		Role:             NewRoleClient(cfg),
+		Token:            NewTokenClient(cfg),
+		User:             NewUserClient(cfg),
 	}, nil
 }
 
@@ -207,7 +225,8 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.API, c.Department, c.Menu, c.Position, c.Role, c.Token, c.User,
+		c.API, c.Department, c.Dictionary, c.DictionaryDetail, c.Menu, c.OauthProvider,
+		c.Position, c.Role, c.Token, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -217,7 +236,8 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.API, c.Department, c.Menu, c.Position, c.Role, c.Token, c.User,
+		c.API, c.Department, c.Dictionary, c.DictionaryDetail, c.Menu, c.OauthProvider,
+		c.Position, c.Role, c.Token, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -230,8 +250,14 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.API.mutate(ctx, m)
 	case *DepartmentMutation:
 		return c.Department.mutate(ctx, m)
+	case *DictionaryMutation:
+		return c.Dictionary.mutate(ctx, m)
+	case *DictionaryDetailMutation:
+		return c.DictionaryDetail.mutate(ctx, m)
 	case *MenuMutation:
 		return c.Menu.mutate(ctx, m)
+	case *OauthProviderMutation:
+		return c.OauthProvider.mutate(ctx, m)
 	case *PositionMutation:
 		return c.Position.mutate(ctx, m)
 	case *RoleMutation:
@@ -529,6 +555,274 @@ func (c *DepartmentClient) mutate(ctx context.Context, m *DepartmentMutation) (V
 	}
 }
 
+// DictionaryClient is a client for the Dictionary schema.
+type DictionaryClient struct {
+	config
+}
+
+// NewDictionaryClient returns a client for the Dictionary from the given config.
+func NewDictionaryClient(c config) *DictionaryClient {
+	return &DictionaryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `dictionary.Hooks(f(g(h())))`.
+func (c *DictionaryClient) Use(hooks ...Hook) {
+	c.hooks.Dictionary = append(c.hooks.Dictionary, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `dictionary.Intercept(f(g(h())))`.
+func (c *DictionaryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Dictionary = append(c.inters.Dictionary, interceptors...)
+}
+
+// Create returns a builder for creating a Dictionary entity.
+func (c *DictionaryClient) Create() *DictionaryCreate {
+	mutation := newDictionaryMutation(c.config, OpCreate)
+	return &DictionaryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Dictionary entities.
+func (c *DictionaryClient) CreateBulk(builders ...*DictionaryCreate) *DictionaryCreateBulk {
+	return &DictionaryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Dictionary.
+func (c *DictionaryClient) Update() *DictionaryUpdate {
+	mutation := newDictionaryMutation(c.config, OpUpdate)
+	return &DictionaryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *DictionaryClient) UpdateOne(d *Dictionary) *DictionaryUpdateOne {
+	mutation := newDictionaryMutation(c.config, OpUpdateOne, withDictionary(d))
+	return &DictionaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *DictionaryClient) UpdateOneID(id uint64) *DictionaryUpdateOne {
+	mutation := newDictionaryMutation(c.config, OpUpdateOne, withDictionaryID(id))
+	return &DictionaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Dictionary.
+func (c *DictionaryClient) Delete() *DictionaryDelete {
+	mutation := newDictionaryMutation(c.config, OpDelete)
+	return &DictionaryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *DictionaryClient) DeleteOne(d *Dictionary) *DictionaryDeleteOne {
+	return c.DeleteOneID(d.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *DictionaryClient) DeleteOneID(id uint64) *DictionaryDeleteOne {
+	builder := c.Delete().Where(dictionary.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &DictionaryDeleteOne{builder}
+}
+
+// Query returns a query builder for Dictionary.
+func (c *DictionaryClient) Query() *DictionaryQuery {
+	return &DictionaryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeDictionary},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Dictionary entity by its id.
+func (c *DictionaryClient) Get(ctx context.Context, id uint64) (*Dictionary, error) {
+	return c.Query().Where(dictionary.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *DictionaryClient) GetX(ctx context.Context, id uint64) *Dictionary {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryDictionaryDetails queries the dictionary_details edge of a Dictionary.
+func (c *DictionaryClient) QueryDictionaryDetails(d *Dictionary) *DictionaryDetailQuery {
+	query := (&DictionaryDetailClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := d.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dictionary.Table, dictionary.FieldID, id),
+			sqlgraph.To(dictionarydetail.Table, dictionarydetail.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, dictionary.DictionaryDetailsTable, dictionary.DictionaryDetailsColumn),
+		)
+		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *DictionaryClient) Hooks() []Hook {
+	return c.hooks.Dictionary
+}
+
+// Interceptors returns the client interceptors.
+func (c *DictionaryClient) Interceptors() []Interceptor {
+	return c.inters.Dictionary
+}
+
+func (c *DictionaryClient) mutate(ctx context.Context, m *DictionaryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&DictionaryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&DictionaryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&DictionaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&DictionaryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Dictionary mutation op: %q", m.Op())
+	}
+}
+
+// DictionaryDetailClient is a client for the DictionaryDetail schema.
+type DictionaryDetailClient struct {
+	config
+}
+
+// NewDictionaryDetailClient returns a client for the DictionaryDetail from the given config.
+func NewDictionaryDetailClient(c config) *DictionaryDetailClient {
+	return &DictionaryDetailClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `dictionarydetail.Hooks(f(g(h())))`.
+func (c *DictionaryDetailClient) Use(hooks ...Hook) {
+	c.hooks.DictionaryDetail = append(c.hooks.DictionaryDetail, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `dictionarydetail.Intercept(f(g(h())))`.
+func (c *DictionaryDetailClient) Intercept(interceptors ...Interceptor) {
+	c.inters.DictionaryDetail = append(c.inters.DictionaryDetail, interceptors...)
+}
+
+// Create returns a builder for creating a DictionaryDetail entity.
+func (c *DictionaryDetailClient) Create() *DictionaryDetailCreate {
+	mutation := newDictionaryDetailMutation(c.config, OpCreate)
+	return &DictionaryDetailCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of DictionaryDetail entities.
+func (c *DictionaryDetailClient) CreateBulk(builders ...*DictionaryDetailCreate) *DictionaryDetailCreateBulk {
+	return &DictionaryDetailCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for DictionaryDetail.
+func (c *DictionaryDetailClient) Update() *DictionaryDetailUpdate {
+	mutation := newDictionaryDetailMutation(c.config, OpUpdate)
+	return &DictionaryDetailUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *DictionaryDetailClient) UpdateOne(dd *DictionaryDetail) *DictionaryDetailUpdateOne {
+	mutation := newDictionaryDetailMutation(c.config, OpUpdateOne, withDictionaryDetail(dd))
+	return &DictionaryDetailUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *DictionaryDetailClient) UpdateOneID(id uint64) *DictionaryDetailUpdateOne {
+	mutation := newDictionaryDetailMutation(c.config, OpUpdateOne, withDictionaryDetailID(id))
+	return &DictionaryDetailUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for DictionaryDetail.
+func (c *DictionaryDetailClient) Delete() *DictionaryDetailDelete {
+	mutation := newDictionaryDetailMutation(c.config, OpDelete)
+	return &DictionaryDetailDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *DictionaryDetailClient) DeleteOne(dd *DictionaryDetail) *DictionaryDetailDeleteOne {
+	return c.DeleteOneID(dd.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *DictionaryDetailClient) DeleteOneID(id uint64) *DictionaryDetailDeleteOne {
+	builder := c.Delete().Where(dictionarydetail.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &DictionaryDetailDeleteOne{builder}
+}
+
+// Query returns a query builder for DictionaryDetail.
+func (c *DictionaryDetailClient) Query() *DictionaryDetailQuery {
+	return &DictionaryDetailQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeDictionaryDetail},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a DictionaryDetail entity by its id.
+func (c *DictionaryDetailClient) Get(ctx context.Context, id uint64) (*DictionaryDetail, error) {
+	return c.Query().Where(dictionarydetail.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *DictionaryDetailClient) GetX(ctx context.Context, id uint64) *DictionaryDetail {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryDictionaries queries the dictionaries edge of a DictionaryDetail.
+func (c *DictionaryDetailClient) QueryDictionaries(dd *DictionaryDetail) *DictionaryQuery {
+	query := (&DictionaryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := dd.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dictionarydetail.Table, dictionarydetail.FieldID, id),
+			sqlgraph.To(dictionary.Table, dictionary.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, dictionarydetail.DictionariesTable, dictionarydetail.DictionariesColumn),
+		)
+		fromV = sqlgraph.Neighbors(dd.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *DictionaryDetailClient) Hooks() []Hook {
+	return c.hooks.DictionaryDetail
+}
+
+// Interceptors returns the client interceptors.
+func (c *DictionaryDetailClient) Interceptors() []Interceptor {
+	return c.inters.DictionaryDetail
+}
+
+func (c *DictionaryDetailClient) mutate(ctx context.Context, m *DictionaryDetailMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&DictionaryDetailCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&DictionaryDetailUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&DictionaryDetailUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&DictionaryDetailDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown DictionaryDetail mutation op: %q", m.Op())
+	}
+}
+
 // MenuClient is a client for the Menu schema.
 type MenuClient struct {
 	config
@@ -692,6 +986,124 @@ func (c *MenuClient) mutate(ctx context.Context, m *MenuMutation) (Value, error)
 		return (&MenuDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Menu mutation op: %q", m.Op())
+	}
+}
+
+// OauthProviderClient is a client for the OauthProvider schema.
+type OauthProviderClient struct {
+	config
+}
+
+// NewOauthProviderClient returns a client for the OauthProvider from the given config.
+func NewOauthProviderClient(c config) *OauthProviderClient {
+	return &OauthProviderClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `oauthprovider.Hooks(f(g(h())))`.
+func (c *OauthProviderClient) Use(hooks ...Hook) {
+	c.hooks.OauthProvider = append(c.hooks.OauthProvider, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `oauthprovider.Intercept(f(g(h())))`.
+func (c *OauthProviderClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OauthProvider = append(c.inters.OauthProvider, interceptors...)
+}
+
+// Create returns a builder for creating a OauthProvider entity.
+func (c *OauthProviderClient) Create() *OauthProviderCreate {
+	mutation := newOauthProviderMutation(c.config, OpCreate)
+	return &OauthProviderCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OauthProvider entities.
+func (c *OauthProviderClient) CreateBulk(builders ...*OauthProviderCreate) *OauthProviderCreateBulk {
+	return &OauthProviderCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OauthProvider.
+func (c *OauthProviderClient) Update() *OauthProviderUpdate {
+	mutation := newOauthProviderMutation(c.config, OpUpdate)
+	return &OauthProviderUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OauthProviderClient) UpdateOne(op *OauthProvider) *OauthProviderUpdateOne {
+	mutation := newOauthProviderMutation(c.config, OpUpdateOne, withOauthProvider(op))
+	return &OauthProviderUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OauthProviderClient) UpdateOneID(id uint64) *OauthProviderUpdateOne {
+	mutation := newOauthProviderMutation(c.config, OpUpdateOne, withOauthProviderID(id))
+	return &OauthProviderUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OauthProvider.
+func (c *OauthProviderClient) Delete() *OauthProviderDelete {
+	mutation := newOauthProviderMutation(c.config, OpDelete)
+	return &OauthProviderDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *OauthProviderClient) DeleteOne(op *OauthProvider) *OauthProviderDeleteOne {
+	return c.DeleteOneID(op.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *OauthProviderClient) DeleteOneID(id uint64) *OauthProviderDeleteOne {
+	builder := c.Delete().Where(oauthprovider.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OauthProviderDeleteOne{builder}
+}
+
+// Query returns a query builder for OauthProvider.
+func (c *OauthProviderClient) Query() *OauthProviderQuery {
+	return &OauthProviderQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeOauthProvider},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a OauthProvider entity by its id.
+func (c *OauthProviderClient) Get(ctx context.Context, id uint64) (*OauthProvider, error) {
+	return c.Query().Where(oauthprovider.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OauthProviderClient) GetX(ctx context.Context, id uint64) *OauthProvider {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *OauthProviderClient) Hooks() []Hook {
+	return c.hooks.OauthProvider
+}
+
+// Interceptors returns the client interceptors.
+func (c *OauthProviderClient) Interceptors() []Interceptor {
+	return c.inters.OauthProvider
+}
+
+func (c *OauthProviderClient) mutate(ctx context.Context, m *OauthProviderMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OauthProviderCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OauthProviderUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OauthProviderUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OauthProviderDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown OauthProvider mutation op: %q", m.Op())
 	}
 }
 
@@ -1266,9 +1678,11 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		API, Department, Menu, Position, Role, Token, User []ent.Hook
+		API, Department, Dictionary, DictionaryDetail, Menu, OauthProvider, Position,
+		Role, Token, User []ent.Hook
 	}
 	inters struct {
-		API, Department, Menu, Position, Role, Token, User []ent.Interceptor
+		API, Department, Dictionary, DictionaryDetail, Menu, OauthProvider, Position,
+		Role, Token, User []ent.Interceptor
 	}
 )

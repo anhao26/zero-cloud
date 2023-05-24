@@ -211,6 +211,166 @@ func (d *DepartmentUpdateOne) SetNotEmptyParentID(value uint64) *DepartmentUpdat
 }
 
 // set field if value is not empty. e.g. string does not equal to ""
+func (d *DictionaryUpdate) SetNotEmptyStatus(value uint8) *DictionaryUpdate {
+	if value != 0 {
+		return d.SetStatus(value)
+	}
+	return d
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (d *DictionaryUpdateOne) SetNotEmptyStatus(value uint8) *DictionaryUpdateOne {
+	if value != 0 {
+		return d.SetStatus(value)
+	}
+	return d
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (d *DictionaryUpdate) SetNotEmptyTitle(value string) *DictionaryUpdate {
+	if value != "" {
+		return d.SetTitle(value)
+	}
+	return d
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (d *DictionaryUpdateOne) SetNotEmptyTitle(value string) *DictionaryUpdateOne {
+	if value != "" {
+		return d.SetTitle(value)
+	}
+	return d
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (d *DictionaryUpdate) SetNotEmptyName(value string) *DictionaryUpdate {
+	if value != "" {
+		return d.SetName(value)
+	}
+	return d
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (d *DictionaryUpdateOne) SetNotEmptyName(value string) *DictionaryUpdateOne {
+	if value != "" {
+		return d.SetName(value)
+	}
+	return d
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (d *DictionaryUpdate) SetNotEmptyDesc(value string) *DictionaryUpdate {
+	if value != "" {
+		return d.SetDesc(value)
+	}
+	return d
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (d *DictionaryUpdateOne) SetNotEmptyDesc(value string) *DictionaryUpdateOne {
+	if value != "" {
+		return d.SetDesc(value)
+	}
+	return d
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (dd *DictionaryDetailUpdate) SetNotEmptyStatus(value uint8) *DictionaryDetailUpdate {
+	if value != 0 {
+		return dd.SetStatus(value)
+	}
+	return dd
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (dd *DictionaryDetailUpdateOne) SetNotEmptyStatus(value uint8) *DictionaryDetailUpdateOne {
+	if value != 0 {
+		return dd.SetStatus(value)
+	}
+	return dd
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (dd *DictionaryDetailUpdate) SetNotEmptySort(value uint32) *DictionaryDetailUpdate {
+	if value != 0 {
+		return dd.SetSort(value)
+	}
+	return dd
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (dd *DictionaryDetailUpdateOne) SetNotEmptySort(value uint32) *DictionaryDetailUpdateOne {
+	if value != 0 {
+		return dd.SetSort(value)
+	}
+	return dd
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (dd *DictionaryDetailUpdate) SetNotEmptyTitle(value string) *DictionaryDetailUpdate {
+	if value != "" {
+		return dd.SetTitle(value)
+	}
+	return dd
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (dd *DictionaryDetailUpdateOne) SetNotEmptyTitle(value string) *DictionaryDetailUpdateOne {
+	if value != "" {
+		return dd.SetTitle(value)
+	}
+	return dd
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (dd *DictionaryDetailUpdate) SetNotEmptyKey(value string) *DictionaryDetailUpdate {
+	if value != "" {
+		return dd.SetKey(value)
+	}
+	return dd
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (dd *DictionaryDetailUpdateOne) SetNotEmptyKey(value string) *DictionaryDetailUpdateOne {
+	if value != "" {
+		return dd.SetKey(value)
+	}
+	return dd
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (dd *DictionaryDetailUpdate) SetNotEmptyValue(value string) *DictionaryDetailUpdate {
+	if value != "" {
+		return dd.SetValue(value)
+	}
+	return dd
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (dd *DictionaryDetailUpdateOne) SetNotEmptyValue(value string) *DictionaryDetailUpdateOne {
+	if value != "" {
+		return dd.SetValue(value)
+	}
+	return dd
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (dd *DictionaryDetailUpdate) SetNotEmptyDictionaryID(value uint64) *DictionaryDetailUpdate {
+	if value != 0 {
+		return dd.SetDictionaryID(value)
+	}
+	return dd
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (dd *DictionaryDetailUpdateOne) SetNotEmptyDictionaryID(value uint64) *DictionaryDetailUpdateOne {
+	if value != 0 {
+		return dd.SetDictionaryID(value)
+	}
+	return dd
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
 func (m *MenuUpdate) SetNotEmptySort(value uint32) *MenuUpdate {
 	if value != 0 {
 		return m.SetSort(value)
@@ -416,6 +576,150 @@ func (m *MenuUpdateOne) SetNotEmptyRealPath(value string) *MenuUpdateOne {
 		return m.SetRealPath(value)
 	}
 	return m
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdate) SetNotEmptyName(value string) *OauthProviderUpdate {
+	if value != "" {
+		return op.SetName(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdateOne) SetNotEmptyName(value string) *OauthProviderUpdateOne {
+	if value != "" {
+		return op.SetName(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdate) SetNotEmptyClientID(value string) *OauthProviderUpdate {
+	if value != "" {
+		return op.SetClientID(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdateOne) SetNotEmptyClientID(value string) *OauthProviderUpdateOne {
+	if value != "" {
+		return op.SetClientID(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdate) SetNotEmptyClientSecret(value string) *OauthProviderUpdate {
+	if value != "" {
+		return op.SetClientSecret(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdateOne) SetNotEmptyClientSecret(value string) *OauthProviderUpdateOne {
+	if value != "" {
+		return op.SetClientSecret(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdate) SetNotEmptyRedirectURL(value string) *OauthProviderUpdate {
+	if value != "" {
+		return op.SetRedirectURL(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdateOne) SetNotEmptyRedirectURL(value string) *OauthProviderUpdateOne {
+	if value != "" {
+		return op.SetRedirectURL(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdate) SetNotEmptyScopes(value string) *OauthProviderUpdate {
+	if value != "" {
+		return op.SetScopes(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdateOne) SetNotEmptyScopes(value string) *OauthProviderUpdateOne {
+	if value != "" {
+		return op.SetScopes(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdate) SetNotEmptyAuthURL(value string) *OauthProviderUpdate {
+	if value != "" {
+		return op.SetAuthURL(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdateOne) SetNotEmptyAuthURL(value string) *OauthProviderUpdateOne {
+	if value != "" {
+		return op.SetAuthURL(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdate) SetNotEmptyTokenURL(value string) *OauthProviderUpdate {
+	if value != "" {
+		return op.SetTokenURL(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdateOne) SetNotEmptyTokenURL(value string) *OauthProviderUpdateOne {
+	if value != "" {
+		return op.SetTokenURL(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdate) SetNotEmptyAuthStyle(value uint64) *OauthProviderUpdate {
+	if value != 0 {
+		return op.SetAuthStyle(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdateOne) SetNotEmptyAuthStyle(value uint64) *OauthProviderUpdateOne {
+	if value != 0 {
+		return op.SetAuthStyle(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdate) SetNotEmptyInfoURL(value string) *OauthProviderUpdate {
+	if value != "" {
+		return op.SetInfoURL(value)
+	}
+	return op
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (op *OauthProviderUpdateOne) SetNotEmptyInfoURL(value string) *OauthProviderUpdateOne {
+	if value != "" {
+		return op.SetInfoURL(value)
+	}
+	return op
 }
 
 // set field if value is not empty. e.g. string does not equal to ""

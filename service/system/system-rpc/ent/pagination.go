@@ -8,7 +8,10 @@ import (
 
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/api"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/department"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/dictionary"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/dictionarydetail"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/oauthprovider"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/role"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/token"
@@ -219,6 +222,164 @@ func (d *DepartmentQuery) Page(
 	return ret, nil
 }
 
+type DictionaryPager struct {
+	Order  dictionary.OrderOption
+	Filter func(*DictionaryQuery) (*DictionaryQuery, error)
+}
+
+// DictionaryPaginateOption enables pagination customization.
+type DictionaryPaginateOption func(*DictionaryPager)
+
+// DefaultDictionaryOrder is the default ordering of Dictionary.
+var DefaultDictionaryOrder = Desc(dictionary.FieldID)
+
+func newDictionaryPager(opts []DictionaryPaginateOption) (*DictionaryPager, error) {
+	pager := &DictionaryPager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultDictionaryOrder
+	}
+	return pager, nil
+}
+
+func (p *DictionaryPager) ApplyFilter(query *DictionaryQuery) (*DictionaryQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// DictionaryPageList is Dictionary PageList result.
+type DictionaryPageList struct {
+	List        []*Dictionary `json:"list"`
+	PageDetails *PageDetails  `json:"pageDetails"`
+}
+
+func (d *DictionaryQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...DictionaryPaginateOption,
+) (*DictionaryPageList, error) {
+
+	pager, err := newDictionaryPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if d, err = pager.ApplyFilter(d); err != nil {
+		return nil, err
+	}
+
+	ret := &DictionaryPageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := d.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		d = d.Order(pager.Order)
+	} else {
+		d = d.Order(DefaultDictionaryOrder)
+	}
+
+	d = d.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := d.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
+
+type DictionaryDetailPager struct {
+	Order  dictionarydetail.OrderOption
+	Filter func(*DictionaryDetailQuery) (*DictionaryDetailQuery, error)
+}
+
+// DictionaryDetailPaginateOption enables pagination customization.
+type DictionaryDetailPaginateOption func(*DictionaryDetailPager)
+
+// DefaultDictionaryDetailOrder is the default ordering of DictionaryDetail.
+var DefaultDictionaryDetailOrder = Desc(dictionarydetail.FieldID)
+
+func newDictionaryDetailPager(opts []DictionaryDetailPaginateOption) (*DictionaryDetailPager, error) {
+	pager := &DictionaryDetailPager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultDictionaryDetailOrder
+	}
+	return pager, nil
+}
+
+func (p *DictionaryDetailPager) ApplyFilter(query *DictionaryDetailQuery) (*DictionaryDetailQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// DictionaryDetailPageList is DictionaryDetail PageList result.
+type DictionaryDetailPageList struct {
+	List        []*DictionaryDetail `json:"list"`
+	PageDetails *PageDetails        `json:"pageDetails"`
+}
+
+func (dd *DictionaryDetailQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...DictionaryDetailPaginateOption,
+) (*DictionaryDetailPageList, error) {
+
+	pager, err := newDictionaryDetailPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if dd, err = pager.ApplyFilter(dd); err != nil {
+		return nil, err
+	}
+
+	ret := &DictionaryDetailPageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := dd.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		dd = dd.Order(pager.Order)
+	} else {
+		dd = dd.Order(DefaultDictionaryDetailOrder)
+	}
+
+	dd = dd.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := dd.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
+
 type MenuPager struct {
 	Order  menu.OrderOption
 	Filter func(*MenuQuery) (*MenuQuery, error)
@@ -290,6 +451,85 @@ func (m *MenuQuery) Page(
 
 	m = m.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
 	list, err := m.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
+
+type OauthProviderPager struct {
+	Order  oauthprovider.OrderOption
+	Filter func(*OauthProviderQuery) (*OauthProviderQuery, error)
+}
+
+// OauthProviderPaginateOption enables pagination customization.
+type OauthProviderPaginateOption func(*OauthProviderPager)
+
+// DefaultOauthProviderOrder is the default ordering of OauthProvider.
+var DefaultOauthProviderOrder = Desc(oauthprovider.FieldID)
+
+func newOauthProviderPager(opts []OauthProviderPaginateOption) (*OauthProviderPager, error) {
+	pager := &OauthProviderPager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultOauthProviderOrder
+	}
+	return pager, nil
+}
+
+func (p *OauthProviderPager) ApplyFilter(query *OauthProviderQuery) (*OauthProviderQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// OauthProviderPageList is OauthProvider PageList result.
+type OauthProviderPageList struct {
+	List        []*OauthProvider `json:"list"`
+	PageDetails *PageDetails     `json:"pageDetails"`
+}
+
+func (op *OauthProviderQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...OauthProviderPaginateOption,
+) (*OauthProviderPageList, error) {
+
+	pager, err := newOauthProviderPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if op, err = pager.ApplyFilter(op); err != nil {
+		return nil, err
+	}
+
+	ret := &OauthProviderPageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := op.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		op = op.Order(pager.Order)
+	} else {
+		op = op.Order(DefaultOauthProviderOrder)
+	}
+
+	op = op.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := op.All(ctx)
 	if err != nil {
 		return nil, err
 	}

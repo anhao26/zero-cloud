@@ -754,3 +754,69 @@ type TokenInfoResp struct {
 	// Token information | Token数据
 	Data TokenInfo `json:"data"`
 }
+
+// The API information | API信息
+// swagger:model ApiInfo
+type ApiInfo struct {
+	BaseIDInfo
+	// Translated Name | 多语言名称
+	Trans string `json:"trans,optional"`
+	// API path | API路径
+	// min length : 1
+	// max length : 80
+	Path string `json:"path,optional" validate:"omitempty,min=1,max=80"`
+	// API Description | API 描述
+	// max length : 100
+	Description string `json:"description,optional" validate:"omitempty,max=100"`
+	// API group | API分组
+	// min length : 1
+	// max length : 20
+	Group string `json:"group,optional" validate:"omitempty,min=1,max=20"`
+	// API request method e.g. POST | API请求类型 如POST
+	// min length : 3
+	// max length : 4
+	Method string `json:"method,optional" validate:"omitempty,uppercase,min=3,max=4"`
+}
+
+// The response data of API list | API列表数据
+// swagger:model ApiListResp
+type ApiListResp struct {
+	BaseDataInfo
+	// API list data | API 列表数据
+	Data ApiListInfo `json:"data"`
+}
+
+// API list data | API 列表数据
+// swagger:model ApiListInfo
+type ApiListInfo struct {
+	BaseListInfo
+	// The API list data | API列表数据
+	Data []ApiInfo `json:"data"`
+}
+
+// Get API list request params | API列表请求参数
+// swagger:model ApiListReq
+type ApiListReq struct {
+	PageInfo
+	// API path | API路径
+	// max length : 200
+	Path string `json:"path,optional" validate:"omitempty,max=200"`
+	// API Description | API 描述
+	// max length : 100
+	Description string `json:"description,optional" validate:"omitempty,max=100"`
+	// API group | API分组
+	// max length : 20
+	Group string `json:"group,optional" validate:"omitempty,max=20"`
+	// API request method e.g. POST | API请求类型 如POST
+	// min length : 3
+	// max length : 4
+	Method string `json:"method,optional" validate:"omitempty,uppercase,min=3,max=4"`
+}
+
+// API information response | API信息返回体
+// swagger:model ApiInfoResp
+type ApiInfoResp struct {
+	BaseDataInfo
+	// API information | API数据
+	Data ApiInfo `json:"data"`
+}

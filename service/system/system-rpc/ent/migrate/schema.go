@@ -61,6 +61,48 @@ var (
 			},
 		},
 	}
+	// SysDictionariesColumns holds the columns for the "sys_dictionaries" table.
+	SysDictionariesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "status", Type: field.TypeUint8, Nullable: true, Default: 1},
+		{Name: "title", Type: field.TypeString, Comment: "The title shown in the ui | 展示名称 （建议配合i18n）"},
+		{Name: "name", Type: field.TypeString, Unique: true, Comment: "The name of dictionary for search | 字典搜索名称"},
+		{Name: "desc", Type: field.TypeString, Comment: "The status of dictionary (true enable | false disable) | 字典状态"},
+	}
+	// SysDictionariesTable holds the schema information for the "sys_dictionaries" table.
+	SysDictionariesTable = &schema.Table{
+		Name:       "sys_dictionaries",
+		Columns:    SysDictionariesColumns,
+		PrimaryKey: []*schema.Column{SysDictionariesColumns[0]},
+	}
+	// SysDictionaryDetailsColumns holds the columns for the "sys_dictionary_details" table.
+	SysDictionaryDetailsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "status", Type: field.TypeUint8, Nullable: true, Default: 1},
+		{Name: "sort", Type: field.TypeUint32, Default: 1},
+		{Name: "title", Type: field.TypeString, Comment: "The title shown in the ui | 展示名称 （建议配合i18n）"},
+		{Name: "key", Type: field.TypeString, Comment: "key | 键"},
+		{Name: "value", Type: field.TypeString, Comment: "value | 值"},
+		{Name: "dictionary_id", Type: field.TypeUint64, Nullable: true, Comment: "Dictionary ID | 字典ID"},
+	}
+	// SysDictionaryDetailsTable holds the schema information for the "sys_dictionary_details" table.
+	SysDictionaryDetailsTable = &schema.Table{
+		Name:       "sys_dictionary_details",
+		Columns:    SysDictionaryDetailsColumns,
+		PrimaryKey: []*schema.Column{SysDictionaryDetailsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "sys_dictionary_details_sys_dictionaries_dictionary_details",
+				Columns:    []*schema.Column{SysDictionaryDetailsColumns[8]},
+				RefColumns: []*schema.Column{SysDictionariesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// SysMenusColumns holds the columns for the "sys_menus" table.
 	SysMenusColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
@@ -101,6 +143,27 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 		},
+	}
+	// SysOauthProvidersColumns holds the columns for the "sys_oauth_providers" table.
+	SysOauthProvidersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "name", Type: field.TypeString, Unique: true, Comment: "The provider's name | 提供商名称"},
+		{Name: "client_id", Type: field.TypeString, Comment: "The client id | 客户端 id"},
+		{Name: "client_secret", Type: field.TypeString, Comment: "The client secret | 客户端密钥"},
+		{Name: "redirect_url", Type: field.TypeString, Comment: "The redirect url | 跳转地址"},
+		{Name: "scopes", Type: field.TypeString, Comment: "The scopes | 权限范围"},
+		{Name: "auth_url", Type: field.TypeString, Comment: "The auth url of the provider | 认证地址"},
+		{Name: "token_url", Type: field.TypeString, Comment: "The token url of the provider | 获取 token地址"},
+		{Name: "auth_style", Type: field.TypeUint64, Comment: "The auth style, 0: auto detect 1: third party log in 2: log in with username and password"},
+		{Name: "info_url", Type: field.TypeString, Comment: "The URL to request user information by token | 用户信息请求地址"},
+	}
+	// SysOauthProvidersTable holds the schema information for the "sys_oauth_providers" table.
+	SysOauthProvidersTable = &schema.Table{
+		Name:       "sys_oauth_providers",
+		Columns:    SysOauthProvidersColumns,
+		PrimaryKey: []*schema.Column{SysOauthProvidersColumns[0]},
 	}
 	// SysPositionsColumns holds the columns for the "sys_positions" table.
 	SysPositionsColumns = []*schema.Column{
@@ -296,7 +359,10 @@ var (
 	Tables = []*schema.Table{
 		SysApisTable,
 		SysDepartmentsTable,
+		SysDictionariesTable,
+		SysDictionaryDetailsTable,
 		SysMenusTable,
+		SysOauthProvidersTable,
 		SysPositionsTable,
 		SysRolesTable,
 		SysTokensTable,
@@ -315,9 +381,19 @@ func init() {
 	SysDepartmentsTable.Annotation = &entsql.Annotation{
 		Table: "sys_departments",
 	}
+	SysDictionariesTable.Annotation = &entsql.Annotation{
+		Table: "sys_dictionaries",
+	}
+	SysDictionaryDetailsTable.ForeignKeys[0].RefTable = SysDictionariesTable
+	SysDictionaryDetailsTable.Annotation = &entsql.Annotation{
+		Table: "sys_dictionary_details",
+	}
 	SysMenusTable.ForeignKeys[0].RefTable = SysMenusTable
 	SysMenusTable.Annotation = &entsql.Annotation{
 		Table: "sys_menus",
+	}
+	SysOauthProvidersTable.Annotation = &entsql.Annotation{
+		Table: "sys_oauth_providers",
 	}
 	SysPositionsTable.Annotation = &entsql.Annotation{
 		Table: "sys_positions",

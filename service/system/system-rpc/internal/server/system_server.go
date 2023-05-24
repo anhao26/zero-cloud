@@ -9,6 +9,8 @@ import (
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/api"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/base"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/department"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/dictionary"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/dictionarydetail"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/menu"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/oauthprovider"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/position"
@@ -85,6 +87,58 @@ func (s *SystemServer) GetDepartmentById(ctx context.Context, in *system.IDReq) 
 func (s *SystemServer) DeleteDepartment(ctx context.Context, in *system.IDsReq) (*system.BaseResp, error) {
 	l := department.NewDeleteDepartmentLogic(ctx, s.svcCtx)
 	return l.DeleteDepartment(in)
+}
+
+// Dictionary management
+func (s *SystemServer) CreateDictionary(ctx context.Context, in *system.DictionaryInfo) (*system.BaseIDResp, error) {
+	l := dictionary.NewCreateDictionaryLogic(ctx, s.svcCtx)
+	return l.CreateDictionary(in)
+}
+
+func (s *SystemServer) UpdateDictionary(ctx context.Context, in *system.DictionaryInfo) (*system.BaseResp, error) {
+	l := dictionary.NewUpdateDictionaryLogic(ctx, s.svcCtx)
+	return l.UpdateDictionary(in)
+}
+
+func (s *SystemServer) GetDictionaryList(ctx context.Context, in *system.DictionaryListReq) (*system.DictionaryListResp, error) {
+	l := dictionary.NewGetDictionaryListLogic(ctx, s.svcCtx)
+	return l.GetDictionaryList(in)
+}
+
+func (s *SystemServer) GetDictionaryById(ctx context.Context, in *system.IDReq) (*system.DictionaryInfo, error) {
+	l := dictionary.NewGetDictionaryByIdLogic(ctx, s.svcCtx)
+	return l.GetDictionaryById(in)
+}
+
+func (s *SystemServer) DeleteDictionary(ctx context.Context, in *system.IDsReq) (*system.BaseResp, error) {
+	l := dictionary.NewDeleteDictionaryLogic(ctx, s.svcCtx)
+	return l.DeleteDictionary(in)
+}
+
+// DictionaryDetail management
+func (s *SystemServer) CreateDictionaryDetail(ctx context.Context, in *system.DictionaryDetailInfo) (*system.BaseIDResp, error) {
+	l := dictionarydetail.NewCreateDictionaryDetailLogic(ctx, s.svcCtx)
+	return l.CreateDictionaryDetail(in)
+}
+
+func (s *SystemServer) UpdateDictionaryDetail(ctx context.Context, in *system.DictionaryDetailInfo) (*system.BaseResp, error) {
+	l := dictionarydetail.NewUpdateDictionaryDetailLogic(ctx, s.svcCtx)
+	return l.UpdateDictionaryDetail(in)
+}
+
+func (s *SystemServer) GetDictionaryDetailList(ctx context.Context, in *system.DictionaryDetailListReq) (*system.DictionaryDetailListResp, error) {
+	l := dictionarydetail.NewGetDictionaryDetailListLogic(ctx, s.svcCtx)
+	return l.GetDictionaryDetailList(in)
+}
+
+func (s *SystemServer) GetDictionaryDetailById(ctx context.Context, in *system.IDReq) (*system.DictionaryDetailInfo, error) {
+	l := dictionarydetail.NewGetDictionaryDetailByIdLogic(ctx, s.svcCtx)
+	return l.GetDictionaryDetailById(in)
+}
+
+func (s *SystemServer) DeleteDictionaryDetail(ctx context.Context, in *system.IDsReq) (*system.BaseResp, error) {
+	l := dictionarydetail.NewDeleteDictionaryDetailLogic(ctx, s.svcCtx)
+	return l.DeleteDictionaryDetail(in)
 }
 
 // Menu management

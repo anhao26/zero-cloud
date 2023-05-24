@@ -820,3 +820,98 @@ type ApiInfoResp struct {
 	// API information | API数据
 	Data ApiInfo `json:"data"`
 }
+
+// The response data of oauth provider information | 第三方信息
+// swagger:model OauthProviderInfo
+type OauthProviderInfo struct {
+	BaseIDInfo
+	// Provider name | 第三方提供商名称
+	// max length : 30
+	Name string `json:"name,optional" validate:"omitempty,max=30"`
+	// ClientId | 客户端ID
+	// max length : 80
+	ClientId string `json:"clientId,optional" validate:"omitempty,max=80"`
+	// ClientSecret | 客户端密钥
+	// max length : 100
+	ClientSecret string `json:"clientSecret,optional" validate:"omitempty,max=100"`
+	// Redirect URL| 跳转地址
+	// max length : 300
+	RedirectUrl string `json:"redirectUrl,optional" validate:"omitempty,max=300"`
+	// Scopes | 授权范围
+	// max length : 50
+	Scopes string `json:"scopes,optional" validate:"omitempty,max=50"`
+	// Authority URL | 授权地址
+	// max length : 300
+	AuthUrl string `json:"authUrl,optional" validate:"omitempty,max=300"`
+	// The URL to get token | 获取Token的地址
+	// max length : 300
+	TokenUrl string `json:"tokenUrl,optional" validate:"omitempty,max=300"`
+	// The type of auth | 鉴权方式
+	// max : 20
+	AuthStyle uint64 `json:"authStyle,optional" validate:"omitempty,lt=20"`
+	// The URL to get user information | 获取信息地址
+	// max length : 300
+	InfoUrl string `json:"infoUrl,optional" validate:"omitempty,max=300"`
+}
+
+// The response data of oauth provider list | 第三方列表数据
+// swagger:model OauthProviderListResp
+type OauthProviderListResp struct {
+	BaseDataInfo
+	// OauthProvider list data | 第三方列表数据
+	Data OauthProviderListInfo `json:"data"`
+}
+
+// OauthProvider list data | 第三方列表数据
+// swagger:model OauthProviderListInfo
+type OauthProviderListInfo struct {
+	BaseListInfo
+	// The API list data | 第三方列表数据
+	Data []OauthProviderInfo `json:"data"`
+}
+
+// Get oauth provider list request params | 第三方列表请求参数
+// swagger:model OauthProviderListReq
+type OauthProviderListReq struct {
+	PageInfo
+	// Name | 第三方提供商名称
+	// max length : 30
+	Name string `json:"name,optional" validate:"omitempty,max=30"`
+}
+
+// Oauth provider information response | 第三方信息返回体
+// swagger:model OauthProviderInfoResp
+type OauthProviderInfoResp struct {
+	BaseDataInfo
+	// OauthProvider information | 第三方数据
+	Data OauthProviderInfo `json:"data"`
+}
+
+// Oauth log in request | Oauth 登录请求
+// swagger:model OauthLoginReq
+type OauthLoginReq struct {
+	// State code to avoid hack | 状态码，请求前后相同避免安全问题
+	// required : true
+	// max length : 30
+	State string `json:"state" validate:"required,max=30"`
+	// Provider name | 提供商名字
+	// Example: google
+	// required : true
+	// max length : 40
+	Provider string `json:"provider" validate:"required,max=40"`
+}
+
+// Redirect response | 跳转网址返回信息
+// swagger:model RedirectResp
+type RedirectResp struct {
+	BaseDataInfo
+	// Redirect information | 跳转网址
+	Data RedirectInfo `json:"data"`
+}
+
+// Redirect information | 跳转网址
+// swagger:model RedirectInfo
+type RedirectInfo struct {
+	// Redirect URL | 跳转网址
+	URL string `json:"URL"`
+}

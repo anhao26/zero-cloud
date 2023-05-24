@@ -13,46 +13,52 @@ import (
 )
 
 type (
-	ApiInfo               = system.ApiInfo
-	ApiListReq            = system.ApiListReq
-	ApiListResp           = system.ApiListResp
-	BaseIDResp            = system.BaseIDResp
-	BaseMsg               = system.BaseMsg
-	BaseResp              = system.BaseResp
-	BaseUUIDResp          = system.BaseUUIDResp
-	CallbackReq           = system.CallbackReq
-	DepartmentInfo        = system.DepartmentInfo
-	DepartmentListReq     = system.DepartmentListReq
-	DepartmentListResp    = system.DepartmentListResp
-	Empty                 = system.Empty
-	IDReq                 = system.IDReq
-	IDsReq                = system.IDsReq
-	MenuInfo              = system.MenuInfo
-	MenuInfoList          = system.MenuInfoList
-	MenuRoleInfo          = system.MenuRoleInfo
-	MenuRoleListResp      = system.MenuRoleListResp
-	Meta                  = system.Meta
-	OauthLoginReq         = system.OauthLoginReq
-	OauthProviderInfo     = system.OauthProviderInfo
-	OauthProviderListReq  = system.OauthProviderListReq
-	OauthProviderListResp = system.OauthProviderListResp
-	OauthRedirectResp     = system.OauthRedirectResp
-	PageInfoReq           = system.PageInfoReq
-	PositionInfo          = system.PositionInfo
-	PositionListReq       = system.PositionListReq
-	PositionListResp      = system.PositionListResp
-	RoleInfo              = system.RoleInfo
-	RoleListReq           = system.RoleListReq
-	RoleListResp          = system.RoleListResp
-	TokenInfo             = system.TokenInfo
-	TokenListReq          = system.TokenListReq
-	TokenListResp         = system.TokenListResp
-	UUIDReq               = system.UUIDReq
-	UUIDsReq              = system.UUIDsReq
-	UserInfo              = system.UserInfo
-	UserListReq           = system.UserListReq
-	UserListResp          = system.UserListResp
-	UsernameReq           = system.UsernameReq
+	ApiInfo                  = system.ApiInfo
+	ApiListReq               = system.ApiListReq
+	ApiListResp              = system.ApiListResp
+	BaseIDResp               = system.BaseIDResp
+	BaseMsg                  = system.BaseMsg
+	BaseResp                 = system.BaseResp
+	BaseUUIDResp             = system.BaseUUIDResp
+	CallbackReq              = system.CallbackReq
+	DepartmentInfo           = system.DepartmentInfo
+	DepartmentListReq        = system.DepartmentListReq
+	DepartmentListResp       = system.DepartmentListResp
+	DictionaryDetailInfo     = system.DictionaryDetailInfo
+	DictionaryDetailListReq  = system.DictionaryDetailListReq
+	DictionaryDetailListResp = system.DictionaryDetailListResp
+	DictionaryInfo           = system.DictionaryInfo
+	DictionaryListReq        = system.DictionaryListReq
+	DictionaryListResp       = system.DictionaryListResp
+	Empty                    = system.Empty
+	IDReq                    = system.IDReq
+	IDsReq                   = system.IDsReq
+	MenuInfo                 = system.MenuInfo
+	MenuInfoList             = system.MenuInfoList
+	MenuRoleInfo             = system.MenuRoleInfo
+	MenuRoleListResp         = system.MenuRoleListResp
+	Meta                     = system.Meta
+	OauthLoginReq            = system.OauthLoginReq
+	OauthProviderInfo        = system.OauthProviderInfo
+	OauthProviderListReq     = system.OauthProviderListReq
+	OauthProviderListResp    = system.OauthProviderListResp
+	OauthRedirectResp        = system.OauthRedirectResp
+	PageInfoReq              = system.PageInfoReq
+	PositionInfo             = system.PositionInfo
+	PositionListReq          = system.PositionListReq
+	PositionListResp         = system.PositionListResp
+	RoleInfo                 = system.RoleInfo
+	RoleListReq              = system.RoleListReq
+	RoleListResp             = system.RoleListResp
+	TokenInfo                = system.TokenInfo
+	TokenListReq             = system.TokenListReq
+	TokenListResp            = system.TokenListResp
+	UUIDReq                  = system.UUIDReq
+	UUIDsReq                 = system.UUIDsReq
+	UserInfo                 = system.UserInfo
+	UserListReq              = system.UserListReq
+	UserListResp             = system.UserListResp
+	UsernameReq              = system.UsernameReq
 
 	System interface {
 		// API management
@@ -68,6 +74,18 @@ type (
 		GetDepartmentList(ctx context.Context, in *DepartmentListReq, opts ...grpc.CallOption) (*DepartmentListResp, error)
 		GetDepartmentById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*DepartmentInfo, error)
 		DeleteDepartment(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
+		// Dictionary management
+		CreateDictionary(ctx context.Context, in *DictionaryInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
+		UpdateDictionary(ctx context.Context, in *DictionaryInfo, opts ...grpc.CallOption) (*BaseResp, error)
+		GetDictionaryList(ctx context.Context, in *DictionaryListReq, opts ...grpc.CallOption) (*DictionaryListResp, error)
+		GetDictionaryById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*DictionaryInfo, error)
+		DeleteDictionary(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
+		// DictionaryDetail management
+		CreateDictionaryDetail(ctx context.Context, in *DictionaryDetailInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
+		UpdateDictionaryDetail(ctx context.Context, in *DictionaryDetailInfo, opts ...grpc.CallOption) (*BaseResp, error)
+		GetDictionaryDetailList(ctx context.Context, in *DictionaryDetailListReq, opts ...grpc.CallOption) (*DictionaryDetailListResp, error)
+		GetDictionaryDetailById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*DictionaryDetailInfo, error)
+		DeleteDictionaryDetail(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
 		// Menu management
 		CreateMenu(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
 		UpdateMenu(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*BaseResp, error)
@@ -176,6 +194,58 @@ func (m *defaultSystem) GetDepartmentById(ctx context.Context, in *IDReq, opts .
 func (m *defaultSystem) DeleteDepartment(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := system.NewSystemClient(m.cli.Conn())
 	return client.DeleteDepartment(ctx, in, opts...)
+}
+
+// Dictionary management
+func (m *defaultSystem) CreateDictionary(ctx context.Context, in *DictionaryInfo, opts ...grpc.CallOption) (*BaseIDResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.CreateDictionary(ctx, in, opts...)
+}
+
+func (m *defaultSystem) UpdateDictionary(ctx context.Context, in *DictionaryInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.UpdateDictionary(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetDictionaryList(ctx context.Context, in *DictionaryListReq, opts ...grpc.CallOption) (*DictionaryListResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetDictionaryList(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetDictionaryById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*DictionaryInfo, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetDictionaryById(ctx, in, opts...)
+}
+
+func (m *defaultSystem) DeleteDictionary(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.DeleteDictionary(ctx, in, opts...)
+}
+
+// DictionaryDetail management
+func (m *defaultSystem) CreateDictionaryDetail(ctx context.Context, in *DictionaryDetailInfo, opts ...grpc.CallOption) (*BaseIDResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.CreateDictionaryDetail(ctx, in, opts...)
+}
+
+func (m *defaultSystem) UpdateDictionaryDetail(ctx context.Context, in *DictionaryDetailInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.UpdateDictionaryDetail(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetDictionaryDetailList(ctx context.Context, in *DictionaryDetailListReq, opts ...grpc.CallOption) (*DictionaryDetailListResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetDictionaryDetailList(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetDictionaryDetailById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*DictionaryDetailInfo, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetDictionaryDetailById(ctx, in, opts...)
+}
+
+func (m *defaultSystem) DeleteDictionaryDetail(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.DeleteDictionaryDetail(ctx, in, opts...)
 }
 
 // Menu management

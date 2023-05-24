@@ -9,6 +9,7 @@ import (
 	captcha "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/captcha"
 	department "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/department"
 	menu "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/menu"
+	oauthprovider "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/oauthprovider"
 	position "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/position"
 	role "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/role"
 	token "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/token"
@@ -321,6 +322,50 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/api",
 					Handler: api.GetApiByIdHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/oauth/login",
+				Handler: oauthprovider.OauthLoginHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/oauth_provider/create",
+					Handler: oauthprovider.CreateOauthProviderHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/oauth_provider/update",
+					Handler: oauthprovider.UpdateOauthProviderHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/oauth_provider/delete",
+					Handler: oauthprovider.DeleteOauthProviderHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/oauth_provider/list",
+					Handler: oauthprovider.GetOauthProviderListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/oauth_provider",
+					Handler: oauthprovider.GetOauthProviderByIdHandler(serverCtx),
 				},
 			}...,
 		),

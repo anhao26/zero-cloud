@@ -62,6 +62,8 @@ github.com/anhao26/zero-cloud/service/system/system-rpc v0.0.0-20230524102651-f9
 github.com/anhao26/zero-cloud/service/system/system-rpc v0.0.0-20230524102651-f9c779ee5e23/go.mod h1:wk0ScYVRqNWxYHZR1zD9fhIXtyAcy9EjQpUaoWA0IWo=
 github.com/anhao26/zero-cloud/service/system/system-rpc v0.0.0-20230524161145-822ea96d64ab h1:ZQ1ekPYObU3N+RAmuPlsmnpN1lmUFp39dPXjL0A1lEo=
 github.com/anhao26/zero-cloud/service/system/system-rpc v0.0.0-20230524161145-822ea96d64ab/go.mod h1:wk0ScYVRqNWxYHZR1zD9fhIXtyAcy9EjQpUaoWA0IWo=
+github.com/anhao26/zero-cloud/service/system/system-rpc v0.0.0-20230524163807-7579d5b2aa84 h1:OmUTjfzPwQ7Ukoc4peP2KinQDGV1xfIs27X86GGpJyQ=
+github.com/anhao26/zero-cloud/service/system/system-rpc v0.0.0-20230524163807-7579d5b2aa84/go.mod h1:wk0ScYVRqNWxYHZR1zD9fhIXtyAcy9EjQpUaoWA0IWo=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/apparentlymart/go-textseg/v13 v13.0.0 h1:Y+KvPE1NYz0xl601PVImeQfFyEy6iT90AvPUL1NNfNw=
 github.com/apparentlymart/go-textseg/v13 v13.0.0/go.mod h1:ZK2fH7c4NqDTLtiYLvIkEghdlcqw7yxLeM89kiTRPUo=

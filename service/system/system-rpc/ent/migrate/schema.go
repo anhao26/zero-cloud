@@ -9,6 +9,29 @@ import (
 )
 
 var (
+	// SysApisColumns holds the columns for the "sys_apis" table.
+	SysApisColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "path", Type: field.TypeString, Comment: "API path | API 路径"},
+		{Name: "description", Type: field.TypeString, Comment: "API description | API 描述"},
+		{Name: "api_group", Type: field.TypeString, Comment: "API group | API 分组"},
+		{Name: "method", Type: field.TypeString, Comment: "HTTP method | HTTP 请求类型", Default: "POST"},
+	}
+	// SysApisTable holds the schema information for the "sys_apis" table.
+	SysApisTable = &schema.Table{
+		Name:       "sys_apis",
+		Columns:    SysApisColumns,
+		PrimaryKey: []*schema.Column{SysApisColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "api_path_method",
+				Unique:  true,
+				Columns: []*schema.Column{SysApisColumns[3], SysApisColumns[6]},
+			},
+		},
+	}
 	// SysDepartmentsColumns holds the columns for the "sys_departments" table.
 	SysDepartmentsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
@@ -271,6 +294,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		SysApisTable,
 		SysDepartmentsTable,
 		SysMenusTable,
 		SysPositionsTable,
@@ -284,6 +308,9 @@ var (
 )
 
 func init() {
+	SysApisTable.Annotation = &entsql.Annotation{
+		Table: "sys_apis",
+	}
 	SysDepartmentsTable.ForeignKeys[0].RefTable = SysDepartmentsTable
 	SysDepartmentsTable.Annotation = &entsql.Annotation{
 		Table: "sys_departments",

@@ -6,7 +6,11 @@ import (
 
 	base "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/base"
 	captcha "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/captcha"
+	department "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/department"
 	menu "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/menu"
+	position "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/position"
+	role "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/role"
+	token "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/token"
 	user "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/user"
 	"github.com/anhao26/zero-cloud/service/system/system-api/internal/svc"
 
@@ -41,6 +45,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/user/login",
 				Handler: user.LoginHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/user/register",
+				Handler: user.RegisterHandler(serverCtx),
+			},
 		},
 	)
 
@@ -58,6 +67,51 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/user/perm",
 					Handler: user.GetUserPermCodeHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/list",
+					Handler: user.GetUserListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/create",
+					Handler: user.CreateUserHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/update",
+					Handler: user.UpdateUserHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/delete",
+					Handler: user.DeleteUserHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/user",
+					Handler: user.GetUserByIdHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/change_password",
+					Handler: user.ChangePasswordHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/user/profile",
+					Handler: user.GetUserProfileHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/profile",
+					Handler: user.UpdateUserProfileHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/user/logout",
+					Handler: user.LogoutHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
@@ -71,6 +125,167 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/menu/role/list",
 					Handler: menu.GetMenuListByRoleHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/menu/list",
+					Handler: menu.GetMenuListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/menu/create",
+					Handler: menu.CreateMenuHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/menu/update",
+					Handler: menu.UpdateMenuHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/menu/delete",
+					Handler: menu.DeleteMenuHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/role/create",
+					Handler: role.CreateRoleHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/role/update",
+					Handler: role.UpdateRoleHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/role/delete",
+					Handler: role.DeleteRoleHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/role/list",
+					Handler: role.GetRoleListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/role",
+					Handler: role.GetRoleByIdHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/department/create",
+					Handler: department.CreateDepartmentHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/department/update",
+					Handler: department.UpdateDepartmentHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/department/delete",
+					Handler: department.DeleteDepartmentHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/department/list",
+					Handler: department.GetDepartmentListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/department",
+					Handler: department.GetDepartmentByIdHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/position/create",
+					Handler: position.CreatePositionHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/position/update",
+					Handler: position.UpdatePositionHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/position/delete",
+					Handler: position.DeletePositionHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/position/list",
+					Handler: position.GetPositionListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/position",
+					Handler: position.GetPositionByIdHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/token/create",
+					Handler: token.CreateTokenHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/token/update",
+					Handler: token.UpdateTokenHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/token/delete",
+					Handler: token.DeleteTokenHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/token/list",
+					Handler: token.GetTokenListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/token",
+					Handler: token.GetTokenByIdHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/token/logout",
+					Handler: token.LogoutHandler(serverCtx),
 				},
 			}...,
 		),

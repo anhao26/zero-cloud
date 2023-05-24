@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/api"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/department"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
@@ -78,6 +79,7 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
+			api.Table:        api.ValidColumn,
 			department.Table: department.ValidColumn,
 			menu.Table:       menu.ValidColumn,
 			position.Table:   position.ValidColumn,

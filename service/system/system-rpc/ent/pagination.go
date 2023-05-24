@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/api"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/department"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
@@ -59,6 +60,85 @@ func (o OrderDirection) reverse() OrderDirection {
 }
 
 const errInvalidPagination = "INVALID_PAGINATION"
+
+type APIPager struct {
+	Order  api.OrderOption
+	Filter func(*APIQuery) (*APIQuery, error)
+}
+
+// APIPaginateOption enables pagination customization.
+type APIPaginateOption func(*APIPager)
+
+// DefaultAPIOrder is the default ordering of API.
+var DefaultAPIOrder = Desc(api.FieldID)
+
+func newAPIPager(opts []APIPaginateOption) (*APIPager, error) {
+	pager := &APIPager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultAPIOrder
+	}
+	return pager, nil
+}
+
+func (p *APIPager) ApplyFilter(query *APIQuery) (*APIQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// APIPageList is API PageList result.
+type APIPageList struct {
+	List        []*API       `json:"list"`
+	PageDetails *PageDetails `json:"pageDetails"`
+}
+
+func (a *APIQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...APIPaginateOption,
+) (*APIPageList, error) {
+
+	pager, err := newAPIPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if a, err = pager.ApplyFilter(a); err != nil {
+		return nil, err
+	}
+
+	ret := &APIPageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := a.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		a = a.Order(pager.Order)
+	} else {
+		a = a.Order(DefaultAPIOrder)
+	}
+
+	a = a.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := a.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
 
 type DepartmentPager struct {
 	Order  department.OrderOption

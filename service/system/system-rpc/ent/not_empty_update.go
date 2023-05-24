@@ -3,6 +3,70 @@
 package ent
 
 // set field if value is not empty. e.g. string does not equal to ""
+func (a *APIUpdate) SetNotEmptyPath(value string) *APIUpdate {
+	if value != "" {
+		return a.SetPath(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *APIUpdateOne) SetNotEmptyPath(value string) *APIUpdateOne {
+	if value != "" {
+		return a.SetPath(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *APIUpdate) SetNotEmptyDescription(value string) *APIUpdate {
+	if value != "" {
+		return a.SetDescription(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *APIUpdateOne) SetNotEmptyDescription(value string) *APIUpdateOne {
+	if value != "" {
+		return a.SetDescription(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *APIUpdate) SetNotEmptyAPIGroup(value string) *APIUpdate {
+	if value != "" {
+		return a.SetAPIGroup(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *APIUpdateOne) SetNotEmptyAPIGroup(value string) *APIUpdateOne {
+	if value != "" {
+		return a.SetAPIGroup(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *APIUpdate) SetNotEmptyMethod(value string) *APIUpdate {
+	if value != "" {
+		return a.SetMethod(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *APIUpdateOne) SetNotEmptyMethod(value string) *APIUpdateOne {
+	if value != "" {
+		return a.SetMethod(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
 func (d *DepartmentUpdate) SetNotEmptyStatus(value uint8) *DepartmentUpdate {
 	if value != 0 {
 		return d.SetStatus(value)

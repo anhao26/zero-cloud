@@ -3,7 +3,7 @@ module github.com/anhao26/zero-cloud/service/system/system-api
 go 1.20
 
 require (
-	github.com/anhao26/zero-cloud/service/system/system-rpc v0.0.0-20230524075139-1de22675811c
+	github.com/anhao26/zero-cloud/service/system/system-rpc v0.0.0-20230524102651-f9c779ee5e23
 	github.com/casbin/casbin/v2 v2.69.1
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/suyuan32/simple-admin-common v1.0.6
@@ -39,6 +39,7 @@ require (
 	github.com/go-playground/validator/v10 v10.12.0 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
+	github.com/gofrs/uuid/v5 v5.0.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect

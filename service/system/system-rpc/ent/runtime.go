@@ -5,6 +5,7 @@ package ent
 import (
 	"time"
 
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/api"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/department"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
@@ -19,6 +20,25 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	apiMixin := schema.API{}.Mixin()
+	apiMixinFields0 := apiMixin[0].Fields()
+	_ = apiMixinFields0
+	apiFields := schema.API{}.Fields()
+	_ = apiFields
+	// apiDescCreatedAt is the schema descriptor for created_at field.
+	apiDescCreatedAt := apiMixinFields0[1].Descriptor()
+	// api.DefaultCreatedAt holds the default value on creation for the created_at field.
+	api.DefaultCreatedAt = apiDescCreatedAt.Default.(func() time.Time)
+	// apiDescUpdatedAt is the schema descriptor for updated_at field.
+	apiDescUpdatedAt := apiMixinFields0[2].Descriptor()
+	// api.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	api.DefaultUpdatedAt = apiDescUpdatedAt.Default.(func() time.Time)
+	// api.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	api.UpdateDefaultUpdatedAt = apiDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// apiDescMethod is the schema descriptor for method field.
+	apiDescMethod := apiFields[3].Descriptor()
+	// api.DefaultMethod holds the default value on creation for the method field.
+	api.DefaultMethod = apiDescMethod.Default.(string)
 	departmentMixin := schema.Department{}.Mixin()
 	departmentMixinFields0 := departmentMixin[0].Fields()
 	_ = departmentMixinFields0

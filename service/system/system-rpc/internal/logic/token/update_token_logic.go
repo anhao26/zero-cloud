@@ -2,13 +2,13 @@ package token
 
 import (
 	"context"
-     "time"
+	"time"
 
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/svc"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/utils/dberrorhandler"
-    "github.com/anhao26/zero-cloud/service/system/system-rpc/types/system"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/types/system"
 
-    "github.com/suyuan32/simple-admin-common/i18n"
+	"github.com/suyuan32/simple-admin-common/i18n"
 	"github.com/suyuan32/simple-admin-common/utils/uuidx"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,17 +28,17 @@ func NewUpdateTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Updat
 }
 
 func (l *UpdateTokenLogic) UpdateToken(in *system.TokenInfo) (*system.BaseResp, error) {
-    err := l.svcCtx.DB.Token.UpdateOneID(uuidx.ParseUUIDString(in.Id)).
-			SetNotEmptyStatus(uint8(in.Status)).
-			SetNotEmptyUUID(uuidx.ParseUUIDString(in.Uuid)).
-			SetNotEmptyToken(in.Token).
-			SetNotEmptySource(in.Source).
-			SetNotEmptyExpiredAt(time.Unix(in.ExpiredAt, 0)).
-			Exec(l.ctx)
+	err := l.svcCtx.DB.Token.UpdateOneID(uuidx.ParseUUIDString(in.Id)).
+		SetNotEmptyStatus(uint8(in.Status)).
+		SetUUID(uuidx.ParseUUIDString(in.Uuid)).
+		SetToken(in.Token).
+		SetSource(in.Source).
+		SetExpiredAt(time.Unix(in.ExpiredAt, 0)).
+		Exec(l.ctx)
 
-    if err != nil {
+	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, in)
 	}
 
-    return &system.BaseResp{Msg: i18n.CreateSuccess }, nil
+	return &system.BaseResp{Msg: i18n.CreateSuccess}, nil
 }

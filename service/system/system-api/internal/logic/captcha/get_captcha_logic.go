@@ -2,6 +2,8 @@ package captcha
 
 import (
 	"context"
+	"github.com/suyuan32/simple-admin-common/enum/errorcode"
+	"github.com/suyuan32/simple-admin-common/i18n"
 
 	"github.com/anhao26/zero-cloud/service/system/system-api/internal/svc"
 	"github.com/anhao26/zero-cloud/service/system/system-api/internal/types"
@@ -24,7 +26,20 @@ func NewGetCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetCap
 }
 
 func (l *GetCaptchaLogic) GetCaptcha() (resp *types.CaptchaResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+	if id, b64s, err := l.svcCtx.Captcha.Generate(); err != nil {
+		logx.Errorw("fail to generate captcha", logx.Field("detail", err.Error()))
+		return &types.CaptchaResp{
+			BaseDataInfo: types.BaseDataInfo{Code: errorcode.Internal, Msg: l.svcCtx.Trans.Trans(l.ctx, i18n.Failed)},
+			Data:         types.CaptchaInfo{},
+		}, nil
+	} else {
+		resp = &types.CaptchaResp{
+			BaseDataInfo: types.BaseDataInfo{Msg: l.svcCtx.Trans.Trans(l.ctx, i18n.Success)},
+			Data: types.CaptchaInfo{
+				CaptchaId: id,
+				ImgPath:   b64s,
+			},
+		}
+		return resp, nil
+	}
 }

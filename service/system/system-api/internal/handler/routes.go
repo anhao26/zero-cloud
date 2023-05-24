@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	base "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/base"
+	captcha "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/captcha"
 	user "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/user"
 	"github.com/anhao26/zero-cloud/service/system/system-api/internal/svc"
 
@@ -15,9 +16,9 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				Method:  http.MethodPost,
-				Path:    "/user/login",
-				Handler: user.LoginHandler(serverCtx),
+				Method:  http.MethodGet,
+				Path:    "/init/database",
+				Handler: base.InitDatabaseHandler(serverCtx),
 			},
 		},
 	)
@@ -26,8 +27,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
-				Path:    "/init/database",
-				Handler: base.InitDatabaseHandler(serverCtx),
+				Path:    "/captcha",
+				Handler: captcha.GetCaptchaHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/user/login",
+				Handler: user.LoginHandler(serverCtx),
 			},
 		},
 	)

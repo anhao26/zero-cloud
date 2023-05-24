@@ -8,6 +8,12 @@ Auth:
   AccessSecret: haha123456
   AccessExpire: 259200
 
+Captcha:
+  KeyLong: 5
+  ImgWidth: 240
+  ImgHeight: 80
+  Driver: digit
+  
 Log:
   ServiceName: SystemApiLogger
   Mode: file

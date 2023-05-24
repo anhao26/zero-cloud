@@ -10,6 +10,7 @@ import (
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/role"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/token"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/user"
 )
 
@@ -367,6 +368,85 @@ func (r *RoleQuery) Page(
 
 	r = r.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
 	list, err := r.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
+
+type TokenPager struct {
+	Order  token.OrderOption
+	Filter func(*TokenQuery) (*TokenQuery, error)
+}
+
+// TokenPaginateOption enables pagination customization.
+type TokenPaginateOption func(*TokenPager)
+
+// DefaultTokenOrder is the default ordering of Token.
+var DefaultTokenOrder = Desc(token.FieldID)
+
+func newTokenPager(opts []TokenPaginateOption) (*TokenPager, error) {
+	pager := &TokenPager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultTokenOrder
+	}
+	return pager, nil
+}
+
+func (p *TokenPager) ApplyFilter(query *TokenQuery) (*TokenQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// TokenPageList is Token PageList result.
+type TokenPageList struct {
+	List        []*Token     `json:"list"`
+	PageDetails *PageDetails `json:"pageDetails"`
+}
+
+func (t *TokenQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...TokenPaginateOption,
+) (*TokenPageList, error) {
+
+	pager, err := newTokenPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if t, err = pager.ApplyFilter(t); err != nil {
+		return nil, err
+	}
+
+	ret := &TokenPageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := t.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		t = t.Order(pager.Order)
+	} else {
+		t = t.Order(DefaultTokenOrder)
+	}
+
+	t = t.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := t.All(ctx)
 	if err != nil {
 		return nil, err
 	}

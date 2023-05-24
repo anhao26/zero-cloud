@@ -16,6 +16,7 @@ import (
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/role"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/token"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/user"
 )
 
@@ -81,6 +82,7 @@ func checkColumn(table, column string) error {
 			menu.Table:       menu.ValidColumn,
 			position.Table:   position.ValidColumn,
 			role.Table:       role.ValidColumn,
+			token.Table:      token.ValidColumn,
 			user.Table:       user.ValidColumn,
 		})
 	})

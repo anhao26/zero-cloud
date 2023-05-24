@@ -128,6 +128,35 @@ var (
 			},
 		},
 	}
+	// SysTokensColumns holds the columns for the "sys_tokens" table.
+	SysTokensColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "status", Type: field.TypeUint8, Nullable: true, Default: 1},
+		{Name: "uuid", Type: field.TypeUUID, Comment: " User's UUID | 用户的UUID"},
+		{Name: "token", Type: field.TypeString, Comment: "Token string | Token 字符串"},
+		{Name: "source", Type: field.TypeString, Comment: "Log in source such as GitHub | Token 来源 （本地为core, 第三方如github等）"},
+		{Name: "expired_at", Type: field.TypeTime, Comment: " Expire time | 过期时间"},
+	}
+	// SysTokensTable holds the schema information for the "sys_tokens" table.
+	SysTokensTable = &schema.Table{
+		Name:       "sys_tokens",
+		Columns:    SysTokensColumns,
+		PrimaryKey: []*schema.Column{SysTokensColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "token_uuid",
+				Unique:  false,
+				Columns: []*schema.Column{SysTokensColumns[4]},
+			},
+			{
+				Name:    "token_expired_at",
+				Unique:  false,
+				Columns: []*schema.Column{SysTokensColumns[7]},
+			},
+		},
+	}
 	// SysUsersColumns holds the columns for the "sys_users" table.
 	SysUsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
@@ -246,6 +275,7 @@ var (
 		SysMenusTable,
 		SysPositionsTable,
 		SysRolesTable,
+		SysTokensTable,
 		SysUsersTable,
 		RoleMenusTable,
 		UserPositionsTable,
@@ -267,6 +297,9 @@ func init() {
 	}
 	SysRolesTable.Annotation = &entsql.Annotation{
 		Table: "sys_roles",
+	}
+	SysTokensTable.Annotation = &entsql.Annotation{
+		Table: "sys_tokens",
 	}
 	SysUsersTable.ForeignKeys[0].RefTable = SysDepartmentsTable
 	SysUsersTable.Annotation = &entsql.Annotation{

@@ -32,6 +32,9 @@ type (
 	RoleInfo           = system.RoleInfo
 	RoleListReq        = system.RoleListReq
 	RoleListResp       = system.RoleListResp
+	TokenInfo          = system.TokenInfo
+	TokenListReq       = system.TokenListReq
+	TokenListResp      = system.TokenListResp
 	UUIDReq            = system.UUIDReq
 	UUIDsReq           = system.UUIDsReq
 	UserInfo           = system.UserInfo
@@ -65,6 +68,13 @@ type (
 		GetRoleList(ctx context.Context, in *RoleListReq, opts ...grpc.CallOption) (*RoleListResp, error)
 		GetRoleById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*RoleInfo, error)
 		DeleteRole(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
+		// Token management
+		CreateToken(ctx context.Context, in *TokenInfo, opts ...grpc.CallOption) (*BaseUUIDResp, error)
+		UpdateToken(ctx context.Context, in *TokenInfo, opts ...grpc.CallOption) (*BaseResp, error)
+		GetTokenList(ctx context.Context, in *TokenListReq, opts ...grpc.CallOption) (*TokenListResp, error)
+		GetTokenById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*TokenInfo, error)
+		DeleteToken(ctx context.Context, in *UUIDsReq, opts ...grpc.CallOption) (*BaseResp, error)
+		BlockUserAllToken(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*BaseResp, error)
 		// User management
 		CreateUser(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*BaseUUIDResp, error)
 		UpdateUser(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*BaseResp, error)
@@ -192,6 +202,37 @@ func (m *defaultSystem) GetRoleById(ctx context.Context, in *IDReq, opts ...grpc
 func (m *defaultSystem) DeleteRole(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := system.NewSystemClient(m.cli.Conn())
 	return client.DeleteRole(ctx, in, opts...)
+}
+
+// Token management
+func (m *defaultSystem) CreateToken(ctx context.Context, in *TokenInfo, opts ...grpc.CallOption) (*BaseUUIDResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.CreateToken(ctx, in, opts...)
+}
+
+func (m *defaultSystem) UpdateToken(ctx context.Context, in *TokenInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.UpdateToken(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetTokenList(ctx context.Context, in *TokenListReq, opts ...grpc.CallOption) (*TokenListResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetTokenList(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetTokenById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*TokenInfo, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetTokenById(ctx, in, opts...)
+}
+
+func (m *defaultSystem) DeleteToken(ctx context.Context, in *UUIDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.DeleteToken(ctx, in, opts...)
+}
+
+func (m *defaultSystem) BlockUserAllToken(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.BlockUserAllToken(ctx, in, opts...)
 }
 
 // User management

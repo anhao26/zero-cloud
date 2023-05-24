@@ -3,13 +3,13 @@ package user
 import (
 	"context"
 
-	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/user"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/predicate"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/user"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/svc"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/utils/dberrorhandler"
-    "github.com/anhao26/zero-cloud/service/system/system-rpc/types/system"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/types/system"
 
-    "github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type GetUserListLogic struct {
@@ -31,9 +31,6 @@ func (l *GetUserListLogic) GetUserList(in *system.UserListReq) (*system.UserList
 	if in.Username != "" {
 		predicates = append(predicates, user.UsernameContains(in.Username))
 	}
-	if in.Password != "" {
-		predicates = append(predicates, user.PasswordContains(in.Password))
-	}
 	if in.Nickname != "" {
 		predicates = append(predicates, user.NicknameContains(in.Nickname))
 	}
@@ -48,19 +45,19 @@ func (l *GetUserListLogic) GetUserList(in *system.UserListReq) (*system.UserList
 
 	for _, v := range result.List {
 		resp.Data = append(resp.Data, &system.UserInfo{
-			Id:          v.ID.String(),
-			CreatedAt:   v.CreatedAt.UnixMilli(),
-			UpdatedAt:   v.UpdatedAt.UnixMilli(),
-			Status:	uint32(v.Status),
-			Username:	v.Username,
-			Password:	v.Password,
-			Nickname:	v.Nickname,
-			Description:	v.Description,
-			HomePath:	v.HomePath,
-			Mobile:	v.Mobile,
-			Email:	v.Email,
-			Avatar:	v.Avatar,
-			DepartmentId:	v.DepartmentID,
+			Id:           v.ID.String(),
+			CreatedAt:    v.CreatedAt.UnixMilli(),
+			UpdatedAt:    v.UpdatedAt.UnixMilli(),
+			Status:       uint32(v.Status),
+			Username:     v.Username,
+			Password:     v.Password,
+			Nickname:     v.Nickname,
+			Description:  v.Description,
+			HomePath:     v.HomePath,
+			Mobile:       v.Mobile,
+			Email:        v.Email,
+			Avatar:       v.Avatar,
+			DepartmentId: v.DepartmentID,
 		})
 	}
 

@@ -3,7 +3,7 @@ module github.com/anhao26/zero-cloud/service/system/system-api
 go 1.20
 
 require (
-	github.com/anhao26/zero-cloud/service/system/system-rpc v0.0.0-20230524030659-0ef330d0e244
+	github.com/anhao26/zero-cloud/service/system/system-rpc v0.0.0-20230524060803-388372f5eb9b
 	github.com/casbin/casbin/v2 v2.69.1
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/suyuan32/simple-admin-common v1.0.6

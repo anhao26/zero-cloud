@@ -3,10 +3,6 @@ syntax = "proto3";
 package system;
 option go_package="./system";
 
-message UsernameReq {
-  string username = 1;
-}
-
 message IDsReq {
   repeated uint64 ids = 1;
 }
@@ -15,9 +11,58 @@ message UUIDsReq {
   repeated string ids = 1;
 }
 
-message PageInfoReq {
+message DepartmentListReq {
   uint64 page = 1;
   uint64 page_size = 2;
+  string name = 3;
+  string ancestors = 4;
+  string leader = 5;
+}
+
+message RoleListResp {
+  uint64 total = 1;
+  repeated RoleInfo data = 2;
+}
+
+message RoleInfo {
+  uint64 id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint32 status = 4;
+  string name = 5;
+  string code = 6;
+  string default_router = 7;
+  string remark = 8;
+  uint32 sort = 9;
+}
+
+message BaseIDResp {
+  uint64 id = 1;
+  string msg = 2;
+}
+
+message MenuListResp {
+  uint64 total = 1;
+  repeated MenuInfo data = 2;
+}
+
+//  base message
+message Empty {}
+
+message PositionListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string name = 3;
+  string code = 4;
+  string remark = 5;
+}
+
+message UsernameReq {
+  string username = 1;
+}
+
+message BaseResp {
+  string msg = 1;
 }
 
 message DepartmentInfo {
@@ -35,12 +80,115 @@ message DepartmentInfo {
   uint64 parent_id = 12;
 }
 
-message DepartmentListReq {
+message MenuListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string path = 3;
+  string name = 4;
+  string redirect = 5;
+}
+
+message TokenListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string username = 3;
+  string nickname = 4;
+  string email = 5;
+  string uuid = 6;
+}
+
+message UserListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string username = 3;
+  string nickname = 4;
+  string email = 5;
+  string mobile = 6;
+  repeated uint64 role_ids = 7;
+  uint64 department_id = 8;
+  repeated uint64 position_ids = 9;
+}
+
+message PositionInfo {
+  uint64 id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint32 status = 4;
+  uint32 sort = 5;
+  string name = 6;
+  string code = 7;
+  string remark = 8;
+}
+
+message TokenListResp {
+  uint64 total = 1;
+  repeated TokenInfo data = 2;
+}
+
+message UserInfo {
+  string id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint32 status = 4;
+  string username = 5;
+  string password = 6;
+  string nickname = 7;
+  string description = 8;
+  string home_path = 9;
+  repeated uint64 role_ids = 10;
+  string mobile = 11;
+  string email = 12;
+  string avatar = 13;
+  uint64 department_id = 14;
+  repeated uint64 position_ids = 15;
+  repeated string role_codes = 16;
+}
+
+message UserListResp {
+  uint64 total = 1;
+  repeated UserInfo data = 2;
+}
+
+message RoleListReq {
   uint64 page = 1;
   uint64 page_size = 2;
   string name = 3;
-  string ancestors = 4;
-  string leader = 5;
+  string code = 4;
+  string default_router = 5;
+}
+
+message TokenInfo {
+  string id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint32 status = 4;
+  string uuid = 5;
+  string token = 6;
+  string source = 7;
+  int64 expired_at = 8;
+}
+
+message UUIDReq {
+  string id = 1;
+}
+
+message PageInfoReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+}
+
+message IDReq {
+  uint64 id = 1;
+}
+
+message BaseUUIDResp {
+  string id = 1;
+  string msg = 2;
+}
+
+message DepartmentListResp {
+  uint64 total = 1;
+  repeated DepartmentInfo data = 2;
 }
 
 message MenuInfo {
@@ -70,132 +218,9 @@ message MenuInfo {
   string real_path = 24;
 }
 
-message UserListReq {
-  uint64 page = 1;
-  uint64 page_size = 2;
-  string username = 3;
-  string nickname = 4;
-  string email = 5;
-  string mobile = 6;
-  repeated uint64 role_ids = 7;
-  uint64 department_id = 8;
-  repeated uint64 position_ids = 9;
-}
-
-message DepartmentListResp {
-  uint64 total = 1;
-  repeated DepartmentInfo data = 2;
-}
-
-message PositionListReq {
-  uint64 page = 1;
-  uint64 page_size = 2;
-  string name = 3;
-  string code = 4;
-  string remark = 5;
-}
-
-message RoleInfo {
-  uint64 id = 1;
-  int64 created_at = 2;
-  int64 updated_at = 3;
-  uint32 status = 4;
-  string name = 5;
-  string code = 6;
-  string default_router = 7;
-  string remark = 8;
-  uint32 sort = 9;
-}
-
-message RoleListReq {
-  uint64 page = 1;
-  uint64 page_size = 2;
-  string name = 3;
-  string code = 4;
-  string default_router = 5;
-}
-
-//  base message
-message Empty {}
-
-message IDReq {
-  uint64 id = 1;
-}
-
-message BaseIDResp {
-  uint64 id = 1;
-  string msg = 2;
-}
-
-message BaseUUIDResp {
-  string id = 1;
-  string msg = 2;
-}
-
-message MenuListResp {
-  uint64 total = 1;
-  repeated MenuInfo data = 2;
-}
-
-message PositionInfo {
-  uint64 id = 1;
-  int64 created_at = 2;
-  int64 updated_at = 3;
-  uint32 status = 4;
-  uint32 sort = 5;
-  string name = 6;
-  string code = 7;
-  string remark = 8;
-}
-
 message PositionListResp {
   uint64 total = 1;
   repeated PositionInfo data = 2;
-}
-
-message UUIDReq {
-  string id = 1;
-}
-
-message BaseResp {
-  string msg = 1;
-}
-
-message MenuListReq {
-  uint64 page = 1;
-  uint64 page_size = 2;
-  string path = 3;
-  string name = 4;
-  string redirect = 5;
-}
-
-message RoleListResp {
-  uint64 total = 1;
-  repeated RoleInfo data = 2;
-}
-
-message UserInfo {
-  string id = 1;
-  int64 created_at = 2;
-  int64 updated_at = 3;
-  uint32 status = 4;
-  string username = 5;
-  string password = 6;
-  string nickname = 7;
-  string description = 8;
-  string home_path = 9;
-  repeated uint64 role_ids = 10;
-  string mobile = 11;
-  string email = 12;
-  string avatar = 13;
-  uint64 department_id = 14;
-  repeated uint64 position_ids = 15;
-  repeated string role_codes = 16;
-}
-
-message UserListResp {
-  uint64 total = 1;
-  repeated UserInfo data = 2;
 }
 
 service System {
@@ -245,6 +270,19 @@ service System {
   rpc getRoleById(IDReq) returns (RoleInfo);
   //  group: role
   rpc deleteRole(IDsReq) returns (BaseResp);
+  //  Token management
+  //  group: token
+  rpc createToken(TokenInfo) returns (BaseUUIDResp);
+  //  group: token
+  rpc updateToken(TokenInfo) returns (BaseResp);
+  //  group: token
+  rpc getTokenList(TokenListReq) returns (TokenListResp);
+  //  group: token
+  rpc getTokenById(UUIDReq) returns (TokenInfo);
+  //  group: token
+  rpc deleteToken(UUIDsReq) returns (BaseResp);
+  //  group: token
+  rpc blockUserAllToken(UUIDReq) returns (BaseResp);
   //  User management
   //  group: user
   rpc createUser(UserInfo) returns (BaseUUIDResp);

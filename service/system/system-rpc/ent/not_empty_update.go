@@ -531,6 +531,54 @@ func (r *RoleUpdateOne) SetNotEmptySort(value uint32) *RoleUpdateOne {
 }
 
 // set field if value is not empty. e.g. string does not equal to ""
+func (t *TokenUpdate) SetNotEmptyStatus(value uint8) *TokenUpdate {
+	if value != 0 {
+		return t.SetStatus(value)
+	}
+	return t
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (t *TokenUpdateOne) SetNotEmptyStatus(value uint8) *TokenUpdateOne {
+	if value != 0 {
+		return t.SetStatus(value)
+	}
+	return t
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (t *TokenUpdate) SetNotEmptyToken(value string) *TokenUpdate {
+	if value != "" {
+		return t.SetToken(value)
+	}
+	return t
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (t *TokenUpdateOne) SetNotEmptyToken(value string) *TokenUpdateOne {
+	if value != "" {
+		return t.SetToken(value)
+	}
+	return t
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (t *TokenUpdate) SetNotEmptySource(value string) *TokenUpdate {
+	if value != "" {
+		return t.SetSource(value)
+	}
+	return t
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (t *TokenUpdateOne) SetNotEmptySource(value string) *TokenUpdateOne {
+	if value != "" {
+		return t.SetSource(value)
+	}
+	return t
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
 func (u *UserUpdate) SetNotEmptyStatus(value uint8) *UserUpdate {
 	if value != 0 {
 		return u.SetStatus(value)

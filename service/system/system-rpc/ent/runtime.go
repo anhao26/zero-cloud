@@ -10,6 +10,7 @@ import (
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/role"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/schema"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/token"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/user"
 	uuid "github.com/gofrs/uuid/v5"
 )
@@ -190,6 +191,31 @@ func init() {
 	roleDescSort := roleFields[4].Descriptor()
 	// role.DefaultSort holds the default value on creation for the sort field.
 	role.DefaultSort = roleDescSort.Default.(uint32)
+	tokenMixin := schema.Token{}.Mixin()
+	tokenMixinFields0 := tokenMixin[0].Fields()
+	_ = tokenMixinFields0
+	tokenMixinFields1 := tokenMixin[1].Fields()
+	_ = tokenMixinFields1
+	tokenFields := schema.Token{}.Fields()
+	_ = tokenFields
+	// tokenDescCreatedAt is the schema descriptor for created_at field.
+	tokenDescCreatedAt := tokenMixinFields0[1].Descriptor()
+	// token.DefaultCreatedAt holds the default value on creation for the created_at field.
+	token.DefaultCreatedAt = tokenDescCreatedAt.Default.(func() time.Time)
+	// tokenDescUpdatedAt is the schema descriptor for updated_at field.
+	tokenDescUpdatedAt := tokenMixinFields0[2].Descriptor()
+	// token.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	token.DefaultUpdatedAt = tokenDescUpdatedAt.Default.(func() time.Time)
+	// token.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	token.UpdateDefaultUpdatedAt = tokenDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// tokenDescStatus is the schema descriptor for status field.
+	tokenDescStatus := tokenMixinFields1[0].Descriptor()
+	// token.DefaultStatus holds the default value on creation for the status field.
+	token.DefaultStatus = tokenDescStatus.Default.(uint8)
+	// tokenDescID is the schema descriptor for id field.
+	tokenDescID := tokenMixinFields0[0].Descriptor()
+	// token.DefaultID holds the default value on creation for the id field.
+	token.DefaultID = tokenDescID.Default.(func() uuid.UUID)
 	userMixin := schema.User{}.Mixin()
 	userMixinFields0 := userMixin[0].Fields()
 	_ = userMixinFields0

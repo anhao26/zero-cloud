@@ -11,6 +11,7 @@ import (
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/menu"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/position"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/role"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/token"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/user"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/svc"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/types/system"
@@ -134,6 +135,37 @@ func (s *SystemServer) GetRoleById(ctx context.Context, in *system.IDReq) (*syst
 func (s *SystemServer) DeleteRole(ctx context.Context, in *system.IDsReq) (*system.BaseResp, error) {
 	l := role.NewDeleteRoleLogic(ctx, s.svcCtx)
 	return l.DeleteRole(in)
+}
+
+// Token management
+func (s *SystemServer) CreateToken(ctx context.Context, in *system.TokenInfo) (*system.BaseUUIDResp, error) {
+	l := token.NewCreateTokenLogic(ctx, s.svcCtx)
+	return l.CreateToken(in)
+}
+
+func (s *SystemServer) UpdateToken(ctx context.Context, in *system.TokenInfo) (*system.BaseResp, error) {
+	l := token.NewUpdateTokenLogic(ctx, s.svcCtx)
+	return l.UpdateToken(in)
+}
+
+func (s *SystemServer) GetTokenList(ctx context.Context, in *system.TokenListReq) (*system.TokenListResp, error) {
+	l := token.NewGetTokenListLogic(ctx, s.svcCtx)
+	return l.GetTokenList(in)
+}
+
+func (s *SystemServer) GetTokenById(ctx context.Context, in *system.UUIDReq) (*system.TokenInfo, error) {
+	l := token.NewGetTokenByIdLogic(ctx, s.svcCtx)
+	return l.GetTokenById(in)
+}
+
+func (s *SystemServer) DeleteToken(ctx context.Context, in *system.UUIDsReq) (*system.BaseResp, error) {
+	l := token.NewDeleteTokenLogic(ctx, s.svcCtx)
+	return l.DeleteToken(in)
+}
+
+func (s *SystemServer) BlockUserAllToken(ctx context.Context, in *system.UUIDReq) (*system.BaseResp, error) {
+	l := token.NewBlockUserAllTokenLogic(ctx, s.svcCtx)
+	return l.BlockUserAllToken(in)
 }
 
 // User management

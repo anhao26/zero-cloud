@@ -19,6 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	System_CreateApi_FullMethodName         = "/system.System/createApi"
+	System_UpdateApi_FullMethodName         = "/system.System/updateApi"
+	System_GetApiList_FullMethodName        = "/system.System/getApiList"
+	System_GetApiById_FullMethodName        = "/system.System/getApiById"
+	System_DeleteApi_FullMethodName         = "/system.System/deleteApi"
 	System_InitDatabase_FullMethodName      = "/system.System/initDatabase"
 	System_CreateDepartment_FullMethodName  = "/system.System/createDepartment"
 	System_UpdateDepartment_FullMethodName  = "/system.System/updateDepartment"
@@ -58,6 +63,17 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SystemClient interface {
+	// API management
+	// group: api
+	CreateApi(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
+	// group: api
+	UpdateApi(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*BaseResp, error)
+	// group: api
+	GetApiList(ctx context.Context, in *ApiListReq, opts ...grpc.CallOption) (*ApiListResp, error)
+	// group: api
+	GetApiById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*ApiInfo, error)
+	// group: api
+	DeleteApi(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
 	// group: base
 	InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error)
 	// Department management
@@ -138,6 +154,51 @@ type systemClient struct {
 
 func NewSystemClient(cc grpc.ClientConnInterface) SystemClient {
 	return &systemClient{cc}
+}
+
+func (c *systemClient) CreateApi(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*BaseIDResp, error) {
+	out := new(BaseIDResp)
+	err := c.cc.Invoke(ctx, System_CreateApi_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) UpdateApi(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, System_UpdateApi_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) GetApiList(ctx context.Context, in *ApiListReq, opts ...grpc.CallOption) (*ApiListResp, error) {
+	out := new(ApiListResp)
+	err := c.cc.Invoke(ctx, System_GetApiList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) GetApiById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*ApiInfo, error) {
+	out := new(ApiInfo)
+	err := c.cc.Invoke(ctx, System_GetApiById_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) DeleteApi(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, System_DeleteApi_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *systemClient) InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error) {
@@ -441,6 +502,17 @@ func (c *systemClient) DeleteUser(ctx context.Context, in *UUIDsReq, opts ...grp
 // All implementations must embed UnimplementedSystemServer
 // for forward compatibility
 type SystemServer interface {
+	// API management
+	// group: api
+	CreateApi(context.Context, *ApiInfo) (*BaseIDResp, error)
+	// group: api
+	UpdateApi(context.Context, *ApiInfo) (*BaseResp, error)
+	// group: api
+	GetApiList(context.Context, *ApiListReq) (*ApiListResp, error)
+	// group: api
+	GetApiById(context.Context, *IDReq) (*ApiInfo, error)
+	// group: api
+	DeleteApi(context.Context, *IDsReq) (*BaseResp, error)
 	// group: base
 	InitDatabase(context.Context, *Empty) (*BaseResp, error)
 	// Department management
@@ -520,6 +592,21 @@ type SystemServer interface {
 type UnimplementedSystemServer struct {
 }
 
+func (UnimplementedSystemServer) CreateApi(context.Context, *ApiInfo) (*BaseIDResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateApi not implemented")
+}
+func (UnimplementedSystemServer) UpdateApi(context.Context, *ApiInfo) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateApi not implemented")
+}
+func (UnimplementedSystemServer) GetApiList(context.Context, *ApiListReq) (*ApiListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetApiList not implemented")
+}
+func (UnimplementedSystemServer) GetApiById(context.Context, *IDReq) (*ApiInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetApiById not implemented")
+}
+func (UnimplementedSystemServer) DeleteApi(context.Context, *IDsReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteApi not implemented")
+}
 func (UnimplementedSystemServer) InitDatabase(context.Context, *Empty) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InitDatabase not implemented")
 }
@@ -630,6 +717,96 @@ type UnsafeSystemServer interface {
 
 func RegisterSystemServer(s grpc.ServiceRegistrar, srv SystemServer) {
 	s.RegisterService(&System_ServiceDesc, srv)
+}
+
+func _System_CreateApi_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).CreateApi(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_CreateApi_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).CreateApi(ctx, req.(*ApiInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_UpdateApi_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).UpdateApi(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_UpdateApi_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).UpdateApi(ctx, req.(*ApiInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_GetApiList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).GetApiList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_GetApiList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).GetApiList(ctx, req.(*ApiListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_GetApiById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).GetApiById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_GetApiById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).GetApiById(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_DeleteApi_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).DeleteApi(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_DeleteApi_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).DeleteApi(ctx, req.(*IDsReq))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _System_InitDatabase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1233,6 +1410,26 @@ var System_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "system.System",
 	HandlerType: (*SystemServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "createApi",
+			Handler:    _System_CreateApi_Handler,
+		},
+		{
+			MethodName: "updateApi",
+			Handler:    _System_UpdateApi_Handler,
+		},
+		{
+			MethodName: "getApiList",
+			Handler:    _System_GetApiList_Handler,
+		},
+		{
+			MethodName: "getApiById",
+			Handler:    _System_GetApiById_Handler,
+		},
+		{
+			MethodName: "deleteApi",
+			Handler:    _System_DeleteApi_Handler,
+		},
 		{
 			MethodName: "initDatabase",
 			Handler:    _System_InitDatabase_Handler,

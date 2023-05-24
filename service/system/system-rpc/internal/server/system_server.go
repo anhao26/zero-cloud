@@ -6,6 +6,7 @@ package server
 import (
 	"context"
 
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/api"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/base"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/department"
 	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/logic/menu"
@@ -26,6 +27,32 @@ func NewSystemServer(svcCtx *svc.ServiceContext) *SystemServer {
 	return &SystemServer{
 		svcCtx: svcCtx,
 	}
+}
+
+// API management
+func (s *SystemServer) CreateApi(ctx context.Context, in *system.ApiInfo) (*system.BaseIDResp, error) {
+	l := api.NewCreateApiLogic(ctx, s.svcCtx)
+	return l.CreateApi(in)
+}
+
+func (s *SystemServer) UpdateApi(ctx context.Context, in *system.ApiInfo) (*system.BaseResp, error) {
+	l := api.NewUpdateApiLogic(ctx, s.svcCtx)
+	return l.UpdateApi(in)
+}
+
+func (s *SystemServer) GetApiList(ctx context.Context, in *system.ApiListReq) (*system.ApiListResp, error) {
+	l := api.NewGetApiListLogic(ctx, s.svcCtx)
+	return l.GetApiList(in)
+}
+
+func (s *SystemServer) GetApiById(ctx context.Context, in *system.IDReq) (*system.ApiInfo, error) {
+	l := api.NewGetApiByIdLogic(ctx, s.svcCtx)
+	return l.GetApiById(in)
+}
+
+func (s *SystemServer) DeleteApi(ctx context.Context, in *system.IDsReq) (*system.BaseResp, error) {
+	l := api.NewDeleteApiLogic(ctx, s.svcCtx)
+	return l.DeleteApi(in)
 }
 
 func (s *SystemServer) InitDatabase(ctx context.Context, in *system.Empty) (*system.BaseResp, error) {

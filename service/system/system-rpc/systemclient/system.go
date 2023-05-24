@@ -13,6 +13,9 @@ import (
 )
 
 type (
+	ApiInfo            = system.ApiInfo
+	ApiListReq         = system.ApiListReq
+	ApiListResp        = system.ApiListResp
 	BaseIDResp         = system.BaseIDResp
 	BaseMsg            = system.BaseMsg
 	BaseResp           = system.BaseResp
@@ -46,6 +49,12 @@ type (
 	UsernameReq        = system.UsernameReq
 
 	System interface {
+		// API management
+		CreateApi(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
+		UpdateApi(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*BaseResp, error)
+		GetApiList(ctx context.Context, in *ApiListReq, opts ...grpc.CallOption) (*ApiListResp, error)
+		GetApiById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*ApiInfo, error)
+		DeleteApi(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
 		InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error)
 		// Department management
 		CreateDepartment(ctx context.Context, in *DepartmentInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
@@ -96,6 +105,32 @@ func NewSystem(cli zrpc.Client) System {
 	return &defaultSystem{
 		cli: cli,
 	}
+}
+
+// API management
+func (m *defaultSystem) CreateApi(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*BaseIDResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.CreateApi(ctx, in, opts...)
+}
+
+func (m *defaultSystem) UpdateApi(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.UpdateApi(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetApiList(ctx context.Context, in *ApiListReq, opts ...grpc.CallOption) (*ApiListResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetApiList(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetApiById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*ApiInfo, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetApiById(ctx, in, opts...)
+}
+
+func (m *defaultSystem) DeleteApi(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.DeleteApi(ctx, in, opts...)
 }
 
 func (m *defaultSystem) InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error) {

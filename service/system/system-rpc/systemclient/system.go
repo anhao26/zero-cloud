@@ -37,6 +37,7 @@ type (
 	UserInfo           = system.UserInfo
 	UserListReq        = system.UserListReq
 	UserListResp       = system.UserListResp
+	UsernameReq        = system.UsernameReq
 
 	System interface {
 		InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error)
@@ -69,6 +70,7 @@ type (
 		UpdateUser(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*BaseResp, error)
 		GetUserList(ctx context.Context, in *UserListReq, opts ...grpc.CallOption) (*UserListResp, error)
 		GetUserById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*UserInfo, error)
+		GetUserByUsername(ctx context.Context, in *UsernameReq, opts ...grpc.CallOption) (*UserInfo, error)
 		DeleteUser(ctx context.Context, in *UUIDsReq, opts ...grpc.CallOption) (*BaseResp, error)
 	}
 
@@ -211,6 +213,11 @@ func (m *defaultSystem) GetUserList(ctx context.Context, in *UserListReq, opts .
 func (m *defaultSystem) GetUserById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*UserInfo, error) {
 	client := system.NewSystemClient(m.cli.Conn())
 	return client.GetUserById(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetUserByUsername(ctx context.Context, in *UsernameReq, opts ...grpc.CallOption) (*UserInfo, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetUserByUsername(ctx, in, opts...)
 }
 
 func (m *defaultSystem) DeleteUser(ctx context.Context, in *UUIDsReq, opts ...grpc.CallOption) (*BaseResp, error) {

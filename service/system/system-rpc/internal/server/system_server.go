@@ -157,6 +157,11 @@ func (s *SystemServer) GetUserById(ctx context.Context, in *system.UUIDReq) (*sy
 	return l.GetUserById(in)
 }
 
+func (s *SystemServer) GetUserByUsername(ctx context.Context, in *system.UsernameReq) (*system.UserInfo, error) {
+	l := user.NewGetUserByUsernameLogic(ctx, s.svcCtx)
+	return l.GetUserByUsername(in)
+}
+
 func (s *SystemServer) DeleteUser(ctx context.Context, in *system.UUIDsReq) (*system.BaseResp, error) {
 	l := user.NewDeleteUserLogic(ctx, s.svcCtx)
 	return l.DeleteUser(in)

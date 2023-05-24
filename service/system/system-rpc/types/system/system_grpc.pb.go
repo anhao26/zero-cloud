@@ -44,6 +44,7 @@ const (
 	System_UpdateUser_FullMethodName        = "/system.System/updateUser"
 	System_GetUserList_FullMethodName       = "/system.System/getUserList"
 	System_GetUserById_FullMethodName       = "/system.System/getUserById"
+	System_GetUserByUsername_FullMethodName = "/system.System/getUserByUsername"
 	System_DeleteUser_FullMethodName        = "/system.System/deleteUser"
 )
 
@@ -106,6 +107,8 @@ type SystemClient interface {
 	GetUserList(ctx context.Context, in *UserListReq, opts ...grpc.CallOption) (*UserListResp, error)
 	// group: user
 	GetUserById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*UserInfo, error)
+	// group: user
+	GetUserByUsername(ctx context.Context, in *UsernameReq, opts ...grpc.CallOption) (*UserInfo, error)
 	// group: user
 	DeleteUser(ctx context.Context, in *UUIDsReq, opts ...grpc.CallOption) (*BaseResp, error)
 }
@@ -343,6 +346,15 @@ func (c *systemClient) GetUserById(ctx context.Context, in *UUIDReq, opts ...grp
 	return out, nil
 }
 
+func (c *systemClient) GetUserByUsername(ctx context.Context, in *UsernameReq, opts ...grpc.CallOption) (*UserInfo, error) {
+	out := new(UserInfo)
+	err := c.cc.Invoke(ctx, System_GetUserByUsername_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *systemClient) DeleteUser(ctx context.Context, in *UUIDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
 	err := c.cc.Invoke(ctx, System_DeleteUser_FullMethodName, in, out, opts...)
@@ -411,6 +423,8 @@ type SystemServer interface {
 	GetUserList(context.Context, *UserListReq) (*UserListResp, error)
 	// group: user
 	GetUserById(context.Context, *UUIDReq) (*UserInfo, error)
+	// group: user
+	GetUserByUsername(context.Context, *UsernameReq) (*UserInfo, error)
 	// group: user
 	DeleteUser(context.Context, *UUIDsReq) (*BaseResp, error)
 	mustEmbedUnimplementedSystemServer()
@@ -494,6 +508,9 @@ func (UnimplementedSystemServer) GetUserList(context.Context, *UserListReq) (*Us
 }
 func (UnimplementedSystemServer) GetUserById(context.Context, *UUIDReq) (*UserInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
+}
+func (UnimplementedSystemServer) GetUserByUsername(context.Context, *UsernameReq) (*UserInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByUsername not implemented")
 }
 func (UnimplementedSystemServer) DeleteUser(context.Context, *UUIDsReq) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
@@ -961,6 +978,24 @@ func _System_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _System_GetUserByUsername_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UsernameReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).GetUserByUsername(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_GetUserByUsername_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).GetUserByUsername(ctx, req.(*UsernameReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _System_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UUIDsReq)
 	if err := dec(in); err != nil {
@@ -1085,6 +1120,10 @@ var System_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "getUserById",
 			Handler:    _System_GetUserById_Handler,
+		},
+		{
+			MethodName: "getUserByUsername",
+			Handler:    _System_GetUserByUsername_Handler,
 		},
 		{
 			MethodName: "deleteUser",

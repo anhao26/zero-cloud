@@ -12,7 +12,11 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/student"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/department"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/role"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/user"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -73,7 +77,11 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			student.Table: student.ValidColumn,
+			department.Table: department.ValidColumn,
+			menu.Table:       menu.ValidColumn,
+			position.Table:   position.ValidColumn,
+			role.Table:       role.ValidColumn,
+			user.Table:       user.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

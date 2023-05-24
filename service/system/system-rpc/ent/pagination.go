@@ -6,7 +6,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/student"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/department"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/position"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/role"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/user"
 )
 
 const errInvalidPage = "INVALID_PAGE"
@@ -55,62 +59,62 @@ func (o OrderDirection) reverse() OrderDirection {
 
 const errInvalidPagination = "INVALID_PAGINATION"
 
-type StudentPager struct {
-	Order  student.OrderOption
-	Filter func(*StudentQuery) (*StudentQuery, error)
+type DepartmentPager struct {
+	Order  department.OrderOption
+	Filter func(*DepartmentQuery) (*DepartmentQuery, error)
 }
 
-// StudentPaginateOption enables pagination customization.
-type StudentPaginateOption func(*StudentPager)
+// DepartmentPaginateOption enables pagination customization.
+type DepartmentPaginateOption func(*DepartmentPager)
 
-// DefaultStudentOrder is the default ordering of Student.
-var DefaultStudentOrder = Desc(student.FieldID)
+// DefaultDepartmentOrder is the default ordering of Department.
+var DefaultDepartmentOrder = Desc(department.FieldID)
 
-func newStudentPager(opts []StudentPaginateOption) (*StudentPager, error) {
-	pager := &StudentPager{}
+func newDepartmentPager(opts []DepartmentPaginateOption) (*DepartmentPager, error) {
+	pager := &DepartmentPager{}
 	for _, opt := range opts {
 		opt(pager)
 	}
 	if pager.Order == nil {
-		pager.Order = DefaultStudentOrder
+		pager.Order = DefaultDepartmentOrder
 	}
 	return pager, nil
 }
 
-func (p *StudentPager) ApplyFilter(query *StudentQuery) (*StudentQuery, error) {
+func (p *DepartmentPager) ApplyFilter(query *DepartmentQuery) (*DepartmentQuery, error) {
 	if p.Filter != nil {
 		return p.Filter(query)
 	}
 	return query, nil
 }
 
-// StudentPageList is Student PageList result.
-type StudentPageList struct {
-	List        []*Student   `json:"list"`
-	PageDetails *PageDetails `json:"pageDetails"`
+// DepartmentPageList is Department PageList result.
+type DepartmentPageList struct {
+	List        []*Department `json:"list"`
+	PageDetails *PageDetails  `json:"pageDetails"`
 }
 
-func (s *StudentQuery) Page(
-	ctx context.Context, pageNum uint64, pageSize uint64, opts ...StudentPaginateOption,
-) (*StudentPageList, error) {
+func (d *DepartmentQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...DepartmentPaginateOption,
+) (*DepartmentPageList, error) {
 
-	pager, err := newStudentPager(opts)
+	pager, err := newDepartmentPager(opts)
 	if err != nil {
 		return nil, err
 	}
 
-	if s, err = pager.ApplyFilter(s); err != nil {
+	if d, err = pager.ApplyFilter(d); err != nil {
 		return nil, err
 	}
 
-	ret := &StudentPageList{}
+	ret := &DepartmentPageList{}
 
 	ret.PageDetails = &PageDetails{
 		Page: pageNum,
 		Size: pageSize,
 	}
 
-	count, err := s.Clone().Count(ctx)
+	count, err := d.Clone().Count(ctx)
 
 	if err != nil {
 		return nil, err
@@ -119,13 +123,329 @@ func (s *StudentQuery) Page(
 	ret.PageDetails.Total = uint64(count)
 
 	if pager.Order != nil {
-		s = s.Order(pager.Order)
+		d = d.Order(pager.Order)
 	} else {
-		s = s.Order(DefaultStudentOrder)
+		d = d.Order(DefaultDepartmentOrder)
 	}
 
-	s = s.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
-	list, err := s.All(ctx)
+	d = d.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := d.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
+
+type MenuPager struct {
+	Order  menu.OrderOption
+	Filter func(*MenuQuery) (*MenuQuery, error)
+}
+
+// MenuPaginateOption enables pagination customization.
+type MenuPaginateOption func(*MenuPager)
+
+// DefaultMenuOrder is the default ordering of Menu.
+var DefaultMenuOrder = Desc(menu.FieldID)
+
+func newMenuPager(opts []MenuPaginateOption) (*MenuPager, error) {
+	pager := &MenuPager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultMenuOrder
+	}
+	return pager, nil
+}
+
+func (p *MenuPager) ApplyFilter(query *MenuQuery) (*MenuQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// MenuPageList is Menu PageList result.
+type MenuPageList struct {
+	List        []*Menu      `json:"list"`
+	PageDetails *PageDetails `json:"pageDetails"`
+}
+
+func (m *MenuQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...MenuPaginateOption,
+) (*MenuPageList, error) {
+
+	pager, err := newMenuPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if m, err = pager.ApplyFilter(m); err != nil {
+		return nil, err
+	}
+
+	ret := &MenuPageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := m.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		m = m.Order(pager.Order)
+	} else {
+		m = m.Order(DefaultMenuOrder)
+	}
+
+	m = m.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := m.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
+
+type PositionPager struct {
+	Order  position.OrderOption
+	Filter func(*PositionQuery) (*PositionQuery, error)
+}
+
+// PositionPaginateOption enables pagination customization.
+type PositionPaginateOption func(*PositionPager)
+
+// DefaultPositionOrder is the default ordering of Position.
+var DefaultPositionOrder = Desc(position.FieldID)
+
+func newPositionPager(opts []PositionPaginateOption) (*PositionPager, error) {
+	pager := &PositionPager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultPositionOrder
+	}
+	return pager, nil
+}
+
+func (p *PositionPager) ApplyFilter(query *PositionQuery) (*PositionQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// PositionPageList is Position PageList result.
+type PositionPageList struct {
+	List        []*Position  `json:"list"`
+	PageDetails *PageDetails `json:"pageDetails"`
+}
+
+func (po *PositionQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...PositionPaginateOption,
+) (*PositionPageList, error) {
+
+	pager, err := newPositionPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if po, err = pager.ApplyFilter(po); err != nil {
+		return nil, err
+	}
+
+	ret := &PositionPageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := po.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		po = po.Order(pager.Order)
+	} else {
+		po = po.Order(DefaultPositionOrder)
+	}
+
+	po = po.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := po.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
+
+type RolePager struct {
+	Order  role.OrderOption
+	Filter func(*RoleQuery) (*RoleQuery, error)
+}
+
+// RolePaginateOption enables pagination customization.
+type RolePaginateOption func(*RolePager)
+
+// DefaultRoleOrder is the default ordering of Role.
+var DefaultRoleOrder = Desc(role.FieldID)
+
+func newRolePager(opts []RolePaginateOption) (*RolePager, error) {
+	pager := &RolePager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultRoleOrder
+	}
+	return pager, nil
+}
+
+func (p *RolePager) ApplyFilter(query *RoleQuery) (*RoleQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// RolePageList is Role PageList result.
+type RolePageList struct {
+	List        []*Role      `json:"list"`
+	PageDetails *PageDetails `json:"pageDetails"`
+}
+
+func (r *RoleQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...RolePaginateOption,
+) (*RolePageList, error) {
+
+	pager, err := newRolePager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if r, err = pager.ApplyFilter(r); err != nil {
+		return nil, err
+	}
+
+	ret := &RolePageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := r.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		r = r.Order(pager.Order)
+	} else {
+		r = r.Order(DefaultRoleOrder)
+	}
+
+	r = r.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := r.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
+
+type UserPager struct {
+	Order  user.OrderOption
+	Filter func(*UserQuery) (*UserQuery, error)
+}
+
+// UserPaginateOption enables pagination customization.
+type UserPaginateOption func(*UserPager)
+
+// DefaultUserOrder is the default ordering of User.
+var DefaultUserOrder = Desc(user.FieldID)
+
+func newUserPager(opts []UserPaginateOption) (*UserPager, error) {
+	pager := &UserPager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultUserOrder
+	}
+	return pager, nil
+}
+
+func (p *UserPager) ApplyFilter(query *UserQuery) (*UserQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// UserPageList is User PageList result.
+type UserPageList struct {
+	List        []*User      `json:"list"`
+	PageDetails *PageDetails `json:"pageDetails"`
+}
+
+func (u *UserQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...UserPaginateOption,
+) (*UserPageList, error) {
+
+	pager, err := newUserPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if u, err = pager.ApplyFilter(u); err != nil {
+		return nil, err
+	}
+
+	ret := &UserPageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := u.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		u = u.Order(pager.Order)
+	} else {
+		u = u.Order(DefaultUserOrder)
+	}
+
+	u = u.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := u.All(ctx)
 	if err != nil {
 		return nil, err
 	}

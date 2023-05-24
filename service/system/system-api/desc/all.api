@@ -1,3 +1,4 @@
 import "base.api"
 import "captcha.api"
 import "user.api"
+import "menu.api"

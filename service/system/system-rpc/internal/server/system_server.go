@@ -70,19 +70,19 @@ func (s *SystemServer) UpdateMenu(ctx context.Context, in *system.MenuInfo) (*sy
 	return l.UpdateMenu(in)
 }
 
-func (s *SystemServer) GetMenuList(ctx context.Context, in *system.MenuListReq) (*system.MenuListResp, error) {
-	l := menu.NewGetMenuListLogic(ctx, s.svcCtx)
-	return l.GetMenuList(in)
-}
-
-func (s *SystemServer) GetMenuById(ctx context.Context, in *system.IDReq) (*system.MenuInfo, error) {
-	l := menu.NewGetMenuByIdLogic(ctx, s.svcCtx)
-	return l.GetMenuById(in)
-}
-
-func (s *SystemServer) DeleteMenu(ctx context.Context, in *system.IDsReq) (*system.BaseResp, error) {
+func (s *SystemServer) DeleteMenu(ctx context.Context, in *system.IDReq) (*system.BaseResp, error) {
 	l := menu.NewDeleteMenuLogic(ctx, s.svcCtx)
 	return l.DeleteMenu(in)
+}
+
+func (s *SystemServer) GetMenuListByRole(ctx context.Context, in *system.BaseMsg) (*system.MenuInfoList, error) {
+	l := menu.NewGetMenuListByRoleLogic(ctx, s.svcCtx)
+	return l.GetMenuListByRole(in)
+}
+
+func (s *SystemServer) GetMenuList(ctx context.Context, in *system.PageInfoReq) (*system.MenuInfoList, error) {
+	l := menu.NewGetMenuListLogic(ctx, s.svcCtx)
+	return l.GetMenuList(in)
 }
 
 // Position management

@@ -2,14 +2,15 @@ package menu
 
 import (
 	"context"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/utils/dberrorhandler"
+	"github.com/suyuan32/simple-admin-common/i18n"
+	"github.com/zeromicro/go-zero/core/errorx"
 
-    "github.com/anhao26/zero-cloud/service/system/system-rpc/ent/menu"
-    "github.com/anhao26/zero-cloud/service/system/system-rpc/internal/svc"
-    "github.com/anhao26/zero-cloud/service/system/system-rpc/internal/utils/dberrorhandler"
-    "github.com/anhao26/zero-cloud/service/system/system-rpc/types/system"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/internal/svc"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/types/system"
 
-    "github.com/suyuan32/simple-admin-common/i18n"
-    "github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type DeleteMenuLogic struct {
@@ -26,12 +27,23 @@ func NewDeleteMenuLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Delete
 	}
 }
 
-func (l *DeleteMenuLogic) DeleteMenu(in *system.IDsReq) (*system.BaseResp, error) {
-	_, err := l.svcCtx.DB.Menu.Delete().Where(menu.IDIn(in.Ids...)).Exec(l.ctx)
-
-    if err != nil {
+func (l *DeleteMenuLogic) DeleteMenu(in *system.IDReq) (*system.BaseResp, error) {
+	exist, err := l.svcCtx.DB.Menu.Query().Where(menu.ParentID(in.Id)).Exist(l.ctx)
+	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, in)
 	}
 
-    return &system.BaseResp{Msg: i18n.DeleteSuccess}, nil
+	if exist {
+		logx.Errorw("delete menu failed, please check its children had been deleted",
+			logx.Field("menuId", in.Id))
+		return nil, errorx.NewInvalidArgumentError("menu.deleteChildrenDesc")
+	}
+
+	err = l.svcCtx.DB.Menu.DeleteOneID(in.Id).Exec(l.ctx)
+
+	if err != nil {
+		return nil, dberrorhandler.DefaultEntError(l.Logger, err, in)
+	}
+
+	return &system.BaseResp{Msg: i18n.DeleteSuccess}, nil
 }

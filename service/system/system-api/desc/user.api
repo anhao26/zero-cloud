@@ -42,6 +42,43 @@ type (
 		// Expire timestamp | 过期时间戳
 		Expire uint64 `json:"expire"`
 	}
+
+	// The response data of user's basic information | 用户基本信息返回数据
+	UserBaseIDInfoResp {
+		BaseDataInfo
+
+		// The  data of user's basic information | 用户基本信息
+		Data UserBaseIDInfo `json:"data"`
+	}
+
+	// The  data of user's basic information | 用户基本信息
+	UserBaseIDInfo {
+		// User's UUID | 用户的UUID
+		UUID         string       `json:"userId"`
+
+		// User's name | 用户名
+		Username     string       `json:"username"`
+
+		// User's nickname | 用户的昵称
+		Nickname     string       `json:"nickname"`
+
+		// The user's avatar path | 用户的头像路径
+		Avatar       string       `json:"avatar"`
+
+		// The home page that the user enters after logging in | 用户登陆后进入的首页
+		HomePath   string  `json:"homePath"`
+
+		// The description of user | 用户的描述信息
+		Description string `json:"desc"`
+	}
+
+	// The permission code for front end permission control | 权限码： 用于前端权限控制
+	PermCodeResp {
+		BaseDataInfo
+
+		// Permission code data | 权限码数据
+		Data []string `json:"data"`
+	}
 )
 
 @server(
@@ -53,4 +90,20 @@ service system {
 	@handler login
 	post /user/login (LoginReq) returns (LoginResp)
 
+}
+
+@server(
+	jwt: Auth
+	group: user
+	middleware: Authority
+)
+
+service system {
+	// Get user basic information | 获取用户基本信息
+	@handler getUserInfo
+	get /user/info returns (UserBaseIDInfoResp)
+
+	// Get user's permission code | 获取用户权限码
+	@handler getUserPermCode
+	get /user/perm returns (PermCodeResp)
 }

@@ -41,6 +41,9 @@ message BaseUUIDResp {
   string msg = 2;
 }
 
+message BaseMsg {
+  string msg = 1;
+}
 
 service System {
   // group: base

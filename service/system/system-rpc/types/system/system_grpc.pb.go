@@ -27,9 +27,9 @@ const (
 	System_DeleteDepartment_FullMethodName  = "/system.System/deleteDepartment"
 	System_CreateMenu_FullMethodName        = "/system.System/createMenu"
 	System_UpdateMenu_FullMethodName        = "/system.System/updateMenu"
-	System_GetMenuList_FullMethodName       = "/system.System/getMenuList"
-	System_GetMenuById_FullMethodName       = "/system.System/getMenuById"
 	System_DeleteMenu_FullMethodName        = "/system.System/deleteMenu"
+	System_GetMenuListByRole_FullMethodName = "/system.System/getMenuListByRole"
+	System_GetMenuList_FullMethodName       = "/system.System/getMenuList"
 	System_CreatePosition_FullMethodName    = "/system.System/createPosition"
 	System_UpdatePosition_FullMethodName    = "/system.System/updatePosition"
 	System_GetPositionList_FullMethodName   = "/system.System/getPositionList"
@@ -77,11 +77,11 @@ type SystemClient interface {
 	// group: menu
 	UpdateMenu(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*BaseResp, error)
 	// group: menu
-	GetMenuList(ctx context.Context, in *MenuListReq, opts ...grpc.CallOption) (*MenuListResp, error)
+	DeleteMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
 	// group: menu
-	GetMenuById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*MenuInfo, error)
+	GetMenuListByRole(ctx context.Context, in *BaseMsg, opts ...grpc.CallOption) (*MenuInfoList, error)
 	// group: menu
-	DeleteMenu(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
+	GetMenuList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*MenuInfoList, error)
 	// Position management
 	// group: position
 	CreatePosition(ctx context.Context, in *PositionInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
@@ -212,27 +212,27 @@ func (c *systemClient) UpdateMenu(ctx context.Context, in *MenuInfo, opts ...grp
 	return out, nil
 }
 
-func (c *systemClient) GetMenuList(ctx context.Context, in *MenuListReq, opts ...grpc.CallOption) (*MenuListResp, error) {
-	out := new(MenuListResp)
-	err := c.cc.Invoke(ctx, System_GetMenuList_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *systemClient) GetMenuById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*MenuInfo, error) {
-	out := new(MenuInfo)
-	err := c.cc.Invoke(ctx, System_GetMenuById_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *systemClient) DeleteMenu(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+func (c *systemClient) DeleteMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	out := new(BaseResp)
 	err := c.cc.Invoke(ctx, System_DeleteMenu_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) GetMenuListByRole(ctx context.Context, in *BaseMsg, opts ...grpc.CallOption) (*MenuInfoList, error) {
+	out := new(MenuInfoList)
+	err := c.cc.Invoke(ctx, System_GetMenuListByRole_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *systemClient) GetMenuList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*MenuInfoList, error) {
+	out := new(MenuInfoList)
+	err := c.cc.Invoke(ctx, System_GetMenuList_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -460,11 +460,11 @@ type SystemServer interface {
 	// group: menu
 	UpdateMenu(context.Context, *MenuInfo) (*BaseResp, error)
 	// group: menu
-	GetMenuList(context.Context, *MenuListReq) (*MenuListResp, error)
+	DeleteMenu(context.Context, *IDReq) (*BaseResp, error)
 	// group: menu
-	GetMenuById(context.Context, *IDReq) (*MenuInfo, error)
+	GetMenuListByRole(context.Context, *BaseMsg) (*MenuInfoList, error)
 	// group: menu
-	DeleteMenu(context.Context, *IDsReq) (*BaseResp, error)
+	GetMenuList(context.Context, *PageInfoReq) (*MenuInfoList, error)
 	// Position management
 	// group: position
 	CreatePosition(context.Context, *PositionInfo) (*BaseIDResp, error)
@@ -544,14 +544,14 @@ func (UnimplementedSystemServer) CreateMenu(context.Context, *MenuInfo) (*BaseID
 func (UnimplementedSystemServer) UpdateMenu(context.Context, *MenuInfo) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateMenu not implemented")
 }
-func (UnimplementedSystemServer) GetMenuList(context.Context, *MenuListReq) (*MenuListResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMenuList not implemented")
-}
-func (UnimplementedSystemServer) GetMenuById(context.Context, *IDReq) (*MenuInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMenuById not implemented")
-}
-func (UnimplementedSystemServer) DeleteMenu(context.Context, *IDsReq) (*BaseResp, error) {
+func (UnimplementedSystemServer) DeleteMenu(context.Context, *IDReq) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteMenu not implemented")
+}
+func (UnimplementedSystemServer) GetMenuListByRole(context.Context, *BaseMsg) (*MenuInfoList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMenuListByRole not implemented")
+}
+func (UnimplementedSystemServer) GetMenuList(context.Context, *PageInfoReq) (*MenuInfoList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMenuList not implemented")
 }
 func (UnimplementedSystemServer) CreatePosition(context.Context, *PositionInfo) (*BaseIDResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePosition not implemented")
@@ -776,44 +776,8 @@ func _System_UpdateMenu_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _System_GetMenuList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MenuListReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SystemServer).GetMenuList(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: System_GetMenuList_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SystemServer).GetMenuList(ctx, req.(*MenuListReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _System_GetMenuById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IDReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SystemServer).GetMenuById(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: System_GetMenuById_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SystemServer).GetMenuById(ctx, req.(*IDReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _System_DeleteMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IDsReq)
+	in := new(IDReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -825,7 +789,43 @@ func _System_DeleteMenu_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: System_DeleteMenu_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SystemServer).DeleteMenu(ctx, req.(*IDsReq))
+		return srv.(SystemServer).DeleteMenu(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_GetMenuListByRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BaseMsg)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).GetMenuListByRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_GetMenuListByRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).GetMenuListByRole(ctx, req.(*BaseMsg))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _System_GetMenuList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PageInfoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SystemServer).GetMenuList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: System_GetMenuList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SystemServer).GetMenuList(ctx, req.(*PageInfoReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1266,16 +1266,16 @@ var System_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _System_UpdateMenu_Handler,
 		},
 		{
-			MethodName: "getMenuList",
-			Handler:    _System_GetMenuList_Handler,
-		},
-		{
-			MethodName: "getMenuById",
-			Handler:    _System_GetMenuById_Handler,
-		},
-		{
 			MethodName: "deleteMenu",
 			Handler:    _System_DeleteMenu_Handler,
+		},
+		{
+			MethodName: "getMenuListByRole",
+			Handler:    _System_GetMenuListByRole_Handler,
+		},
+		{
+			MethodName: "getMenuList",
+			Handler:    _System_GetMenuList_Handler,
 		},
 		{
 			MethodName: "createPosition",

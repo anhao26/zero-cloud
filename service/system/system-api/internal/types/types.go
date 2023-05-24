@@ -167,3 +167,111 @@ type LoginInfo struct {
 	// Expire timestamp | 过期时间戳
 	Expire uint64 `json:"expire"`
 }
+
+// The response data of user's basic information | 用户基本信息返回数据
+// swagger:model UserBaseIDInfoResp
+type UserBaseIDInfoResp struct {
+	BaseDataInfo
+	// The  data of user's basic information | 用户基本信息
+	Data UserBaseIDInfo `json:"data"`
+}
+
+// The  data of user's basic information | 用户基本信息
+// swagger:model UserBaseIDInfo
+type UserBaseIDInfo struct {
+	// User's UUID | 用户的UUID
+	UUID string `json:"userId"`
+	// User's name | 用户名
+	Username string `json:"username"`
+	// User's nickname | 用户的昵称
+	Nickname string `json:"nickname"`
+	// The user's avatar path | 用户的头像路径
+	Avatar string `json:"avatar"`
+	// The home page that the user enters after logging in | 用户登陆后进入的首页
+	HomePath string `json:"homePath"`
+	// The description of user | 用户的描述信息
+	Description string `json:"desc"`
+}
+
+// The permission code for front end permission control | 权限码： 用于前端权限控制
+// swagger:model PermCodeResp
+type PermCodeResp struct {
+	BaseDataInfo
+	// Permission code data | 权限码数据
+	Data []string `json:"data"`
+}
+
+// The response data of menu information | 菜单信息
+// swagger:model MenuInfo
+type MenuInfo struct {
+	BaseIDInfo
+	// Translated Name | 国际化展示名称
+	Trans string `json:"trans,optional"`
+	// Level | 菜单层级
+	Level uint32 `json:"level,optional"`
+	// ParentId | 父级菜单ID
+	ParentId uint64 `json:"parentId,optional"`
+	// Path | 菜单访问路径
+	Path string `json:"path,optional"`
+	// Menu name | 菜单名称
+	Name string `json:"name,optional"`
+	// Redirect | 跳转地址
+	Redirect string `json:"redirect,optional"`
+	// Component | 组件地址
+	Component string `json:"component,optional"`
+	// Sort | 排序
+	Sort uint32 `json:"sort,optional"`
+	// Disabled | 是否启用
+	Disabled bool `json:"disabled,optional"`
+	// Meta | 菜单meta数据
+	Meta Meta `json:"meta"`
+	// MenuType | 菜单类型
+	MenuType uint32 `json:"menuType,optional"`
+}
+
+// The meta data of menu | 菜单的meta数据
+// swagger:model Meta
+type Meta struct {
+	// Menu title show in page | 菜单显示名
+	// Max length: 50
+	Title string `json:"title" validate:"max=50"`
+	// Menu Icon | 菜单图标
+	// Max length: 50
+	Icon string `json:"icon" validate:"max=50"`
+	// Hide menu | 隐藏菜单
+	HideMenu bool `json:"hideMenu" validate:"boolean"`
+	// If hide the breadcrumb | 隐藏面包屑
+	HideBreadcrumb bool `json:"hideBreadcrumb,optional" validate:"boolean"`
+	// Do not keep alive the tab | 不缓存Tab
+	IgnoreKeepAlive bool `json:"ignoreKeepAlive,optional" validate:"boolean"`
+	// Hide the tab header | 当前路由不在标签页显示
+	HideTab bool `json:"hideTab,optional" validate:"boolean"`
+	// Iframe path | 内嵌iframe的地址
+	FrameSrc string `json:"frameSrc,optional"`
+	// The route carries parameters or not | 如果该路由会携带参数，且需要在tab页上面显示。则需要设置为true
+	CarryParam bool `json:"carryParam,optional" validate:"boolean"`
+	// Hide children menu or not | 隐藏所有子菜单
+	HideChildrenInMenu bool `json:"hideChildrenInMenu,optional" validate:"boolean"`
+	// Affix tab | 是否固定标签
+	Affix bool `json:"affix,optional" validate:"boolean"`
+	// The maximum number of pages the router can open | 动态路由可打开Tab页数
+	DynamicLevel uint32 `json:"dynamicLevel" validate:"number,lt=30"`
+	// The real path of the route without dynamic part | 动态路由的实际Path, 即去除路由的动态部分
+	RealPath string `json:"realPath,optional"`
+}
+
+// The response data of menu list | 菜单列表返回数据
+// swagger:model MenuListResp
+type MenuListResp struct {
+	BaseDataInfo
+	// Menu list data | Menu列表数据
+	Data MenuListInfo `json:"data"`
+}
+
+// Menu list data | Menu列表数据
+// swagger:model MenuListInfo
+type MenuListInfo struct {
+	BaseListInfo
+	// The menu list data | 菜单列表数据
+	Data []MenuInfo `json:"data"`
+}

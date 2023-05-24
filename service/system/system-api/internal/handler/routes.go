@@ -6,6 +6,7 @@ import (
 
 	base "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/base"
 	captcha "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/captcha"
+	menu "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/menu"
 	user "github.com/anhao26/zero-cloud/service/system/system-api/internal/handler/user"
 	"github.com/anhao26/zero-cloud/service/system/system-api/internal/svc"
 
@@ -41,5 +42,38 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: user.LoginHandler(serverCtx),
 			},
 		},
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/user/info",
+					Handler: user.GetUserInfoHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/user/perm",
+					Handler: user.GetUserPermCodeHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/menu/role/list",
+					Handler: menu.GetMenuListByRoleHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 }

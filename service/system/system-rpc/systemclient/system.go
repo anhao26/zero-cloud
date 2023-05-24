@@ -14,6 +14,7 @@ import (
 
 type (
 	BaseIDResp         = system.BaseIDResp
+	BaseMsg            = system.BaseMsg
 	BaseResp           = system.BaseResp
 	BaseUUIDResp       = system.BaseUUIDResp
 	DepartmentInfo     = system.DepartmentInfo
@@ -23,8 +24,10 @@ type (
 	IDReq              = system.IDReq
 	IDsReq             = system.IDsReq
 	MenuInfo           = system.MenuInfo
-	MenuListReq        = system.MenuListReq
-	MenuListResp       = system.MenuListResp
+	MenuInfoList       = system.MenuInfoList
+	MenuRoleInfo       = system.MenuRoleInfo
+	MenuRoleListResp   = system.MenuRoleListResp
+	Meta               = system.Meta
 	PageInfoReq        = system.PageInfoReq
 	PositionInfo       = system.PositionInfo
 	PositionListReq    = system.PositionListReq
@@ -53,9 +56,9 @@ type (
 		// Menu management
 		CreateMenu(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
 		UpdateMenu(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*BaseResp, error)
-		GetMenuList(ctx context.Context, in *MenuListReq, opts ...grpc.CallOption) (*MenuListResp, error)
-		GetMenuById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*MenuInfo, error)
-		DeleteMenu(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
+		DeleteMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error)
+		GetMenuListByRole(ctx context.Context, in *BaseMsg, opts ...grpc.CallOption) (*MenuInfoList, error)
+		GetMenuList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*MenuInfoList, error)
 		// Position management
 		CreatePosition(ctx context.Context, in *PositionInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
 		UpdatePosition(ctx context.Context, in *PositionInfo, opts ...grpc.CallOption) (*BaseResp, error)
@@ -137,19 +140,19 @@ func (m *defaultSystem) UpdateMenu(ctx context.Context, in *MenuInfo, opts ...gr
 	return client.UpdateMenu(ctx, in, opts...)
 }
 
-func (m *defaultSystem) GetMenuList(ctx context.Context, in *MenuListReq, opts ...grpc.CallOption) (*MenuListResp, error) {
-	client := system.NewSystemClient(m.cli.Conn())
-	return client.GetMenuList(ctx, in, opts...)
-}
-
-func (m *defaultSystem) GetMenuById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*MenuInfo, error) {
-	client := system.NewSystemClient(m.cli.Conn())
-	return client.GetMenuById(ctx, in, opts...)
-}
-
-func (m *defaultSystem) DeleteMenu(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+func (m *defaultSystem) DeleteMenu(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := system.NewSystemClient(m.cli.Conn())
 	return client.DeleteMenu(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetMenuListByRole(ctx context.Context, in *BaseMsg, opts ...grpc.CallOption) (*MenuInfoList, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetMenuListByRole(ctx, in, opts...)
+}
+
+func (m *defaultSystem) GetMenuList(ctx context.Context, in *PageInfoReq, opts ...grpc.CallOption) (*MenuInfoList, error) {
+	client := system.NewSystemClient(m.cli.Conn())
+	return client.GetMenuList(ctx, in, opts...)
 }
 
 // Position management

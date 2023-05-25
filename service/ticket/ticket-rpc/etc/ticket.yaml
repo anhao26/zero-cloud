@@ -1,15 +1,16 @@
 Name: ticket.rpc
 ListenOn: 0.0.0.0:8070
+Mode: dev
 
 RedisConf:
   Host: 114.132.197.160:6379
   Pass: "[kissneckProjectDzb!!@}"
   Type: node
 
-#Etcd:
-#  Hosts:
-#    - 192.168.56.106:2379
-#  Key: ticket.rpc
+Etcd:
+  Hosts:
+    - 192.168.56.106:2379
+  Key: ticket.rpc
 
 DatabaseConf:
   Type: mysql
@@ -25,7 +26,8 @@ DatabaseConf:
 Log:
   ServiceName: ticketRpcLogger
   Mode: file
-  Path: /home/data/logs/ticket/rpc
+#  Path: /home/data/logs/ticket/rpc
+  Path: F:/ProgramData/CodeGo/src/zero-cloud/log/rpc
   Encoding: json
   Level: info
   Compress: false

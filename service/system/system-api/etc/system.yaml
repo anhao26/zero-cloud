@@ -8,6 +8,16 @@ Auth:
   AccessSecret: haha123456
   AccessExpire: 259200
 
+#SystemRpc:
+#  Target: 127.0.0.1:8080
+#  Enabled: true
+
+SystemRpc:
+  Etcd:
+    Hosts:
+      - 192.168.56.106:2379
+    Key: system.rpc
+
 Captcha:
   KeyLong: 5
   ImgWidth: 240
@@ -27,10 +37,6 @@ Prometheus:
   Host: 0.0.0.0
   Port: 4000
   Path: /metrics
-
-SystemRpc:
-  Target: 127.0.0.1:8080
-  Enabled: true
 
 RedisConf:
   Host: 114.132.197.160:6379

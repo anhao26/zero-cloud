@@ -11,7 +11,8 @@ Auth:
 Log:
   ServiceName: TicketApiLogger
   Mode: file
-  Path: /home/data/logs/Ticket/api
+#  Path: /home/data/logs/Ticket/api
+  Path: F:/ProgramData/CodeGo/src/zero-cloud/log/api
   Level: info
   Compress: false
   KeepDays: 7
@@ -22,15 +23,15 @@ Prometheus:
   Port: 4000
   Path: /metrics
 
-TicketRpc:
-  Target: 127.0.0.1:8070
-  Enabled: true
-
 #TicketRpc:
-#  Etcd:
-#    Hosts:
-#      - 192.168.56.106:2379
-#    Key: ticket.rpc
+#  Target: 127.0.0.1:8070
+#  Enabled: true
+
+TicketRpc:
+  Etcd:
+    Hosts:
+      - 192.168.56.106:2379
+    Key: ticket.rpc
 
 RedisConf:
   Host: 114.132.197.160:6379

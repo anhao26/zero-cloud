@@ -23,36 +23,32 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Authority},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/attribute/create",
-					Handler: attribute.CreateAttributeHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/attribute/update",
-					Handler: attribute.UpdateAttributeHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/attribute/delete",
-					Handler: attribute.DeleteAttributeHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/attribute/list",
-					Handler: attribute.GetAttributeListHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/attribute",
-					Handler: attribute.GetAttributeByIdHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/attribute/create",
+				Handler: attribute.CreateAttributeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/attribute/update",
+				Handler: attribute.UpdateAttributeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/attribute/delete",
+				Handler: attribute.DeleteAttributeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/attribute/list",
+				Handler: attribute.GetAttributeListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/attribute",
+				Handler: attribute.GetAttributeByIdHandler(serverCtx),
+			},
+		},
 	)
 }

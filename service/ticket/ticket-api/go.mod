@@ -3,6 +3,7 @@ module github.com/anhao26/zero-cloud/service/ticket/ticket-api
 go 1.20
 
 require (
+	github.com/anhao26/zero-cloud/service/ticket/ticket-rpc v0.0.0-20230525081106-8df1fd3a5b98
 	github.com/casbin/casbin/v2 v2.69.1
 	github.com/suyuan32/simple-admin-common v1.0.6
 	github.com/zeromicro/go-zero v1.5.2
@@ -14,7 +15,6 @@ require (
 	entgo.io/ent v0.12.3 // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
-	github.com/anhao26/zero-cloud/service/ticket/ticket-rpc v0.0.0-20230525081106-8df1fd3a5b98 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/casbin/ent-adapter v0.3.0 // indirect
@@ -38,7 +38,6 @@ require (
 	github.com/go-playground/validator/v10 v10.12.0 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
-	github.com/gofrs/uuid/v5 v5.0.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect

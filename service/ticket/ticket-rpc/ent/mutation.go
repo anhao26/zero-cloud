@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attribute"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entity"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/predicate"
 )
@@ -24,8 +25,1286 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeEntity = "Entity"
+	TypeAttribute = "Attribute"
+	TypeEntity    = "Entity"
 )
+
+// AttributeMutation represents an operation that mutates the Attribute nodes in the graph.
+type AttributeMutation struct {
+	config
+	op                      Op
+	typ                     string
+	id                      *uint64
+	created_at              *time.Time
+	updated_at              *time.Time
+	entity_id               *uint64
+	addentity_id            *int64
+	attribute_code          *string
+	backend_class           *string
+	backend_type            *string
+	backend_table           *string
+	frontend_class          *string
+	frontend_type           *string
+	frontend_label          *string
+	source_class            *string
+	default_value           *string
+	is_filterable           *uint8
+	addis_filterable        *int8
+	is_searchable           *uint8
+	addis_searchable        *int8
+	is_required             *uint8
+	addis_required          *int8
+	required_validate_class *string
+	clearedFields           map[string]struct{}
+	done                    bool
+	oldValue                func(context.Context) (*Attribute, error)
+	predicates              []predicate.Attribute
+}
+
+var _ ent.Mutation = (*AttributeMutation)(nil)
+
+// attributeOption allows management of the mutation configuration using functional options.
+type attributeOption func(*AttributeMutation)
+
+// newAttributeMutation creates new mutation for the Attribute entity.
+func newAttributeMutation(c config, op Op, opts ...attributeOption) *AttributeMutation {
+	m := &AttributeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeAttribute,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withAttributeID sets the ID field of the mutation.
+func withAttributeID(id uint64) attributeOption {
+	return func(m *AttributeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Attribute
+		)
+		m.oldValue = func(ctx context.Context) (*Attribute, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Attribute.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withAttribute sets the old Attribute of the mutation.
+func withAttribute(node *Attribute) attributeOption {
+	return func(m *AttributeMutation) {
+		m.oldValue = func(context.Context) (*Attribute, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m AttributeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m AttributeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Attribute entities.
+func (m *AttributeMutation) SetID(id uint64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *AttributeMutation) ID() (id uint64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *AttributeMutation) IDs(ctx context.Context) ([]uint64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uint64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Attribute.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *AttributeMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *AttributeMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *AttributeMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *AttributeMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *AttributeMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *AttributeMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetEntityID sets the "entity_id" field.
+func (m *AttributeMutation) SetEntityID(u uint64) {
+	m.entity_id = &u
+	m.addentity_id = nil
+}
+
+// EntityID returns the value of the "entity_id" field in the mutation.
+func (m *AttributeMutation) EntityID() (r uint64, exists bool) {
+	v := m.entity_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEntityID returns the old "entity_id" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldEntityID(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEntityID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEntityID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEntityID: %w", err)
+	}
+	return oldValue.EntityID, nil
+}
+
+// AddEntityID adds u to the "entity_id" field.
+func (m *AttributeMutation) AddEntityID(u int64) {
+	if m.addentity_id != nil {
+		*m.addentity_id += u
+	} else {
+		m.addentity_id = &u
+	}
+}
+
+// AddedEntityID returns the value that was added to the "entity_id" field in this mutation.
+func (m *AttributeMutation) AddedEntityID() (r int64, exists bool) {
+	v := m.addentity_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetEntityID resets all changes to the "entity_id" field.
+func (m *AttributeMutation) ResetEntityID() {
+	m.entity_id = nil
+	m.addentity_id = nil
+}
+
+// SetAttributeCode sets the "attribute_code" field.
+func (m *AttributeMutation) SetAttributeCode(s string) {
+	m.attribute_code = &s
+}
+
+// AttributeCode returns the value of the "attribute_code" field in the mutation.
+func (m *AttributeMutation) AttributeCode() (r string, exists bool) {
+	v := m.attribute_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAttributeCode returns the old "attribute_code" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldAttributeCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAttributeCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAttributeCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAttributeCode: %w", err)
+	}
+	return oldValue.AttributeCode, nil
+}
+
+// ResetAttributeCode resets all changes to the "attribute_code" field.
+func (m *AttributeMutation) ResetAttributeCode() {
+	m.attribute_code = nil
+}
+
+// SetBackendClass sets the "backend_class" field.
+func (m *AttributeMutation) SetBackendClass(s string) {
+	m.backend_class = &s
+}
+
+// BackendClass returns the value of the "backend_class" field in the mutation.
+func (m *AttributeMutation) BackendClass() (r string, exists bool) {
+	v := m.backend_class
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBackendClass returns the old "backend_class" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldBackendClass(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBackendClass is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBackendClass requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBackendClass: %w", err)
+	}
+	return oldValue.BackendClass, nil
+}
+
+// ResetBackendClass resets all changes to the "backend_class" field.
+func (m *AttributeMutation) ResetBackendClass() {
+	m.backend_class = nil
+}
+
+// SetBackendType sets the "backend_type" field.
+func (m *AttributeMutation) SetBackendType(s string) {
+	m.backend_type = &s
+}
+
+// BackendType returns the value of the "backend_type" field in the mutation.
+func (m *AttributeMutation) BackendType() (r string, exists bool) {
+	v := m.backend_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBackendType returns the old "backend_type" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldBackendType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBackendType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBackendType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBackendType: %w", err)
+	}
+	return oldValue.BackendType, nil
+}
+
+// ResetBackendType resets all changes to the "backend_type" field.
+func (m *AttributeMutation) ResetBackendType() {
+	m.backend_type = nil
+}
+
+// SetBackendTable sets the "backend_table" field.
+func (m *AttributeMutation) SetBackendTable(s string) {
+	m.backend_table = &s
+}
+
+// BackendTable returns the value of the "backend_table" field in the mutation.
+func (m *AttributeMutation) BackendTable() (r string, exists bool) {
+	v := m.backend_table
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBackendTable returns the old "backend_table" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldBackendTable(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBackendTable is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBackendTable requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBackendTable: %w", err)
+	}
+	return oldValue.BackendTable, nil
+}
+
+// ResetBackendTable resets all changes to the "backend_table" field.
+func (m *AttributeMutation) ResetBackendTable() {
+	m.backend_table = nil
+}
+
+// SetFrontendClass sets the "frontend_class" field.
+func (m *AttributeMutation) SetFrontendClass(s string) {
+	m.frontend_class = &s
+}
+
+// FrontendClass returns the value of the "frontend_class" field in the mutation.
+func (m *AttributeMutation) FrontendClass() (r string, exists bool) {
+	v := m.frontend_class
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFrontendClass returns the old "frontend_class" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldFrontendClass(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFrontendClass is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFrontendClass requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFrontendClass: %w", err)
+	}
+	return oldValue.FrontendClass, nil
+}
+
+// ResetFrontendClass resets all changes to the "frontend_class" field.
+func (m *AttributeMutation) ResetFrontendClass() {
+	m.frontend_class = nil
+}
+
+// SetFrontendType sets the "frontend_type" field.
+func (m *AttributeMutation) SetFrontendType(s string) {
+	m.frontend_type = &s
+}
+
+// FrontendType returns the value of the "frontend_type" field in the mutation.
+func (m *AttributeMutation) FrontendType() (r string, exists bool) {
+	v := m.frontend_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFrontendType returns the old "frontend_type" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldFrontendType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFrontendType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFrontendType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFrontendType: %w", err)
+	}
+	return oldValue.FrontendType, nil
+}
+
+// ResetFrontendType resets all changes to the "frontend_type" field.
+func (m *AttributeMutation) ResetFrontendType() {
+	m.frontend_type = nil
+}
+
+// SetFrontendLabel sets the "frontend_label" field.
+func (m *AttributeMutation) SetFrontendLabel(s string) {
+	m.frontend_label = &s
+}
+
+// FrontendLabel returns the value of the "frontend_label" field in the mutation.
+func (m *AttributeMutation) FrontendLabel() (r string, exists bool) {
+	v := m.frontend_label
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFrontendLabel returns the old "frontend_label" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldFrontendLabel(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFrontendLabel is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFrontendLabel requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFrontendLabel: %w", err)
+	}
+	return oldValue.FrontendLabel, nil
+}
+
+// ResetFrontendLabel resets all changes to the "frontend_label" field.
+func (m *AttributeMutation) ResetFrontendLabel() {
+	m.frontend_label = nil
+}
+
+// SetSourceClass sets the "source_class" field.
+func (m *AttributeMutation) SetSourceClass(s string) {
+	m.source_class = &s
+}
+
+// SourceClass returns the value of the "source_class" field in the mutation.
+func (m *AttributeMutation) SourceClass() (r string, exists bool) {
+	v := m.source_class
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSourceClass returns the old "source_class" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldSourceClass(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSourceClass is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSourceClass requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSourceClass: %w", err)
+	}
+	return oldValue.SourceClass, nil
+}
+
+// ResetSourceClass resets all changes to the "source_class" field.
+func (m *AttributeMutation) ResetSourceClass() {
+	m.source_class = nil
+}
+
+// SetDefaultValue sets the "default_value" field.
+func (m *AttributeMutation) SetDefaultValue(s string) {
+	m.default_value = &s
+}
+
+// DefaultValue returns the value of the "default_value" field in the mutation.
+func (m *AttributeMutation) DefaultValue() (r string, exists bool) {
+	v := m.default_value
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDefaultValue returns the old "default_value" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldDefaultValue(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDefaultValue is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDefaultValue requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDefaultValue: %w", err)
+	}
+	return oldValue.DefaultValue, nil
+}
+
+// ResetDefaultValue resets all changes to the "default_value" field.
+func (m *AttributeMutation) ResetDefaultValue() {
+	m.default_value = nil
+}
+
+// SetIsFilterable sets the "is_filterable" field.
+func (m *AttributeMutation) SetIsFilterable(u uint8) {
+	m.is_filterable = &u
+	m.addis_filterable = nil
+}
+
+// IsFilterable returns the value of the "is_filterable" field in the mutation.
+func (m *AttributeMutation) IsFilterable() (r uint8, exists bool) {
+	v := m.is_filterable
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsFilterable returns the old "is_filterable" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldIsFilterable(ctx context.Context) (v uint8, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsFilterable is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsFilterable requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsFilterable: %w", err)
+	}
+	return oldValue.IsFilterable, nil
+}
+
+// AddIsFilterable adds u to the "is_filterable" field.
+func (m *AttributeMutation) AddIsFilterable(u int8) {
+	if m.addis_filterable != nil {
+		*m.addis_filterable += u
+	} else {
+		m.addis_filterable = &u
+	}
+}
+
+// AddedIsFilterable returns the value that was added to the "is_filterable" field in this mutation.
+func (m *AttributeMutation) AddedIsFilterable() (r int8, exists bool) {
+	v := m.addis_filterable
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetIsFilterable resets all changes to the "is_filterable" field.
+func (m *AttributeMutation) ResetIsFilterable() {
+	m.is_filterable = nil
+	m.addis_filterable = nil
+}
+
+// SetIsSearchable sets the "is_searchable" field.
+func (m *AttributeMutation) SetIsSearchable(u uint8) {
+	m.is_searchable = &u
+	m.addis_searchable = nil
+}
+
+// IsSearchable returns the value of the "is_searchable" field in the mutation.
+func (m *AttributeMutation) IsSearchable() (r uint8, exists bool) {
+	v := m.is_searchable
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsSearchable returns the old "is_searchable" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldIsSearchable(ctx context.Context) (v uint8, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsSearchable is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsSearchable requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsSearchable: %w", err)
+	}
+	return oldValue.IsSearchable, nil
+}
+
+// AddIsSearchable adds u to the "is_searchable" field.
+func (m *AttributeMutation) AddIsSearchable(u int8) {
+	if m.addis_searchable != nil {
+		*m.addis_searchable += u
+	} else {
+		m.addis_searchable = &u
+	}
+}
+
+// AddedIsSearchable returns the value that was added to the "is_searchable" field in this mutation.
+func (m *AttributeMutation) AddedIsSearchable() (r int8, exists bool) {
+	v := m.addis_searchable
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetIsSearchable resets all changes to the "is_searchable" field.
+func (m *AttributeMutation) ResetIsSearchable() {
+	m.is_searchable = nil
+	m.addis_searchable = nil
+}
+
+// SetIsRequired sets the "is_required" field.
+func (m *AttributeMutation) SetIsRequired(u uint8) {
+	m.is_required = &u
+	m.addis_required = nil
+}
+
+// IsRequired returns the value of the "is_required" field in the mutation.
+func (m *AttributeMutation) IsRequired() (r uint8, exists bool) {
+	v := m.is_required
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsRequired returns the old "is_required" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldIsRequired(ctx context.Context) (v uint8, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsRequired is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsRequired requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsRequired: %w", err)
+	}
+	return oldValue.IsRequired, nil
+}
+
+// AddIsRequired adds u to the "is_required" field.
+func (m *AttributeMutation) AddIsRequired(u int8) {
+	if m.addis_required != nil {
+		*m.addis_required += u
+	} else {
+		m.addis_required = &u
+	}
+}
+
+// AddedIsRequired returns the value that was added to the "is_required" field in this mutation.
+func (m *AttributeMutation) AddedIsRequired() (r int8, exists bool) {
+	v := m.addis_required
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetIsRequired resets all changes to the "is_required" field.
+func (m *AttributeMutation) ResetIsRequired() {
+	m.is_required = nil
+	m.addis_required = nil
+}
+
+// SetRequiredValidateClass sets the "required_validate_class" field.
+func (m *AttributeMutation) SetRequiredValidateClass(s string) {
+	m.required_validate_class = &s
+}
+
+// RequiredValidateClass returns the value of the "required_validate_class" field in the mutation.
+func (m *AttributeMutation) RequiredValidateClass() (r string, exists bool) {
+	v := m.required_validate_class
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRequiredValidateClass returns the old "required_validate_class" field's value of the Attribute entity.
+// If the Attribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AttributeMutation) OldRequiredValidateClass(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRequiredValidateClass is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRequiredValidateClass requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRequiredValidateClass: %w", err)
+	}
+	return oldValue.RequiredValidateClass, nil
+}
+
+// ResetRequiredValidateClass resets all changes to the "required_validate_class" field.
+func (m *AttributeMutation) ResetRequiredValidateClass() {
+	m.required_validate_class = nil
+}
+
+// Where appends a list predicates to the AttributeMutation builder.
+func (m *AttributeMutation) Where(ps ...predicate.Attribute) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the AttributeMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *AttributeMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Attribute, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *AttributeMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *AttributeMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Attribute).
+func (m *AttributeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *AttributeMutation) Fields() []string {
+	fields := make([]string, 0, 16)
+	if m.created_at != nil {
+		fields = append(fields, attribute.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, attribute.FieldUpdatedAt)
+	}
+	if m.entity_id != nil {
+		fields = append(fields, attribute.FieldEntityID)
+	}
+	if m.attribute_code != nil {
+		fields = append(fields, attribute.FieldAttributeCode)
+	}
+	if m.backend_class != nil {
+		fields = append(fields, attribute.FieldBackendClass)
+	}
+	if m.backend_type != nil {
+		fields = append(fields, attribute.FieldBackendType)
+	}
+	if m.backend_table != nil {
+		fields = append(fields, attribute.FieldBackendTable)
+	}
+	if m.frontend_class != nil {
+		fields = append(fields, attribute.FieldFrontendClass)
+	}
+	if m.frontend_type != nil {
+		fields = append(fields, attribute.FieldFrontendType)
+	}
+	if m.frontend_label != nil {
+		fields = append(fields, attribute.FieldFrontendLabel)
+	}
+	if m.source_class != nil {
+		fields = append(fields, attribute.FieldSourceClass)
+	}
+	if m.default_value != nil {
+		fields = append(fields, attribute.FieldDefaultValue)
+	}
+	if m.is_filterable != nil {
+		fields = append(fields, attribute.FieldIsFilterable)
+	}
+	if m.is_searchable != nil {
+		fields = append(fields, attribute.FieldIsSearchable)
+	}
+	if m.is_required != nil {
+		fields = append(fields, attribute.FieldIsRequired)
+	}
+	if m.required_validate_class != nil {
+		fields = append(fields, attribute.FieldRequiredValidateClass)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *AttributeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case attribute.FieldCreatedAt:
+		return m.CreatedAt()
+	case attribute.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case attribute.FieldEntityID:
+		return m.EntityID()
+	case attribute.FieldAttributeCode:
+		return m.AttributeCode()
+	case attribute.FieldBackendClass:
+		return m.BackendClass()
+	case attribute.FieldBackendType:
+		return m.BackendType()
+	case attribute.FieldBackendTable:
+		return m.BackendTable()
+	case attribute.FieldFrontendClass:
+		return m.FrontendClass()
+	case attribute.FieldFrontendType:
+		return m.FrontendType()
+	case attribute.FieldFrontendLabel:
+		return m.FrontendLabel()
+	case attribute.FieldSourceClass:
+		return m.SourceClass()
+	case attribute.FieldDefaultValue:
+		return m.DefaultValue()
+	case attribute.FieldIsFilterable:
+		return m.IsFilterable()
+	case attribute.FieldIsSearchable:
+		return m.IsSearchable()
+	case attribute.FieldIsRequired:
+		return m.IsRequired()
+	case attribute.FieldRequiredValidateClass:
+		return m.RequiredValidateClass()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *AttributeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case attribute.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case attribute.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case attribute.FieldEntityID:
+		return m.OldEntityID(ctx)
+	case attribute.FieldAttributeCode:
+		return m.OldAttributeCode(ctx)
+	case attribute.FieldBackendClass:
+		return m.OldBackendClass(ctx)
+	case attribute.FieldBackendType:
+		return m.OldBackendType(ctx)
+	case attribute.FieldBackendTable:
+		return m.OldBackendTable(ctx)
+	case attribute.FieldFrontendClass:
+		return m.OldFrontendClass(ctx)
+	case attribute.FieldFrontendType:
+		return m.OldFrontendType(ctx)
+	case attribute.FieldFrontendLabel:
+		return m.OldFrontendLabel(ctx)
+	case attribute.FieldSourceClass:
+		return m.OldSourceClass(ctx)
+	case attribute.FieldDefaultValue:
+		return m.OldDefaultValue(ctx)
+	case attribute.FieldIsFilterable:
+		return m.OldIsFilterable(ctx)
+	case attribute.FieldIsSearchable:
+		return m.OldIsSearchable(ctx)
+	case attribute.FieldIsRequired:
+		return m.OldIsRequired(ctx)
+	case attribute.FieldRequiredValidateClass:
+		return m.OldRequiredValidateClass(ctx)
+	}
+	return nil, fmt.Errorf("unknown Attribute field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AttributeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case attribute.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case attribute.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case attribute.FieldEntityID:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEntityID(v)
+		return nil
+	case attribute.FieldAttributeCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAttributeCode(v)
+		return nil
+	case attribute.FieldBackendClass:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBackendClass(v)
+		return nil
+	case attribute.FieldBackendType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBackendType(v)
+		return nil
+	case attribute.FieldBackendTable:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBackendTable(v)
+		return nil
+	case attribute.FieldFrontendClass:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFrontendClass(v)
+		return nil
+	case attribute.FieldFrontendType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFrontendType(v)
+		return nil
+	case attribute.FieldFrontendLabel:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFrontendLabel(v)
+		return nil
+	case attribute.FieldSourceClass:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSourceClass(v)
+		return nil
+	case attribute.FieldDefaultValue:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDefaultValue(v)
+		return nil
+	case attribute.FieldIsFilterable:
+		v, ok := value.(uint8)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsFilterable(v)
+		return nil
+	case attribute.FieldIsSearchable:
+		v, ok := value.(uint8)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsSearchable(v)
+		return nil
+	case attribute.FieldIsRequired:
+		v, ok := value.(uint8)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsRequired(v)
+		return nil
+	case attribute.FieldRequiredValidateClass:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRequiredValidateClass(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Attribute field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *AttributeMutation) AddedFields() []string {
+	var fields []string
+	if m.addentity_id != nil {
+		fields = append(fields, attribute.FieldEntityID)
+	}
+	if m.addis_filterable != nil {
+		fields = append(fields, attribute.FieldIsFilterable)
+	}
+	if m.addis_searchable != nil {
+		fields = append(fields, attribute.FieldIsSearchable)
+	}
+	if m.addis_required != nil {
+		fields = append(fields, attribute.FieldIsRequired)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *AttributeMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case attribute.FieldEntityID:
+		return m.AddedEntityID()
+	case attribute.FieldIsFilterable:
+		return m.AddedIsFilterable()
+	case attribute.FieldIsSearchable:
+		return m.AddedIsSearchable()
+	case attribute.FieldIsRequired:
+		return m.AddedIsRequired()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AttributeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case attribute.FieldEntityID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddEntityID(v)
+		return nil
+	case attribute.FieldIsFilterable:
+		v, ok := value.(int8)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddIsFilterable(v)
+		return nil
+	case attribute.FieldIsSearchable:
+		v, ok := value.(int8)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddIsSearchable(v)
+		return nil
+	case attribute.FieldIsRequired:
+		v, ok := value.(int8)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddIsRequired(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Attribute numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *AttributeMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *AttributeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *AttributeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Attribute nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *AttributeMutation) ResetField(name string) error {
+	switch name {
+	case attribute.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case attribute.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case attribute.FieldEntityID:
+		m.ResetEntityID()
+		return nil
+	case attribute.FieldAttributeCode:
+		m.ResetAttributeCode()
+		return nil
+	case attribute.FieldBackendClass:
+		m.ResetBackendClass()
+		return nil
+	case attribute.FieldBackendType:
+		m.ResetBackendType()
+		return nil
+	case attribute.FieldBackendTable:
+		m.ResetBackendTable()
+		return nil
+	case attribute.FieldFrontendClass:
+		m.ResetFrontendClass()
+		return nil
+	case attribute.FieldFrontendType:
+		m.ResetFrontendType()
+		return nil
+	case attribute.FieldFrontendLabel:
+		m.ResetFrontendLabel()
+		return nil
+	case attribute.FieldSourceClass:
+		m.ResetSourceClass()
+		return nil
+	case attribute.FieldDefaultValue:
+		m.ResetDefaultValue()
+		return nil
+	case attribute.FieldIsFilterable:
+		m.ResetIsFilterable()
+		return nil
+	case attribute.FieldIsSearchable:
+		m.ResetIsSearchable()
+		return nil
+	case attribute.FieldIsRequired:
+		m.ResetIsRequired()
+		return nil
+	case attribute.FieldRequiredValidateClass:
+		m.ResetRequiredValidateClass()
+		return nil
+	}
+	return fmt.Errorf("unknown Attribute field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *AttributeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *AttributeMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *AttributeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *AttributeMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *AttributeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *AttributeMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *AttributeMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Attribute unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *AttributeMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Attribute edge %s", name)
+}
 
 // EntityMutation represents an operation that mutates the Entity nodes in the graph.
 type EntityMutation struct {

@@ -13,20 +13,29 @@ import (
 )
 
 type (
-	BaseIDResp     = ticket.BaseIDResp
-	BaseResp       = ticket.BaseResp
-	BaseUUIDResp   = ticket.BaseUUIDResp
-	Empty          = ticket.Empty
-	EntityInfo     = ticket.EntityInfo
-	EntityListReq  = ticket.EntityListReq
-	EntityListResp = ticket.EntityListResp
-	IDReq          = ticket.IDReq
-	IDsReq         = ticket.IDsReq
-	PageInfoReq    = ticket.PageInfoReq
-	UUIDReq        = ticket.UUIDReq
-	UUIDsReq       = ticket.UUIDsReq
+	AttributeInfo     = ticket.AttributeInfo
+	AttributeListReq  = ticket.AttributeListReq
+	AttributeListResp = ticket.AttributeListResp
+	BaseIDResp        = ticket.BaseIDResp
+	BaseResp          = ticket.BaseResp
+	BaseUUIDResp      = ticket.BaseUUIDResp
+	Empty             = ticket.Empty
+	EntityInfo        = ticket.EntityInfo
+	EntityListReq     = ticket.EntityListReq
+	EntityListResp    = ticket.EntityListResp
+	IDReq             = ticket.IDReq
+	IDsReq            = ticket.IDsReq
+	PageInfoReq       = ticket.PageInfoReq
+	UUIDReq           = ticket.UUIDReq
+	UUIDsReq          = ticket.UUIDsReq
 
 	Ticket interface {
+		// Attribute management
+		CreateAttribute(ctx context.Context, in *AttributeInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
+		UpdateAttribute(ctx context.Context, in *AttributeInfo, opts ...grpc.CallOption) (*BaseResp, error)
+		GetAttributeList(ctx context.Context, in *AttributeListReq, opts ...grpc.CallOption) (*AttributeListResp, error)
+		GetAttributeById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*AttributeInfo, error)
+		DeleteAttribute(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
 		InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error)
 		// Entity management
 		CreateEntity(ctx context.Context, in *EntityInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
@@ -45,6 +54,32 @@ func NewTicket(cli zrpc.Client) Ticket {
 	return &defaultTicket{
 		cli: cli,
 	}
+}
+
+// Attribute management
+func (m *defaultTicket) CreateAttribute(ctx context.Context, in *AttributeInfo, opts ...grpc.CallOption) (*BaseIDResp, error) {
+	client := ticket.NewTicketClient(m.cli.Conn())
+	return client.CreateAttribute(ctx, in, opts...)
+}
+
+func (m *defaultTicket) UpdateAttribute(ctx context.Context, in *AttributeInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := ticket.NewTicketClient(m.cli.Conn())
+	return client.UpdateAttribute(ctx, in, opts...)
+}
+
+func (m *defaultTicket) GetAttributeList(ctx context.Context, in *AttributeListReq, opts ...grpc.CallOption) (*AttributeListResp, error) {
+	client := ticket.NewTicketClient(m.cli.Conn())
+	return client.GetAttributeList(ctx, in, opts...)
+}
+
+func (m *defaultTicket) GetAttributeById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*AttributeInfo, error) {
+	client := ticket.NewTicketClient(m.cli.Conn())
+	return client.GetAttributeById(ctx, in, opts...)
+}
+
+func (m *defaultTicket) DeleteAttribute(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	client := ticket.NewTicketClient(m.cli.Conn())
+	return client.DeleteAttribute(ctx, in, opts...)
 }
 
 func (m *defaultTicket) InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error) {

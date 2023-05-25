@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attribute"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entity"
 )
 
@@ -21,6 +22,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Attribute is the client for interacting with the Attribute builders.
+	Attribute *AttributeClient
 	// Entity is the client for interacting with the Entity builders.
 	Entity *EntityClient
 }
@@ -36,6 +39,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Attribute = NewAttributeClient(c.config)
 	c.Entity = NewEntityClient(c.config)
 }
 
@@ -117,9 +121,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Entity: NewEntityClient(cfg),
+		ctx:       ctx,
+		config:    cfg,
+		Attribute: NewAttributeClient(cfg),
+		Entity:    NewEntityClient(cfg),
 	}, nil
 }
 
@@ -137,16 +142,17 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Entity: NewEntityClient(cfg),
+		ctx:       ctx,
+		config:    cfg,
+		Attribute: NewAttributeClient(cfg),
+		Entity:    NewEntityClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Entity.
+//		Attribute.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -168,22 +174,144 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.Attribute.Use(hooks...)
 	c.Entity.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
+	c.Attribute.Intercept(interceptors...)
 	c.Entity.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *AttributeMutation:
+		return c.Attribute.mutate(ctx, m)
 	case *EntityMutation:
 		return c.Entity.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// AttributeClient is a client for the Attribute schema.
+type AttributeClient struct {
+	config
+}
+
+// NewAttributeClient returns a client for the Attribute from the given config.
+func NewAttributeClient(c config) *AttributeClient {
+	return &AttributeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `attribute.Hooks(f(g(h())))`.
+func (c *AttributeClient) Use(hooks ...Hook) {
+	c.hooks.Attribute = append(c.hooks.Attribute, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `attribute.Intercept(f(g(h())))`.
+func (c *AttributeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Attribute = append(c.inters.Attribute, interceptors...)
+}
+
+// Create returns a builder for creating a Attribute entity.
+func (c *AttributeClient) Create() *AttributeCreate {
+	mutation := newAttributeMutation(c.config, OpCreate)
+	return &AttributeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Attribute entities.
+func (c *AttributeClient) CreateBulk(builders ...*AttributeCreate) *AttributeCreateBulk {
+	return &AttributeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Attribute.
+func (c *AttributeClient) Update() *AttributeUpdate {
+	mutation := newAttributeMutation(c.config, OpUpdate)
+	return &AttributeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AttributeClient) UpdateOne(a *Attribute) *AttributeUpdateOne {
+	mutation := newAttributeMutation(c.config, OpUpdateOne, withAttribute(a))
+	return &AttributeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AttributeClient) UpdateOneID(id uint64) *AttributeUpdateOne {
+	mutation := newAttributeMutation(c.config, OpUpdateOne, withAttributeID(id))
+	return &AttributeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Attribute.
+func (c *AttributeClient) Delete() *AttributeDelete {
+	mutation := newAttributeMutation(c.config, OpDelete)
+	return &AttributeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AttributeClient) DeleteOne(a *Attribute) *AttributeDeleteOne {
+	return c.DeleteOneID(a.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AttributeClient) DeleteOneID(id uint64) *AttributeDeleteOne {
+	builder := c.Delete().Where(attribute.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AttributeDeleteOne{builder}
+}
+
+// Query returns a query builder for Attribute.
+func (c *AttributeClient) Query() *AttributeQuery {
+	return &AttributeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAttribute},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Attribute entity by its id.
+func (c *AttributeClient) Get(ctx context.Context, id uint64) (*Attribute, error) {
+	return c.Query().Where(attribute.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AttributeClient) GetX(ctx context.Context, id uint64) *Attribute {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AttributeClient) Hooks() []Hook {
+	return c.hooks.Attribute
+}
+
+// Interceptors returns the client interceptors.
+func (c *AttributeClient) Interceptors() []Interceptor {
+	return c.inters.Attribute
+}
+
+func (c *AttributeClient) mutate(ctx context.Context, m *AttributeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AttributeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AttributeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AttributeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AttributeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Attribute mutation op: %q", m.Op())
 	}
 }
 
@@ -308,9 +436,9 @@ func (c *EntityClient) mutate(ctx context.Context, m *EntityMutation) (Value, er
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Entity []ent.Hook
+		Attribute, Entity []ent.Hook
 	}
 	inters struct {
-		Entity []ent.Interceptor
+		Attribute, Entity []ent.Interceptor
 	}
 )

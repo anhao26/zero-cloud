@@ -3,6 +3,230 @@
 package ent
 
 // set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyEntityID(value uint64) *AttributeUpdate {
+	if value != 0 {
+		return a.SetEntityID(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyEntityID(value uint64) *AttributeUpdateOne {
+	if value != 0 {
+		return a.SetEntityID(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyAttributeCode(value string) *AttributeUpdate {
+	if value != "" {
+		return a.SetAttributeCode(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyAttributeCode(value string) *AttributeUpdateOne {
+	if value != "" {
+		return a.SetAttributeCode(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyBackendClass(value string) *AttributeUpdate {
+	if value != "" {
+		return a.SetBackendClass(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyBackendClass(value string) *AttributeUpdateOne {
+	if value != "" {
+		return a.SetBackendClass(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyBackendType(value string) *AttributeUpdate {
+	if value != "" {
+		return a.SetBackendType(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyBackendType(value string) *AttributeUpdateOne {
+	if value != "" {
+		return a.SetBackendType(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyBackendTable(value string) *AttributeUpdate {
+	if value != "" {
+		return a.SetBackendTable(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyBackendTable(value string) *AttributeUpdateOne {
+	if value != "" {
+		return a.SetBackendTable(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyFrontendClass(value string) *AttributeUpdate {
+	if value != "" {
+		return a.SetFrontendClass(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyFrontendClass(value string) *AttributeUpdateOne {
+	if value != "" {
+		return a.SetFrontendClass(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyFrontendType(value string) *AttributeUpdate {
+	if value != "" {
+		return a.SetFrontendType(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyFrontendType(value string) *AttributeUpdateOne {
+	if value != "" {
+		return a.SetFrontendType(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyFrontendLabel(value string) *AttributeUpdate {
+	if value != "" {
+		return a.SetFrontendLabel(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyFrontendLabel(value string) *AttributeUpdateOne {
+	if value != "" {
+		return a.SetFrontendLabel(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptySourceClass(value string) *AttributeUpdate {
+	if value != "" {
+		return a.SetSourceClass(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptySourceClass(value string) *AttributeUpdateOne {
+	if value != "" {
+		return a.SetSourceClass(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyDefaultValue(value string) *AttributeUpdate {
+	if value != "" {
+		return a.SetDefaultValue(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyDefaultValue(value string) *AttributeUpdateOne {
+	if value != "" {
+		return a.SetDefaultValue(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyIsFilterable(value uint8) *AttributeUpdate {
+	if value != 0 {
+		return a.SetIsFilterable(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyIsFilterable(value uint8) *AttributeUpdateOne {
+	if value != 0 {
+		return a.SetIsFilterable(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyIsSearchable(value uint8) *AttributeUpdate {
+	if value != 0 {
+		return a.SetIsSearchable(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyIsSearchable(value uint8) *AttributeUpdateOne {
+	if value != 0 {
+		return a.SetIsSearchable(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyIsRequired(value uint8) *AttributeUpdate {
+	if value != 0 {
+		return a.SetIsRequired(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyIsRequired(value uint8) *AttributeUpdateOne {
+	if value != 0 {
+		return a.SetIsRequired(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdate) SetNotEmptyRequiredValidateClass(value string) *AttributeUpdate {
+	if value != "" {
+		return a.SetRequiredValidateClass(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (a *AttributeUpdateOne) SetNotEmptyRequiredValidateClass(value string) *AttributeUpdateOne {
+	if value != "" {
+		return a.SetRequiredValidateClass(value)
+	}
+	return a
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
 func (e *EntityUpdate) SetNotEmptyEntityCode(value string) *EntityUpdate {
 	if value != "" {
 		return e.SetEntityCode(value)

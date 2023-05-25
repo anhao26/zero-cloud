@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attribute"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entity"
 )
 
@@ -54,6 +55,85 @@ func (o OrderDirection) reverse() OrderDirection {
 }
 
 const errInvalidPagination = "INVALID_PAGINATION"
+
+type AttributePager struct {
+	Order  attribute.OrderOption
+	Filter func(*AttributeQuery) (*AttributeQuery, error)
+}
+
+// AttributePaginateOption enables pagination customization.
+type AttributePaginateOption func(*AttributePager)
+
+// DefaultAttributeOrder is the default ordering of Attribute.
+var DefaultAttributeOrder = Desc(attribute.FieldID)
+
+func newAttributePager(opts []AttributePaginateOption) (*AttributePager, error) {
+	pager := &AttributePager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultAttributeOrder
+	}
+	return pager, nil
+}
+
+func (p *AttributePager) ApplyFilter(query *AttributeQuery) (*AttributeQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// AttributePageList is Attribute PageList result.
+type AttributePageList struct {
+	List        []*Attribute `json:"list"`
+	PageDetails *PageDetails `json:"pageDetails"`
+}
+
+func (a *AttributeQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...AttributePaginateOption,
+) (*AttributePageList, error) {
+
+	pager, err := newAttributePager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if a, err = pager.ApplyFilter(a); err != nil {
+		return nil, err
+	}
+
+	ret := &AttributePageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := a.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		a = a.Order(pager.Order)
+	} else {
+		a = a.Order(DefaultAttributeOrder)
+	}
+
+	a = a.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := a.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
 
 type EntityPager struct {
 	Order  entity.OrderOption

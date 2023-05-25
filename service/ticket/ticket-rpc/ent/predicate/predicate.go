@@ -6,5 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Attribute is the predicate function for attribute builders.
+type Attribute func(*sql.Selector)
+
 // Entity is the predicate function for entity builders.
 type Entity func(*sql.Selector)

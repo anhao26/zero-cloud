@@ -19,18 +19,34 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Ticket_InitDatabase_FullMethodName  = "/ticket.Ticket/initDatabase"
-	Ticket_CreateEntity_FullMethodName  = "/ticket.Ticket/createEntity"
-	Ticket_UpdateEntity_FullMethodName  = "/ticket.Ticket/updateEntity"
-	Ticket_GetEntityList_FullMethodName = "/ticket.Ticket/getEntityList"
-	Ticket_GetEntityById_FullMethodName = "/ticket.Ticket/getEntityById"
-	Ticket_DeleteEntity_FullMethodName  = "/ticket.Ticket/deleteEntity"
+	Ticket_CreateAttribute_FullMethodName  = "/ticket.Ticket/createAttribute"
+	Ticket_UpdateAttribute_FullMethodName  = "/ticket.Ticket/updateAttribute"
+	Ticket_GetAttributeList_FullMethodName = "/ticket.Ticket/getAttributeList"
+	Ticket_GetAttributeById_FullMethodName = "/ticket.Ticket/getAttributeById"
+	Ticket_DeleteAttribute_FullMethodName  = "/ticket.Ticket/deleteAttribute"
+	Ticket_InitDatabase_FullMethodName     = "/ticket.Ticket/initDatabase"
+	Ticket_CreateEntity_FullMethodName     = "/ticket.Ticket/createEntity"
+	Ticket_UpdateEntity_FullMethodName     = "/ticket.Ticket/updateEntity"
+	Ticket_GetEntityList_FullMethodName    = "/ticket.Ticket/getEntityList"
+	Ticket_GetEntityById_FullMethodName    = "/ticket.Ticket/getEntityById"
+	Ticket_DeleteEntity_FullMethodName     = "/ticket.Ticket/deleteEntity"
 )
 
 // TicketClient is the client API for Ticket service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TicketClient interface {
+	// Attribute management
+	// group: attribute
+	CreateAttribute(ctx context.Context, in *AttributeInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
+	// group: attribute
+	UpdateAttribute(ctx context.Context, in *AttributeInfo, opts ...grpc.CallOption) (*BaseResp, error)
+	// group: attribute
+	GetAttributeList(ctx context.Context, in *AttributeListReq, opts ...grpc.CallOption) (*AttributeListResp, error)
+	// group: attribute
+	GetAttributeById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*AttributeInfo, error)
+	// group: attribute
+	DeleteAttribute(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
 	// group: base
 	InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error)
 	// Entity management
@@ -52,6 +68,51 @@ type ticketClient struct {
 
 func NewTicketClient(cc grpc.ClientConnInterface) TicketClient {
 	return &ticketClient{cc}
+}
+
+func (c *ticketClient) CreateAttribute(ctx context.Context, in *AttributeInfo, opts ...grpc.CallOption) (*BaseIDResp, error) {
+	out := new(BaseIDResp)
+	err := c.cc.Invoke(ctx, Ticket_CreateAttribute_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ticketClient) UpdateAttribute(ctx context.Context, in *AttributeInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, Ticket_UpdateAttribute_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ticketClient) GetAttributeList(ctx context.Context, in *AttributeListReq, opts ...grpc.CallOption) (*AttributeListResp, error) {
+	out := new(AttributeListResp)
+	err := c.cc.Invoke(ctx, Ticket_GetAttributeList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ticketClient) GetAttributeById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*AttributeInfo, error) {
+	out := new(AttributeInfo)
+	err := c.cc.Invoke(ctx, Ticket_GetAttributeById_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ticketClient) DeleteAttribute(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, Ticket_DeleteAttribute_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *ticketClient) InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error) {
@@ -112,6 +173,17 @@ func (c *ticketClient) DeleteEntity(ctx context.Context, in *IDsReq, opts ...grp
 // All implementations must embed UnimplementedTicketServer
 // for forward compatibility
 type TicketServer interface {
+	// Attribute management
+	// group: attribute
+	CreateAttribute(context.Context, *AttributeInfo) (*BaseIDResp, error)
+	// group: attribute
+	UpdateAttribute(context.Context, *AttributeInfo) (*BaseResp, error)
+	// group: attribute
+	GetAttributeList(context.Context, *AttributeListReq) (*AttributeListResp, error)
+	// group: attribute
+	GetAttributeById(context.Context, *IDReq) (*AttributeInfo, error)
+	// group: attribute
+	DeleteAttribute(context.Context, *IDsReq) (*BaseResp, error)
 	// group: base
 	InitDatabase(context.Context, *Empty) (*BaseResp, error)
 	// Entity management
@@ -132,6 +204,21 @@ type TicketServer interface {
 type UnimplementedTicketServer struct {
 }
 
+func (UnimplementedTicketServer) CreateAttribute(context.Context, *AttributeInfo) (*BaseIDResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAttribute not implemented")
+}
+func (UnimplementedTicketServer) UpdateAttribute(context.Context, *AttributeInfo) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAttribute not implemented")
+}
+func (UnimplementedTicketServer) GetAttributeList(context.Context, *AttributeListReq) (*AttributeListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAttributeList not implemented")
+}
+func (UnimplementedTicketServer) GetAttributeById(context.Context, *IDReq) (*AttributeInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAttributeById not implemented")
+}
+func (UnimplementedTicketServer) DeleteAttribute(context.Context, *IDsReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAttribute not implemented")
+}
 func (UnimplementedTicketServer) InitDatabase(context.Context, *Empty) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InitDatabase not implemented")
 }
@@ -161,6 +248,96 @@ type UnsafeTicketServer interface {
 
 func RegisterTicketServer(s grpc.ServiceRegistrar, srv TicketServer) {
 	s.RegisterService(&Ticket_ServiceDesc, srv)
+}
+
+func _Ticket_CreateAttribute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AttributeInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TicketServer).CreateAttribute(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Ticket_CreateAttribute_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TicketServer).CreateAttribute(ctx, req.(*AttributeInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ticket_UpdateAttribute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AttributeInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TicketServer).UpdateAttribute(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Ticket_UpdateAttribute_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TicketServer).UpdateAttribute(ctx, req.(*AttributeInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ticket_GetAttributeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AttributeListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TicketServer).GetAttributeList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Ticket_GetAttributeList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TicketServer).GetAttributeList(ctx, req.(*AttributeListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ticket_GetAttributeById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TicketServer).GetAttributeById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Ticket_GetAttributeById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TicketServer).GetAttributeById(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ticket_DeleteAttribute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TicketServer).DeleteAttribute(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Ticket_DeleteAttribute_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TicketServer).DeleteAttribute(ctx, req.(*IDsReq))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Ticket_InitDatabase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -278,6 +455,26 @@ var Ticket_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "ticket.Ticket",
 	HandlerType: (*TicketServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "createAttribute",
+			Handler:    _Ticket_CreateAttribute_Handler,
+		},
+		{
+			MethodName: "updateAttribute",
+			Handler:    _Ticket_UpdateAttribute_Handler,
+		},
+		{
+			MethodName: "getAttributeList",
+			Handler:    _Ticket_GetAttributeList_Handler,
+		},
+		{
+			MethodName: "getAttributeById",
+			Handler:    _Ticket_GetAttributeById_Handler,
+		},
+		{
+			MethodName: "deleteAttribute",
+			Handler:    _Ticket_DeleteAttribute_Handler,
+		},
 		{
 			MethodName: "initDatabase",
 			Handler:    _Ticket_InitDatabase_Handler,

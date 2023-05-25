@@ -9,6 +9,18 @@ import (
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent"
 )
 
+// The AttributeFunc type is an adapter to allow the use of ordinary
+// function as Attribute mutator.
+type AttributeFunc func(context.Context, *ent.AttributeMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AttributeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AttributeMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AttributeMutation", m)
+}
+
 // The EntityFunc type is an adapter to allow the use of ordinary
 // function as Entity mutator.
 type EntityFunc func(context.Context, *ent.EntityMutation) (ent.Value, error)

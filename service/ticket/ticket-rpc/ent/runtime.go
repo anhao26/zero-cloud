@@ -5,6 +5,7 @@ package ent
 import (
 	"time"
 
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attribute"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entity"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/schema"
 )
@@ -13,6 +14,33 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	attributeMixin := schema.Attribute{}.Mixin()
+	attributeMixinFields0 := attributeMixin[0].Fields()
+	_ = attributeMixinFields0
+	attributeFields := schema.Attribute{}.Fields()
+	_ = attributeFields
+	// attributeDescCreatedAt is the schema descriptor for created_at field.
+	attributeDescCreatedAt := attributeMixinFields0[1].Descriptor()
+	// attribute.DefaultCreatedAt holds the default value on creation for the created_at field.
+	attribute.DefaultCreatedAt = attributeDescCreatedAt.Default.(func() time.Time)
+	// attributeDescUpdatedAt is the schema descriptor for updated_at field.
+	attributeDescUpdatedAt := attributeMixinFields0[2].Descriptor()
+	// attribute.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	attribute.DefaultUpdatedAt = attributeDescUpdatedAt.Default.(func() time.Time)
+	// attribute.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	attribute.UpdateDefaultUpdatedAt = attributeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// attributeDescIsFilterable is the schema descriptor for is_filterable field.
+	attributeDescIsFilterable := attributeFields[10].Descriptor()
+	// attribute.DefaultIsFilterable holds the default value on creation for the is_filterable field.
+	attribute.DefaultIsFilterable = attributeDescIsFilterable.Default.(uint8)
+	// attributeDescIsSearchable is the schema descriptor for is_searchable field.
+	attributeDescIsSearchable := attributeFields[11].Descriptor()
+	// attribute.DefaultIsSearchable holds the default value on creation for the is_searchable field.
+	attribute.DefaultIsSearchable = attributeDescIsSearchable.Default.(uint8)
+	// attributeDescIsRequired is the schema descriptor for is_required field.
+	attributeDescIsRequired := attributeFields[12].Descriptor()
+	// attribute.DefaultIsRequired holds the default value on creation for the is_required field.
+	attribute.DefaultIsRequired = attributeDescIsRequired.Default.(uint8)
 	entityMixin := schema.Entity{}.Mixin()
 	entityMixinFields0 := entityMixin[0].Fields()
 	_ = entityMixinFields0

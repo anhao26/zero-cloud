@@ -6,6 +6,7 @@ package server
 import (
 	"context"
 
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/logic/attribute"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/logic/base"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/logic/entity"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/svc"
@@ -21,6 +22,32 @@ func NewTicketServer(svcCtx *svc.ServiceContext) *TicketServer {
 	return &TicketServer{
 		svcCtx: svcCtx,
 	}
+}
+
+// Attribute management
+func (s *TicketServer) CreateAttribute(ctx context.Context, in *ticket.AttributeInfo) (*ticket.BaseIDResp, error) {
+	l := attribute.NewCreateAttributeLogic(ctx, s.svcCtx)
+	return l.CreateAttribute(in)
+}
+
+func (s *TicketServer) UpdateAttribute(ctx context.Context, in *ticket.AttributeInfo) (*ticket.BaseResp, error) {
+	l := attribute.NewUpdateAttributeLogic(ctx, s.svcCtx)
+	return l.UpdateAttribute(in)
+}
+
+func (s *TicketServer) GetAttributeList(ctx context.Context, in *ticket.AttributeListReq) (*ticket.AttributeListResp, error) {
+	l := attribute.NewGetAttributeListLogic(ctx, s.svcCtx)
+	return l.GetAttributeList(in)
+}
+
+func (s *TicketServer) GetAttributeById(ctx context.Context, in *ticket.IDReq) (*ticket.AttributeInfo, error) {
+	l := attribute.NewGetAttributeByIdLogic(ctx, s.svcCtx)
+	return l.GetAttributeById(in)
+}
+
+func (s *TicketServer) DeleteAttribute(ctx context.Context, in *ticket.IDsReq) (*ticket.BaseResp, error) {
+	l := attribute.NewDeleteAttributeLogic(ctx, s.svcCtx)
+	return l.DeleteAttribute(in)
 }
 
 func (s *TicketServer) InitDatabase(ctx context.Context, in *ticket.Empty) (*ticket.BaseResp, error) {

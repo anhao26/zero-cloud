@@ -1,20 +1,26 @@
 Name: ticket.rpc
 ListenOn: 0.0.0.0:8070
 
+RedisConf:
+  Host: 114.132.197.160:6379
+  Pass: "[kissneckProjectDzb!!@}"
+  Type: node
+
+#Etcd:
+#  Hosts:
+#    - 192.168.56.106:2379
+#  Key: ticket.rpc
+
 DatabaseConf:
   Type: mysql
-  Host: 127.0.0.1
+  Host: 192.168.56.109
   Port: 3306
-  DBName: simple_admin
-  Username: # set your username
-  Password: # set your password
+  DBName: cloud_ticket
+  Username: root
+  Password: "123456"
   MaxOpenConn: 100
   SSLMode: disable
   CacheTime: 5
-
-RedisConf:
-  Host: 127.0.0.1:6379
-  Type: node
 
 Log:
   ServiceName: ticketRpcLogger

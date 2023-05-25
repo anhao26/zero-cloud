@@ -111,3 +111,73 @@ type BaseUUIDInfo struct {
 	// Update date | 更新日期
 	UpdatedAt int64 `json:"updatedAt,optional"`
 }
+
+// The response data of attribute information | Attribute信息
+// swagger:model AttributeInfo
+type AttributeInfo struct {
+	BaseIDInfo
+	// EntityId
+	EntityId uint64 `json:"entityId,optional"`
+	// AttributeCode
+	AttributeCode string `json:"attributeCode,optional"`
+	// BackendClass
+	BackendClass string `json:"backendClass,optional"`
+	// BackendType
+	BackendType string `json:"backendType,optional"`
+	// BackendTable
+	BackendTable string `json:"backendTable,optional"`
+	// FrontendClass
+	FrontendClass string `json:"frontendClass,optional"`
+	// FrontendType
+	FrontendType string `json:"frontendType,optional"`
+	// FrontendLabel
+	FrontendLabel string `json:"frontendLabel,optional"`
+	// SourceClass
+	SourceClass string `json:"sourceClass,optional"`
+	// DefaultValue
+	DefaultValue string `json:"defaultValue,optional"`
+	// IsFilterable
+	IsFilterable uint32 `json:"isFilterable,optional"`
+	// IsSearchable
+	IsSearchable uint32 `json:"isSearchable,optional"`
+	// IsRequired
+	IsRequired uint32 `json:"isRequired,optional"`
+	// RequiredValidateClass
+	RequiredValidateClass string `json:"requiredValidateClass,optional"`
+}
+
+// The response data of attribute list | Attribute列表数据
+// swagger:model AttributeListResp
+type AttributeListResp struct {
+	BaseDataInfo
+	// Attribute list data | Attribute列表数据
+	Data AttributeListInfo `json:"data"`
+}
+
+// Attribute list data | Attribute列表数据
+// swagger:model AttributeListInfo
+type AttributeListInfo struct {
+	BaseListInfo
+	// The API list data | Attribute列表数据
+	Data []AttributeInfo `json:"data"`
+}
+
+// Get attribute list request params | Attribute列表请求参数
+// swagger:model AttributeListReq
+type AttributeListReq struct {
+	PageInfo
+	// AttributeCode
+	AttributeCode string `json:"attributeCode,optional"`
+	// BackendClass
+	BackendClass string `json:"backendClass,optional"`
+	// BackendType
+	BackendType string `json:"backendType,optional"`
+}
+
+// Attribute information response | Attribute信息返回体
+// swagger:model AttributeInfoResp
+type AttributeInfoResp struct {
+	BaseDataInfo
+	// Attribute information | Attribute数据
+	Data AttributeInfo `json:"data"`
+}

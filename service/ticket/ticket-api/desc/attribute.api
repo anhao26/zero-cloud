@@ -1,0 +1,116 @@
+import "base.api"
+
+type (
+    // The response data of attribute information | Attribute信息
+    AttributeInfo {
+        BaseIDInfo
+
+        // EntityId
+        EntityId  uint64 `json:"entityId,optional"`
+
+        // AttributeCode
+        AttributeCode  string `json:"attributeCode,optional"`
+
+        // BackendClass
+        BackendClass  string `json:"backendClass,optional"`
+
+        // BackendType
+        BackendType  string `json:"backendType,optional"`
+
+        // BackendTable
+        BackendTable  string `json:"backendTable,optional"`
+
+        // FrontendClass
+        FrontendClass  string `json:"frontendClass,optional"`
+
+        // FrontendType
+        FrontendType  string `json:"frontendType,optional"`
+
+        // FrontendLabel
+        FrontendLabel  string `json:"frontendLabel,optional"`
+
+        // SourceClass
+        SourceClass  string `json:"sourceClass,optional"`
+
+        // DefaultValue
+        DefaultValue  string `json:"defaultValue,optional"`
+
+        // IsFilterable
+        IsFilterable  uint32 `json:"isFilterable,optional"`
+
+        // IsSearchable
+        IsSearchable  uint32 `json:"isSearchable,optional"`
+
+        // IsRequired
+        IsRequired  uint32 `json:"isRequired,optional"`
+
+        // RequiredValidateClass
+        RequiredValidateClass  string `json:"requiredValidateClass,optional"`
+    }
+
+    // The response data of attribute list | Attribute列表数据
+    AttributeListResp {
+        BaseDataInfo
+
+        // Attribute list data | Attribute列表数据
+        Data AttributeListInfo `json:"data"`
+    }
+
+    // Attribute list data | Attribute列表数据
+    AttributeListInfo {
+        BaseListInfo
+
+        // The API list data | Attribute列表数据
+        Data  []AttributeInfo  `json:"data"`
+    }
+
+    // Get attribute list request params | Attribute列表请求参数
+    AttributeListReq {
+        PageInfo
+
+        // AttributeCode
+        AttributeCode  string `json:"attributeCode,optional"`
+
+        // BackendClass
+        BackendClass  string `json:"backendClass,optional"`
+
+        // BackendType
+        BackendType  string `json:"backendType,optional"`
+    }
+
+    // Attribute information response | Attribute信息返回体
+    AttributeInfoResp {
+        BaseDataInfo
+
+        // Attribute information | Attribute数据
+        Data AttributeInfo `json:"data"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: attribute
+    middleware: Authority
+)
+
+service Ticket {
+    // Create attribute information | 创建Attribute
+    @handler createAttribute
+    post /attribute/create (AttributeInfo) returns (BaseMsgResp)
+
+    // Update attribute information | 更新Attribute
+    @handler updateAttribute
+    post /attribute/update (AttributeInfo) returns (BaseMsgResp)
+
+    // Delete attribute information | 删除Attribute信息
+    @handler deleteAttribute
+    post /attribute/delete (IDsReq) returns (BaseMsgResp)
+
+    // Get attribute list | 获取Attribute列表
+    @handler getAttributeList
+    post /attribute/list (AttributeListReq) returns (AttributeListResp)
+
+    // Get attribute by ID | 通过ID获取Attribute
+    @handler getAttributeById
+    post /attribute (IDReq) returns (AttributeInfoResp)
+}

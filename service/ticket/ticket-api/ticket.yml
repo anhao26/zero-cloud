@@ -1,0 +1,464 @@
+basePath: /
+consumes:
+    - application/json
+definitions:
+    AttributeInfo:
+        description: The response data of attribute information | Attribute信息
+        properties:
+            attributeCode:
+                description: AttributeCode
+                type: string
+                x-go-name: AttributeCode
+            backendClass:
+                description: BackendClass
+                type: string
+                x-go-name: BackendClass
+            backendTable:
+                description: BackendTable
+                type: string
+                x-go-name: BackendTable
+            backendType:
+                description: BackendType
+                type: string
+                x-go-name: BackendType
+            createdAt:
+                description: Create date | 创建日期
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            defaultValue:
+                description: DefaultValue
+                type: string
+                x-go-name: DefaultValue
+            entityId:
+                description: EntityId
+                format: uint64
+                type: integer
+                x-go-name: EntityId
+            frontendClass:
+                description: FrontendClass
+                type: string
+                x-go-name: FrontendClass
+            frontendLabel:
+                description: FrontendLabel
+                type: string
+                x-go-name: FrontendLabel
+            frontendType:
+                description: FrontendType
+                type: string
+                x-go-name: FrontendType
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: Id
+            isFilterable:
+                description: IsFilterable
+                format: uint32
+                type: integer
+                x-go-name: IsFilterable
+            isRequired:
+                description: IsRequired
+                format: uint32
+                type: integer
+                x-go-name: IsRequired
+            isSearchable:
+                description: IsSearchable
+                format: uint32
+                type: integer
+                x-go-name: IsSearchable
+            requiredValidateClass:
+                description: RequiredValidateClass
+                type: string
+                x-go-name: RequiredValidateClass
+            sourceClass:
+                description: SourceClass
+                type: string
+                x-go-name: SourceClass
+            updatedAt:
+                description: Update date | 更新日期
+                format: int64
+                type: integer
+                x-go-name: UpdatedAt
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    AttributeInfoResp:
+        description: Attribute information response | Attribute信息返回体
+        properties:
+            code:
+                description: Error code | 错误代码
+                format: int64
+                type: integer
+                x-go-name: Code
+            data:
+                $ref: '#/definitions/AttributeInfo'
+                description: Data | 数据
+                type: string
+                x-go-name: Data
+            msg:
+                description: Message | 提示信息
+                type: string
+                x-go-name: Msg
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    AttributeListInfo:
+        description: Attribute list data | Attribute列表数据
+        properties:
+            data:
+                description: The API list data | Attribute列表数据
+                items:
+                    $ref: '#/definitions/AttributeInfo'
+                type: array
+                x-go-name: Data
+            total:
+                description: The total number of data | 数据总数
+                format: uint64
+                type: integer
+                x-go-name: Total
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    AttributeListReq:
+        description: Get attribute list request params | Attribute列表请求参数
+        properties:
+            attributeCode:
+                description: AttributeCode
+                type: string
+                x-go-name: AttributeCode
+            backendClass:
+                description: BackendClass
+                type: string
+                x-go-name: BackendClass
+            backendType:
+                description: BackendType
+                type: string
+                x-go-name: BackendType
+            page:
+                description: Page number | 第几页
+                format: uint64
+                type: integer
+                x-go-name: Page
+            pageSize:
+                description: Page size | 单页数据行数
+                format: uint64
+                maximum: 100000
+                type: integer
+                x-go-name: PageSize
+        required:
+            - page
+            - pageSize
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    AttributeListResp:
+        description: The response data of attribute list | Attribute列表数据
+        properties:
+            code:
+                description: Error code | 错误代码
+                format: int64
+                type: integer
+                x-go-name: Code
+            data:
+                $ref: '#/definitions/AttributeListInfo'
+                description: Data | 数据
+                type: string
+                x-go-name: Data
+            msg:
+                description: Message | 提示信息
+                type: string
+                x-go-name: Msg
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    BaseDataInfo:
+        description: The basic response with data | 基础带数据信息
+        properties:
+            code:
+                description: Error code | 错误代码
+                format: int64
+                type: integer
+                x-go-name: Code
+            data:
+                description: Data | 数据
+                type: string
+                x-go-name: Data
+            msg:
+                description: Message | 提示信息
+                type: string
+                x-go-name: Msg
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    BaseIDInfo:
+        description: The base ID response data | 基础ID信息
+        properties:
+            createdAt:
+                description: Create date | 创建日期
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: Id
+            updatedAt:
+                description: Update date | 更新日期
+                format: int64
+                type: integer
+                x-go-name: UpdatedAt
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    BaseListInfo:
+        description: The basic response with data | 基础带数据信息
+        properties:
+            data:
+                description: Data | 数据
+                type: string
+                x-go-name: Data
+            total:
+                description: The total number of data | 数据总数
+                format: uint64
+                type: integer
+                x-go-name: Total
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    BaseMsgResp:
+        description: The basic response without data | 基础不带数据信息
+        properties:
+            code:
+                description: Error code | 错误代码
+                format: int64
+                type: integer
+                x-go-name: Code
+            msg:
+                description: Message | 提示信息
+                type: string
+                x-go-name: Msg
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    BaseUUIDInfo:
+        description: The base UUID response data | 基础UUID信息
+        properties:
+            createdAt:
+                description: Create date | 创建日期
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            id:
+                description: ID
+                type: string
+                x-go-name: Id
+            updatedAt:
+                description: Update date | 更新日期
+                format: int64
+                type: integer
+                x-go-name: UpdatedAt
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    IDPathReq:
+        description: Basic ID request | 基础ID地址参数请求
+        properties:
+            Id:
+                description: ID
+                format: uint64
+                type: integer
+        required:
+            - Id
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    IDReq:
+        description: Basic ID request | 基础ID参数请求
+        properties:
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: Id
+        required:
+            - id
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    IDsReq:
+        description: Basic IDs request | 基础ID数组参数请求
+        properties:
+            ids:
+                description: IDs
+                items:
+                    format: uint64
+                    type: integer
+                type: array
+                x-go-name: Ids
+        required:
+            - ids
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    PageInfo:
+        description: The page request parameters | 列表请求参数
+        properties:
+            page:
+                description: Page number | 第几页
+                format: uint64
+                type: integer
+                x-go-name: Page
+            pageSize:
+                description: Page size | 单页数据行数
+                format: uint64
+                maximum: 100000
+                type: integer
+                x-go-name: PageSize
+        required:
+            - page
+            - pageSize
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    UUIDReq:
+        description: Basic UUID request | 基础UUID参数请求
+        properties:
+            id:
+                description: ID
+                maxLength: 36
+                type: string
+                x-go-name: Id
+        required:
+            - id
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    UUIDsReq:
+        description: Basic UUID array request | 基础UUID数组参数请求
+        properties:
+            ids:
+                description: Ids
+                items:
+                    type: string
+                type: array
+                x-go-name: Ids
+        required:
+            - ids
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+host: localhost:8071
+info:
+    description: 'Description: ticket service'
+    title: ticket
+    version: 0.0.1
+paths:
+    /attribute:
+        post:
+            description: Get attribute by ID | 通过ID获取Attribute
+            operationId: GetAttributeById
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDReq'
+                    type: object
+            responses:
+                "200":
+                    description: AttributeInfoResp
+                    schema:
+                        $ref: '#/definitions/AttributeInfoResp'
+            summary: Get attribute by ID | 通过ID获取Attribute
+            tags:
+                - attribute
+    /attribute/create:
+        post:
+            description: Create attribute information | 创建Attribute
+            operationId: CreateAttribute
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/AttributeInfo'
+                    type: object
+            responses:
+                "200":
+                    description: BaseMsgResp
+                    schema:
+                        $ref: '#/definitions/BaseMsgResp'
+            summary: Create attribute information | 创建Attribute
+            tags:
+                - attribute
+    /attribute/delete:
+        post:
+            description: Delete attribute information | 删除Attribute信息
+            operationId: DeleteAttribute
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDsReq'
+                    type: object
+            responses:
+                "200":
+                    description: BaseMsgResp
+                    schema:
+                        $ref: '#/definitions/BaseMsgResp'
+            summary: Delete attribute information | 删除Attribute信息
+            tags:
+                - attribute
+    /attribute/list:
+        post:
+            description: Get attribute list | 获取Attribute列表
+            operationId: GetAttributeList
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/AttributeListReq'
+                    type: object
+            responses:
+                "200":
+                    description: AttributeListResp
+                    schema:
+                        $ref: '#/definitions/AttributeListResp'
+            summary: Get attribute list | 获取Attribute列表
+            tags:
+                - attribute
+    /attribute/update:
+        post:
+            description: Update attribute information | 更新Attribute
+            operationId: UpdateAttribute
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/AttributeInfo'
+                    type: object
+            responses:
+                "200":
+                    description: BaseMsgResp
+                    schema:
+                        $ref: '#/definitions/BaseMsgResp'
+            summary: Update attribute information | 更新Attribute
+            tags:
+                - attribute
+    /init/database:
+        get:
+            description: Initialize database | 初始化数据库
+            operationId: InitDatabase
+            responses:
+                "200":
+                    description: BaseMsgResp
+                    schema:
+                        $ref: '#/definitions/BaseMsgResp'
+            summary: Initialize database | 初始化数据库
+            tags:
+                - base
+produces:
+    - application/json
+responses:
+    SimpleMsg:
+        description: The simplest message | 最简单的信息
+        headers:
+            msg:
+                description: Message | 信息
+                type: string
+schemes:
+    - http
+    - https
+security:
+    - Token:
+        - '[]'
+securityDefinitions:
+    Token:
+        in: header
+        name: Authorization
+        type: apiKey
+swagger: "2.0"

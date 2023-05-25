@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	attribute "github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/handler/attribute"
 	base "github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/handler/base"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/svc"
 
@@ -19,5 +20,39 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: base.InitDatabaseHandler(serverCtx),
 			},
 		},
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/attribute/create",
+					Handler: attribute.CreateAttributeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/attribute/update",
+					Handler: attribute.UpdateAttributeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/attribute/delete",
+					Handler: attribute.DeleteAttributeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/attribute/list",
+					Handler: attribute.GetAttributeListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/attribute",
+					Handler: attribute.GetAttributeByIdHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 }

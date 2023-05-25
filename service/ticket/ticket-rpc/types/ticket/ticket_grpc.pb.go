@@ -19,7 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Ticket_InitDatabase_FullMethodName = "/ticket.Ticket/initDatabase"
+	Ticket_InitDatabase_FullMethodName  = "/ticket.Ticket/initDatabase"
+	Ticket_CreateEntity_FullMethodName  = "/ticket.Ticket/createEntity"
+	Ticket_UpdateEntity_FullMethodName  = "/ticket.Ticket/updateEntity"
+	Ticket_GetEntityList_FullMethodName = "/ticket.Ticket/getEntityList"
+	Ticket_GetEntityById_FullMethodName = "/ticket.Ticket/getEntityById"
+	Ticket_DeleteEntity_FullMethodName  = "/ticket.Ticket/deleteEntity"
 )
 
 // TicketClient is the client API for Ticket service.
@@ -28,6 +33,17 @@ const (
 type TicketClient interface {
 	// group: base
 	InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error)
+	// Entity management
+	// group: entity
+	CreateEntity(ctx context.Context, in *EntityInfo, opts ...grpc.CallOption) (*BaseIDResp, error)
+	// group: entity
+	UpdateEntity(ctx context.Context, in *EntityInfo, opts ...grpc.CallOption) (*BaseResp, error)
+	// group: entity
+	GetEntityList(ctx context.Context, in *EntityListReq, opts ...grpc.CallOption) (*EntityListResp, error)
+	// group: entity
+	GetEntityById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*EntityInfo, error)
+	// group: entity
+	DeleteEntity(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error)
 }
 
 type ticketClient struct {
@@ -47,12 +63,68 @@ func (c *ticketClient) InitDatabase(ctx context.Context, in *Empty, opts ...grpc
 	return out, nil
 }
 
+func (c *ticketClient) CreateEntity(ctx context.Context, in *EntityInfo, opts ...grpc.CallOption) (*BaseIDResp, error) {
+	out := new(BaseIDResp)
+	err := c.cc.Invoke(ctx, Ticket_CreateEntity_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ticketClient) UpdateEntity(ctx context.Context, in *EntityInfo, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, Ticket_UpdateEntity_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ticketClient) GetEntityList(ctx context.Context, in *EntityListReq, opts ...grpc.CallOption) (*EntityListResp, error) {
+	out := new(EntityListResp)
+	err := c.cc.Invoke(ctx, Ticket_GetEntityList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ticketClient) GetEntityById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*EntityInfo, error) {
+	out := new(EntityInfo)
+	err := c.cc.Invoke(ctx, Ticket_GetEntityById_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ticketClient) DeleteEntity(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*BaseResp, error) {
+	out := new(BaseResp)
+	err := c.cc.Invoke(ctx, Ticket_DeleteEntity_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TicketServer is the server API for Ticket service.
 // All implementations must embed UnimplementedTicketServer
 // for forward compatibility
 type TicketServer interface {
 	// group: base
 	InitDatabase(context.Context, *Empty) (*BaseResp, error)
+	// Entity management
+	// group: entity
+	CreateEntity(context.Context, *EntityInfo) (*BaseIDResp, error)
+	// group: entity
+	UpdateEntity(context.Context, *EntityInfo) (*BaseResp, error)
+	// group: entity
+	GetEntityList(context.Context, *EntityListReq) (*EntityListResp, error)
+	// group: entity
+	GetEntityById(context.Context, *IDReq) (*EntityInfo, error)
+	// group: entity
+	DeleteEntity(context.Context, *IDsReq) (*BaseResp, error)
 	mustEmbedUnimplementedTicketServer()
 }
 
@@ -62,6 +134,21 @@ type UnimplementedTicketServer struct {
 
 func (UnimplementedTicketServer) InitDatabase(context.Context, *Empty) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InitDatabase not implemented")
+}
+func (UnimplementedTicketServer) CreateEntity(context.Context, *EntityInfo) (*BaseIDResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateEntity not implemented")
+}
+func (UnimplementedTicketServer) UpdateEntity(context.Context, *EntityInfo) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateEntity not implemented")
+}
+func (UnimplementedTicketServer) GetEntityList(context.Context, *EntityListReq) (*EntityListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetEntityList not implemented")
+}
+func (UnimplementedTicketServer) GetEntityById(context.Context, *IDReq) (*EntityInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetEntityById not implemented")
+}
+func (UnimplementedTicketServer) DeleteEntity(context.Context, *IDsReq) (*BaseResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteEntity not implemented")
 }
 func (UnimplementedTicketServer) mustEmbedUnimplementedTicketServer() {}
 
@@ -94,6 +181,96 @@ func _Ticket_InitDatabase_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Ticket_CreateEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EntityInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TicketServer).CreateEntity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Ticket_CreateEntity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TicketServer).CreateEntity(ctx, req.(*EntityInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ticket_UpdateEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EntityInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TicketServer).UpdateEntity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Ticket_UpdateEntity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TicketServer).UpdateEntity(ctx, req.(*EntityInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ticket_GetEntityList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EntityListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TicketServer).GetEntityList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Ticket_GetEntityList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TicketServer).GetEntityList(ctx, req.(*EntityListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ticket_GetEntityById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TicketServer).GetEntityById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Ticket_GetEntityById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TicketServer).GetEntityById(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ticket_DeleteEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TicketServer).DeleteEntity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Ticket_DeleteEntity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TicketServer).DeleteEntity(ctx, req.(*IDsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Ticket_ServiceDesc is the grpc.ServiceDesc for Ticket service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -104,6 +281,26 @@ var Ticket_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "initDatabase",
 			Handler:    _Ticket_InitDatabase_Handler,
+		},
+		{
+			MethodName: "createEntity",
+			Handler:    _Ticket_CreateEntity_Handler,
+		},
+		{
+			MethodName: "updateEntity",
+			Handler:    _Ticket_UpdateEntity_Handler,
+		},
+		{
+			MethodName: "getEntityList",
+			Handler:    _Ticket_GetEntityList_Handler,
+		},
+		{
+			MethodName: "getEntityById",
+			Handler:    _Ticket_GetEntityById_Handler,
+		},
+		{
+			MethodName: "deleteEntity",
+			Handler:    _Ticket_DeleteEntity_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

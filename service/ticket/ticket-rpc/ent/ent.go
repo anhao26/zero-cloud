@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/ticket"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entity"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -73,7 +73,7 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			ticket.Table: ticket.ValidColumn,
+			entity.Table: entity.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

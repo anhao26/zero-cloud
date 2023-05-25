@@ -6,5 +6,5 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Ticket is the predicate function for ticket builders.
-type Ticket func(*sql.Selector)
+// Entity is the predicate function for entity builders.
+type Entity func(*sql.Selector)

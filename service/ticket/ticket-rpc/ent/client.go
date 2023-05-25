@@ -13,7 +13,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/ticket"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entity"
 )
 
 // Client is the client that holds all ent builders.
@@ -21,8 +21,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Ticket is the client for interacting with the Ticket builders.
-	Ticket *TicketClient
+	// Entity is the client for interacting with the Entity builders.
+	Entity *EntityClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -36,7 +36,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Ticket = NewTicketClient(c.config)
+	c.Entity = NewEntityClient(c.config)
 }
 
 type (
@@ -119,7 +119,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
-		Ticket: NewTicketClient(cfg),
+		Entity: NewEntityClient(cfg),
 	}, nil
 }
 
@@ -139,14 +139,14 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
-		Ticket: NewTicketClient(cfg),
+		Entity: NewEntityClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Ticket.
+//		Entity.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -168,111 +168,111 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Ticket.Use(hooks...)
+	c.Entity.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.Ticket.Intercept(interceptors...)
+	c.Entity.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *TicketMutation:
-		return c.Ticket.mutate(ctx, m)
+	case *EntityMutation:
+		return c.Entity.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
 }
 
-// TicketClient is a client for the Ticket schema.
-type TicketClient struct {
+// EntityClient is a client for the Entity schema.
+type EntityClient struct {
 	config
 }
 
-// NewTicketClient returns a client for the Ticket from the given config.
-func NewTicketClient(c config) *TicketClient {
-	return &TicketClient{config: c}
+// NewEntityClient returns a client for the Entity from the given config.
+func NewEntityClient(c config) *EntityClient {
+	return &EntityClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `ticket.Hooks(f(g(h())))`.
-func (c *TicketClient) Use(hooks ...Hook) {
-	c.hooks.Ticket = append(c.hooks.Ticket, hooks...)
+// A call to `Use(f, g, h)` equals to `entity.Hooks(f(g(h())))`.
+func (c *EntityClient) Use(hooks ...Hook) {
+	c.hooks.Entity = append(c.hooks.Entity, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `ticket.Intercept(f(g(h())))`.
-func (c *TicketClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Ticket = append(c.inters.Ticket, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `entity.Intercept(f(g(h())))`.
+func (c *EntityClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Entity = append(c.inters.Entity, interceptors...)
 }
 
-// Create returns a builder for creating a Ticket entity.
-func (c *TicketClient) Create() *TicketCreate {
-	mutation := newTicketMutation(c.config, OpCreate)
-	return &TicketCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Entity entity.
+func (c *EntityClient) Create() *EntityCreate {
+	mutation := newEntityMutation(c.config, OpCreate)
+	return &EntityCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Ticket entities.
-func (c *TicketClient) CreateBulk(builders ...*TicketCreate) *TicketCreateBulk {
-	return &TicketCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Entity entities.
+func (c *EntityClient) CreateBulk(builders ...*EntityCreate) *EntityCreateBulk {
+	return &EntityCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Ticket.
-func (c *TicketClient) Update() *TicketUpdate {
-	mutation := newTicketMutation(c.config, OpUpdate)
-	return &TicketUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Entity.
+func (c *EntityClient) Update() *EntityUpdate {
+	mutation := newEntityMutation(c.config, OpUpdate)
+	return &EntityUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *TicketClient) UpdateOne(t *Ticket) *TicketUpdateOne {
-	mutation := newTicketMutation(c.config, OpUpdateOne, withTicket(t))
-	return &TicketUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *EntityClient) UpdateOne(e *Entity) *EntityUpdateOne {
+	mutation := newEntityMutation(c.config, OpUpdateOne, withEntity(e))
+	return &EntityUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *TicketClient) UpdateOneID(id int) *TicketUpdateOne {
-	mutation := newTicketMutation(c.config, OpUpdateOne, withTicketID(id))
-	return &TicketUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *EntityClient) UpdateOneID(id uint64) *EntityUpdateOne {
+	mutation := newEntityMutation(c.config, OpUpdateOne, withEntityID(id))
+	return &EntityUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Ticket.
-func (c *TicketClient) Delete() *TicketDelete {
-	mutation := newTicketMutation(c.config, OpDelete)
-	return &TicketDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Entity.
+func (c *EntityClient) Delete() *EntityDelete {
+	mutation := newEntityMutation(c.config, OpDelete)
+	return &EntityDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *TicketClient) DeleteOne(t *Ticket) *TicketDeleteOne {
-	return c.DeleteOneID(t.ID)
+func (c *EntityClient) DeleteOne(e *Entity) *EntityDeleteOne {
+	return c.DeleteOneID(e.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *TicketClient) DeleteOneID(id int) *TicketDeleteOne {
-	builder := c.Delete().Where(ticket.ID(id))
+func (c *EntityClient) DeleteOneID(id uint64) *EntityDeleteOne {
+	builder := c.Delete().Where(entity.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &TicketDeleteOne{builder}
+	return &EntityDeleteOne{builder}
 }
 
-// Query returns a query builder for Ticket.
-func (c *TicketClient) Query() *TicketQuery {
-	return &TicketQuery{
+// Query returns a query builder for Entity.
+func (c *EntityClient) Query() *EntityQuery {
+	return &EntityQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeTicket},
+		ctx:    &QueryContext{Type: TypeEntity},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a Ticket entity by its id.
-func (c *TicketClient) Get(ctx context.Context, id int) (*Ticket, error) {
-	return c.Query().Where(ticket.ID(id)).Only(ctx)
+// Get returns a Entity entity by its id.
+func (c *EntityClient) Get(ctx context.Context, id uint64) (*Entity, error) {
+	return c.Query().Where(entity.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *TicketClient) GetX(ctx context.Context, id int) *Ticket {
+func (c *EntityClient) GetX(ctx context.Context, id uint64) *Entity {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -281,36 +281,36 @@ func (c *TicketClient) GetX(ctx context.Context, id int) *Ticket {
 }
 
 // Hooks returns the client hooks.
-func (c *TicketClient) Hooks() []Hook {
-	return c.hooks.Ticket
+func (c *EntityClient) Hooks() []Hook {
+	return c.hooks.Entity
 }
 
 // Interceptors returns the client interceptors.
-func (c *TicketClient) Interceptors() []Interceptor {
-	return c.inters.Ticket
+func (c *EntityClient) Interceptors() []Interceptor {
+	return c.inters.Entity
 }
 
-func (c *TicketClient) mutate(ctx context.Context, m *TicketMutation) (Value, error) {
+func (c *EntityClient) mutate(ctx context.Context, m *EntityMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&TicketCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&EntityCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&TicketUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&EntityUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&TicketUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&EntityUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&TicketDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&EntityDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown Ticket mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Entity mutation op: %q", m.Op())
 	}
 }
 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Ticket []ent.Hook
+		Entity []ent.Hook
 	}
 	inters struct {
-		Ticket []ent.Interceptor
+		Entity []ent.Interceptor
 	}
 )

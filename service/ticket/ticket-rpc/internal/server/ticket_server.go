@@ -7,6 +7,7 @@ import (
 	"context"
 
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/logic/base"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/logic/entity"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/svc"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/types/ticket"
 )
@@ -25,4 +26,30 @@ func NewTicketServer(svcCtx *svc.ServiceContext) *TicketServer {
 func (s *TicketServer) InitDatabase(ctx context.Context, in *ticket.Empty) (*ticket.BaseResp, error) {
 	l := base.NewInitDatabaseLogic(ctx, s.svcCtx)
 	return l.InitDatabase(in)
+}
+
+// Entity management
+func (s *TicketServer) CreateEntity(ctx context.Context, in *ticket.EntityInfo) (*ticket.BaseIDResp, error) {
+	l := entity.NewCreateEntityLogic(ctx, s.svcCtx)
+	return l.CreateEntity(in)
+}
+
+func (s *TicketServer) UpdateEntity(ctx context.Context, in *ticket.EntityInfo) (*ticket.BaseResp, error) {
+	l := entity.NewUpdateEntityLogic(ctx, s.svcCtx)
+	return l.UpdateEntity(in)
+}
+
+func (s *TicketServer) GetEntityList(ctx context.Context, in *ticket.EntityListReq) (*ticket.EntityListResp, error) {
+	l := entity.NewGetEntityListLogic(ctx, s.svcCtx)
+	return l.GetEntityList(in)
+}
+
+func (s *TicketServer) GetEntityById(ctx context.Context, in *ticket.IDReq) (*ticket.EntityInfo, error) {
+	l := entity.NewGetEntityByIdLogic(ctx, s.svcCtx)
+	return l.GetEntityById(in)
+}
+
+func (s *TicketServer) DeleteEntity(ctx context.Context, in *ticket.IDsReq) (*ticket.BaseResp, error) {
+	l := entity.NewDeleteEntityLogic(ctx, s.svcCtx)
+	return l.DeleteEntity(in)
 }

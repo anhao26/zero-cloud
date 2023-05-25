@@ -9,16 +9,16 @@ import (
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent"
 )
 
-// The TicketFunc type is an adapter to allow the use of ordinary
-// function as Ticket mutator.
-type TicketFunc func(context.Context, *ent.TicketMutation) (ent.Value, error)
+// The EntityFunc type is an adapter to allow the use of ordinary
+// function as Entity mutator.
+type EntityFunc func(context.Context, *ent.EntityMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f TicketFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.TicketMutation); ok {
+func (f EntityFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.EntityMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TicketMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EntityMutation", m)
 }
 
 // Condition is a hook condition function.

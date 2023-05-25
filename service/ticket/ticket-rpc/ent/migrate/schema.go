@@ -3,26 +3,38 @@
 package migrate
 
 import (
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/dialect/sql/schema"
 	"entgo.io/ent/schema/field"
 )
 
 var (
-	// TicketsColumns holds the columns for the "tickets" table.
-	TicketsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+	// EntitiesColumns holds the columns for the "entities" table.
+	EntitiesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "entity_code", Type: field.TypeString, Unique: true, Comment: "Entity Code | 实体标识"},
+		{Name: "entity_class", Type: field.TypeString, Comment: "Entity Class | 实体类"},
+		{Name: "entity_table", Type: field.TypeString, Comment: "Entity Table | 实体表名称"},
+		{Name: "default_attribute_set_id", Type: field.TypeUint64, Comment: "Default Attribute Set Id | 默认属性SET ID"},
+		{Name: "additional_attribute_table", Type: field.TypeString, Comment: "Additional Attribute Table | 附加属性表"},
+		{Name: "is_flat_enabled", Type: field.TypeUint32, Comment: "Is Flat Enabled | 是否设置一张表存储", Default: 0},
 	}
-	// TicketsTable holds the schema information for the "tickets" table.
-	TicketsTable = &schema.Table{
-		Name:       "tickets",
-		Columns:    TicketsColumns,
-		PrimaryKey: []*schema.Column{TicketsColumns[0]},
+	// EntitiesTable holds the schema information for the "entities" table.
+	EntitiesTable = &schema.Table{
+		Name:       "entities",
+		Columns:    EntitiesColumns,
+		PrimaryKey: []*schema.Column{EntitiesColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		TicketsTable,
+		EntitiesTable,
 	}
 )
 
 func init() {
+	EntitiesTable.Annotation = &entsql.Annotation{
+		Table: "entities",
+	}
 }

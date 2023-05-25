@@ -2,8 +2,34 @@
 
 package ent
 
+import (
+	"time"
+
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entity"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/schema"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	entityMixin := schema.Entity{}.Mixin()
+	entityMixinFields0 := entityMixin[0].Fields()
+	_ = entityMixinFields0
+	entityFields := schema.Entity{}.Fields()
+	_ = entityFields
+	// entityDescCreatedAt is the schema descriptor for created_at field.
+	entityDescCreatedAt := entityMixinFields0[1].Descriptor()
+	// entity.DefaultCreatedAt holds the default value on creation for the created_at field.
+	entity.DefaultCreatedAt = entityDescCreatedAt.Default.(func() time.Time)
+	// entityDescUpdatedAt is the schema descriptor for updated_at field.
+	entityDescUpdatedAt := entityMixinFields0[2].Descriptor()
+	// entity.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	entity.DefaultUpdatedAt = entityDescUpdatedAt.Default.(func() time.Time)
+	// entity.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	entity.UpdateDefaultUpdatedAt = entityDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// entityDescIsFlatEnabled is the schema descriptor for is_flat_enabled field.
+	entityDescIsFlatEnabled := entityFields[5].Descriptor()
+	// entity.DefaultIsFlatEnabled holds the default value on creation for the is_flat_enabled field.
+	entity.DefaultIsFlatEnabled = entityDescIsFlatEnabled.Default.(uint32)
 }

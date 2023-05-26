@@ -3,6 +3,28 @@ syntax = "proto3";
 package ticket;
 option go_package="./ticket";
 
+message UUIDReq {
+  string id = 1;
+}
+
+message BaseIDResp {
+  uint64 id = 1;
+  string msg = 2;
+}
+
+message BaseUUIDResp {
+  string id = 1;
+  string msg = 2;
+}
+
+message EntityListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string entity_code = 3;
+  string entity_class = 4;
+  string entity_table = 5;
+}
+
 message AttributeListReq {
   uint64 page = 1;
   uint64 page_size = 2;
@@ -11,15 +33,27 @@ message AttributeListReq {
   string backend_type = 5;
 }
 
-//  base message
-message Empty {}
-
-message UUIDReq {
-  string id = 1;
+message IDsReq {
+  repeated uint64 ids = 1;
 }
 
-message BaseResp {
-  string msg = 1;
+message EntityListResp {
+  uint64 total = 1;
+  repeated EntityInfo data = 2;
+}
+
+message AttributeListResp {
+  uint64 total = 1;
+  repeated AttributeInfo data = 2;
+}
+
+message IDReq {
+  uint64 id = 1;
+}
+
+message PageInfoReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
 }
 
 message EntityInfo {
@@ -32,6 +66,14 @@ message EntityInfo {
   uint64 default_attribute_set_id = 7;
   string additional_attribute_table = 8;
   uint32 is_flat_enabled = 9;
+}
+
+message UUIDsReq {
+  repeated string ids = 1;
+}
+
+message BaseResp {
+  string msg = 1;
 }
 
 message AttributeInfo {
@@ -54,50 +96,8 @@ message AttributeInfo {
   string required_validate_class = 17;
 }
 
-message PageInfoReq {
-  uint64 page = 1;
-  uint64 page_size = 2;
-}
-
-message EntityListResp {
-  uint64 total = 1;
-  repeated EntityInfo data = 2;
-}
-
-message IDsReq {
-  repeated uint64 ids = 1;
-}
-
-message UUIDsReq {
-  repeated string ids = 1;
-}
-
-message BaseUUIDResp {
-  string id = 1;
-  string msg = 2;
-}
-
-message IDReq {
-  uint64 id = 1;
-}
-
-message BaseIDResp {
-  uint64 id = 1;
-  string msg = 2;
-}
-
-message EntityListReq {
-  uint64 page = 1;
-  uint64 page_size = 2;
-  string entity_code = 3;
-  string entity_class = 4;
-  string entity_table = 5;
-}
-
-message AttributeListResp {
-  uint64 total = 1;
-  repeated AttributeInfo data = 2;
-}
+//  base message
+message Empty {}
 
 service Ticket {
   //  Attribute management

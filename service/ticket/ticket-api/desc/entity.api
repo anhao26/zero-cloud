@@ -1,0 +1,92 @@
+import "base.api"
+
+type (
+    // The response data of entity information | Entity信息
+    EntityInfo {
+        BaseIDInfo
+
+        // EntityCode
+        EntityCode  string `json:"entityCode,optional"`
+
+        // EntityClass
+        EntityClass  string `json:"entityClass,optional"`
+
+        // EntityTable
+        EntityTable  string `json:"entityTable,optional"`
+
+        // DefaultAttributeSetId
+        DefaultAttributeSetId  uint64 `json:"defaultAttributeSetId,optional"`
+
+        // AdditionalAttributeTable
+        AdditionalAttributeTable  string `json:"additionalAttributeTable,optional"`
+
+        // IsFlatEnabled
+        IsFlatEnabled  uint32 `json:"isFlatEnabled,optional"`
+    }
+
+    // The response data of entity list | Entity列表数据
+    EntityListResp {
+        BaseDataInfo
+
+        // Entity list data | Entity列表数据
+        Data EntityListInfo `json:"data"`
+    }
+
+    // Entity list data | Entity列表数据
+    EntityListInfo {
+        BaseListInfo
+
+        // The API list data | Entity列表数据
+        Data  []EntityInfo  `json:"data"`
+    }
+
+    // Get entity list request params | Entity列表请求参数
+    EntityListReq {
+        PageInfo
+
+        // EntityCode
+        EntityCode  string `json:"entityCode,optional"`
+
+        // EntityClass
+        EntityClass  string `json:"entityClass,optional"`
+
+        // EntityTable
+        EntityTable  string `json:"entityTable,optional"`
+    }
+
+    // Entity information response | Entity信息返回体
+    EntityInfoResp {
+        BaseDataInfo
+
+        // Entity information | Entity数据
+        Data EntityInfo `json:"data"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: entity
+    middleware: Authority
+)
+
+service Ticket {
+    // Create entity information | 创建Entity
+    @handler createEntity
+    post /entity/create (EntityInfo) returns (BaseMsgResp)
+
+    // Update entity information | 更新Entity
+    @handler updateEntity
+    post /entity/update (EntityInfo) returns (BaseMsgResp)
+
+    // Delete entity information | 删除Entity信息
+    @handler deleteEntity
+    post /entity/delete (IDsReq) returns (BaseMsgResp)
+
+    // Get entity list | 获取Entity列表
+    @handler getEntityList
+    post /entity/list (EntityListReq) returns (EntityListResp)
+
+    // Get entity by ID | 通过ID获取Entity
+    @handler getEntityById
+    post /entity (IDReq) returns (EntityInfoResp)
+}

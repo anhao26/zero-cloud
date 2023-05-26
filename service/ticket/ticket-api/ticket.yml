@@ -252,6 +252,137 @@ definitions:
                 x-go-name: UpdatedAt
         type: object
         x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    EntityInfo:
+        description: The response data of entity information | Entity信息
+        properties:
+            additionalAttributeTable:
+                description: AdditionalAttributeTable
+                type: string
+                x-go-name: AdditionalAttributeTable
+            createdAt:
+                description: Create date | 创建日期
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            defaultAttributeSetId:
+                description: DefaultAttributeSetId
+                format: uint64
+                type: integer
+                x-go-name: DefaultAttributeSetId
+            entityClass:
+                description: EntityClass
+                type: string
+                x-go-name: EntityClass
+            entityCode:
+                description: EntityCode
+                type: string
+                x-go-name: EntityCode
+            entityTable:
+                description: EntityTable
+                type: string
+                x-go-name: EntityTable
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: Id
+            isFlatEnabled:
+                description: IsFlatEnabled
+                format: uint32
+                type: integer
+                x-go-name: IsFlatEnabled
+            updatedAt:
+                description: Update date | 更新日期
+                format: int64
+                type: integer
+                x-go-name: UpdatedAt
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    EntityInfoResp:
+        description: Entity information response | Entity信息返回体
+        properties:
+            code:
+                description: Error code | 错误代码
+                format: int64
+                type: integer
+                x-go-name: Code
+            data:
+                $ref: '#/definitions/EntityInfo'
+                description: Data | 数据
+                type: string
+                x-go-name: Data
+            msg:
+                description: Message | 提示信息
+                type: string
+                x-go-name: Msg
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    EntityListInfo:
+        description: Entity list data | Entity列表数据
+        properties:
+            data:
+                description: The API list data | Entity列表数据
+                items:
+                    $ref: '#/definitions/EntityInfo'
+                type: array
+                x-go-name: Data
+            total:
+                description: The total number of data | 数据总数
+                format: uint64
+                type: integer
+                x-go-name: Total
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    EntityListReq:
+        description: Get entity list request params | Entity列表请求参数
+        properties:
+            entityClass:
+                description: EntityClass
+                type: string
+                x-go-name: EntityClass
+            entityCode:
+                description: EntityCode
+                type: string
+                x-go-name: EntityCode
+            entityTable:
+                description: EntityTable
+                type: string
+                x-go-name: EntityTable
+            page:
+                description: Page number | 第几页
+                format: uint64
+                type: integer
+                x-go-name: Page
+            pageSize:
+                description: Page size | 单页数据行数
+                format: uint64
+                maximum: 100000
+                type: integer
+                x-go-name: PageSize
+        required:
+            - page
+            - pageSize
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    EntityListResp:
+        description: The response data of entity list | Entity列表数据
+        properties:
+            code:
+                description: Error code | 错误代码
+                format: int64
+                type: integer
+                x-go-name: Code
+            data:
+                $ref: '#/definitions/EntityListInfo'
+                description: Data | 数据
+                type: string
+                x-go-name: Data
+            msg:
+                description: Message | 提示信息
+                type: string
+                x-go-name: Msg
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
     IDPathReq:
         description: Basic ID request | 基础ID地址参数请求
         properties:
@@ -429,6 +560,96 @@ paths:
             summary: Update attribute information | 更新Attribute
             tags:
                 - attribute
+    /entity:
+        post:
+            description: Get entity by ID | 通过ID获取Entity
+            operationId: GetEntityById
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDReq'
+                    type: object
+            responses:
+                "200":
+                    description: EntityInfoResp
+                    schema:
+                        $ref: '#/definitions/EntityInfoResp'
+            summary: Get entity by ID | 通过ID获取Entity
+            tags:
+                - entity
+    /entity/create:
+        post:
+            description: Create entity information | 创建Entity
+            operationId: CreateEntity
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/EntityInfo'
+                    type: object
+            responses:
+                "200":
+                    description: BaseMsgResp
+                    schema:
+                        $ref: '#/definitions/BaseMsgResp'
+            summary: Create entity information | 创建Entity
+            tags:
+                - entity
+    /entity/delete:
+        post:
+            description: Delete entity information | 删除Entity信息
+            operationId: DeleteEntity
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDsReq'
+                    type: object
+            responses:
+                "200":
+                    description: BaseMsgResp
+                    schema:
+                        $ref: '#/definitions/BaseMsgResp'
+            summary: Delete entity information | 删除Entity信息
+            tags:
+                - entity
+    /entity/list:
+        post:
+            description: Get entity list | 获取Entity列表
+            operationId: GetEntityList
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/EntityListReq'
+                    type: object
+            responses:
+                "200":
+                    description: EntityListResp
+                    schema:
+                        $ref: '#/definitions/EntityListResp'
+            summary: Get entity list | 获取Entity列表
+            tags:
+                - entity
+    /entity/update:
+        post:
+            description: Update entity information | 更新Entity
+            operationId: UpdateEntity
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/EntityInfo'
+                    type: object
+            responses:
+                "200":
+                    description: BaseMsgResp
+                    schema:
+                        $ref: '#/definitions/BaseMsgResp'
+            summary: Update entity information | 更新Entity
+            tags:
+                - entity
     /init/database:
         get:
             description: Initialize database | 初始化数据库

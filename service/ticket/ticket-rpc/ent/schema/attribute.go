@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/suyuan32/simple-admin-common/orm/ent/mixins"
@@ -67,7 +68,9 @@ func (Attribute) Mixin() []ent.Mixin {
 }
 
 func (Attribute) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("entities", Entity.Type),
+	}
 }
 
 func (Attribute) Indexes() []ent.Index {

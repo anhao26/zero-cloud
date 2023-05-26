@@ -88,9 +88,9 @@ type (
 )
 
 @server(
-//    jwt: Auth
+    jwt: Auth
     group: attribute
-//    middleware: Authority
+    middleware: Authority
 )
 
 service Ticket {

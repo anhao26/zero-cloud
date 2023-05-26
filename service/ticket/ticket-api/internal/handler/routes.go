@@ -6,6 +6,7 @@ import (
 
 	attribute "github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/handler/attribute"
 	base "github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/handler/base"
+	entity "github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/handler/entity"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -23,32 +24,70 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/attribute/create",
-				Handler: attribute.CreateAttributeHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/attribute/update",
-				Handler: attribute.UpdateAttributeHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/attribute/delete",
-				Handler: attribute.DeleteAttributeHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/attribute/list",
-				Handler: attribute.GetAttributeListHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/attribute",
-				Handler: attribute.GetAttributeByIdHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/attribute/create",
+					Handler: attribute.CreateAttributeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/attribute/update",
+					Handler: attribute.UpdateAttributeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/attribute/delete",
+					Handler: attribute.DeleteAttributeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/attribute/list",
+					Handler: attribute.GetAttributeListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/attribute",
+					Handler: attribute.GetAttributeByIdHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/entity/create",
+					Handler: entity.CreateEntityHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/entity/update",
+					Handler: entity.UpdateEntityHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/entity/delete",
+					Handler: entity.DeleteEntityHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/entity/list",
+					Handler: entity.GetEntityListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/entity",
+					Handler: entity.GetEntityByIdHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 }

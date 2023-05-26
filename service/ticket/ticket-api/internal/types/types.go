@@ -181,3 +181,57 @@ type AttributeInfoResp struct {
 	// Attribute information | Attribute数据
 	Data AttributeInfo `json:"data"`
 }
+
+// The response data of entity information | Entity信息
+// swagger:model EntityInfo
+type EntityInfo struct {
+	BaseIDInfo
+	// EntityCode
+	EntityCode string `json:"entityCode,optional"`
+	// EntityClass
+	EntityClass string `json:"entityClass,optional"`
+	// EntityTable
+	EntityTable string `json:"entityTable,optional"`
+	// DefaultAttributeSetId
+	DefaultAttributeSetId uint64 `json:"defaultAttributeSetId,optional"`
+	// AdditionalAttributeTable
+	AdditionalAttributeTable string `json:"additionalAttributeTable,optional"`
+	// IsFlatEnabled
+	IsFlatEnabled uint32 `json:"isFlatEnabled,optional"`
+}
+
+// The response data of entity list | Entity列表数据
+// swagger:model EntityListResp
+type EntityListResp struct {
+	BaseDataInfo
+	// Entity list data | Entity列表数据
+	Data EntityListInfo `json:"data"`
+}
+
+// Entity list data | Entity列表数据
+// swagger:model EntityListInfo
+type EntityListInfo struct {
+	BaseListInfo
+	// The API list data | Entity列表数据
+	Data []EntityInfo `json:"data"`
+}
+
+// Get entity list request params | Entity列表请求参数
+// swagger:model EntityListReq
+type EntityListReq struct {
+	PageInfo
+	// EntityCode
+	EntityCode string `json:"entityCode,optional"`
+	// EntityClass
+	EntityClass string `json:"entityClass,optional"`
+	// EntityTable
+	EntityTable string `json:"entityTable,optional"`
+}
+
+// Entity information response | Entity信息返回体
+// swagger:model EntityInfoResp
+type EntityInfoResp struct {
+	BaseDataInfo
+	// Entity information | Entity数据
+	Data EntityInfo `json:"data"`
+}

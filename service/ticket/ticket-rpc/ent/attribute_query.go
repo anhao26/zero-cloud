@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -11,16 +12,20 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attribute"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attributeoption"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entity"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/predicate"
 )
 
 // AttributeQuery is the builder for querying Attribute entities.
 type AttributeQuery struct {
 	config
-	ctx        *QueryContext
-	order      []attribute.OrderOption
-	inters     []Interceptor
-	predicates []predicate.Attribute
+	ctx                  *QueryContext
+	order                []attribute.OrderOption
+	inters               []Interceptor
+	predicates           []predicate.Attribute
+	withEntities         *EntityQuery
+	withAttributeOptions *AttributeOptionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -55,6 +60,50 @@ func (aq *AttributeQuery) Unique(unique bool) *AttributeQuery {
 func (aq *AttributeQuery) Order(o ...attribute.OrderOption) *AttributeQuery {
 	aq.order = append(aq.order, o...)
 	return aq
+}
+
+// QueryEntities chains the current query on the "entities" edge.
+func (aq *AttributeQuery) QueryEntities() *EntityQuery {
+	query := (&EntityClient{config: aq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := aq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := aq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(attribute.Table, attribute.FieldID, selector),
+			sqlgraph.To(entity.Table, entity.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, attribute.EntitiesTable, attribute.EntitiesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAttributeOptions chains the current query on the "attribute_options" edge.
+func (aq *AttributeQuery) QueryAttributeOptions() *AttributeOptionQuery {
+	query := (&AttributeOptionClient{config: aq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := aq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := aq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(attribute.Table, attribute.FieldID, selector),
+			sqlgraph.To(attributeoption.Table, attributeoption.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, attribute.AttributeOptionsTable, attribute.AttributeOptionsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Attribute entity from the query.
@@ -244,15 +293,39 @@ func (aq *AttributeQuery) Clone() *AttributeQuery {
 		return nil
 	}
 	return &AttributeQuery{
-		config:     aq.config,
-		ctx:        aq.ctx.Clone(),
-		order:      append([]attribute.OrderOption{}, aq.order...),
-		inters:     append([]Interceptor{}, aq.inters...),
-		predicates: append([]predicate.Attribute{}, aq.predicates...),
+		config:               aq.config,
+		ctx:                  aq.ctx.Clone(),
+		order:                append([]attribute.OrderOption{}, aq.order...),
+		inters:               append([]Interceptor{}, aq.inters...),
+		predicates:           append([]predicate.Attribute{}, aq.predicates...),
+		withEntities:         aq.withEntities.Clone(),
+		withAttributeOptions: aq.withAttributeOptions.Clone(),
 		// clone intermediate query.
 		sql:  aq.sql.Clone(),
 		path: aq.path,
 	}
+}
+
+// WithEntities tells the query-builder to eager-load the nodes that are connected to
+// the "entities" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AttributeQuery) WithEntities(opts ...func(*EntityQuery)) *AttributeQuery {
+	query := (&EntityClient{config: aq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	aq.withEntities = query
+	return aq
+}
+
+// WithAttributeOptions tells the query-builder to eager-load the nodes that are connected to
+// the "attribute_options" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AttributeQuery) WithAttributeOptions(opts ...func(*AttributeOptionQuery)) *AttributeQuery {
+	query := (&AttributeOptionClient{config: aq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	aq.withAttributeOptions = query
+	return aq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -331,8 +404,12 @@ func (aq *AttributeQuery) prepareQuery(ctx context.Context) error {
 
 func (aq *AttributeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Attribute, error) {
 	var (
-		nodes = []*Attribute{}
-		_spec = aq.querySpec()
+		nodes       = []*Attribute{}
+		_spec       = aq.querySpec()
+		loadedTypes = [2]bool{
+			aq.withEntities != nil,
+			aq.withAttributeOptions != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Attribute).scanValues(nil, columns)
@@ -340,6 +417,7 @@ func (aq *AttributeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*At
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Attribute{config: aq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -351,7 +429,84 @@ func (aq *AttributeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*At
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := aq.withEntities; query != nil {
+		if err := aq.loadEntities(ctx, query, nodes,
+			func(n *Attribute) { n.Edges.Entities = []*Entity{} },
+			func(n *Attribute, e *Entity) { n.Edges.Entities = append(n.Edges.Entities, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := aq.withAttributeOptions; query != nil {
+		if err := aq.loadAttributeOptions(ctx, query, nodes,
+			func(n *Attribute) { n.Edges.AttributeOptions = []*AttributeOption{} },
+			func(n *Attribute, e *AttributeOption) { n.Edges.AttributeOptions = append(n.Edges.AttributeOptions, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (aq *AttributeQuery) loadEntities(ctx context.Context, query *EntityQuery, nodes []*Attribute, init func(*Attribute), assign func(*Attribute, *Entity)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uint64]*Attribute)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Entity(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(attribute.EntitiesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.attribute_entities
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "attribute_entities" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "attribute_entities" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (aq *AttributeQuery) loadAttributeOptions(ctx context.Context, query *AttributeOptionQuery, nodes []*Attribute, init func(*Attribute), assign func(*Attribute, *AttributeOption)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uint64]*Attribute)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.AttributeOption(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(attribute.AttributeOptionsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.attribute_attribute_options
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "attribute_attribute_options" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "attribute_attribute_options" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (aq *AttributeQuery) sqlCount(ctx context.Context) (int, error) {

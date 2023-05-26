@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+// AttributeGroup message
+
+message AttributeGroupInfo {
+  uint64 id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint64 attribute_set_id = 4;
+  string attribute_group_name = 5;
+  uint32 sequence = 6;
+}
+
+message AttributeGroupListResp {
+  uint64 total = 1;
+  repeated AttributeGroupInfo data = 2;
+}
+
+message AttributeGroupListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string attribute_group_name = 3;
+}
+
+
+service Ticket {
+
+  // AttributeGroup management
+  // group: attributegroup
+  rpc createAttributeGroup (AttributeGroupInfo) returns (BaseIDResp);
+  // group: attributegroup
+  rpc updateAttributeGroup (AttributeGroupInfo) returns (BaseResp);
+  // group: attributegroup
+  rpc getAttributeGroupList (AttributeGroupListReq) returns (AttributeGroupListResp);
+  // group: attributegroup
+  rpc getAttributeGroupById (IDReq) returns (AttributeGroupInfo);
+  // group: attributegroup
+  rpc deleteAttributeGroup (IDsReq) returns (BaseResp);
+
+
+}

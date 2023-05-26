@@ -12,6 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attribute"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attributeoption"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entity"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/predicate"
 )
 
@@ -170,9 +172,81 @@ func (au *AttributeUpdate) SetRequiredValidateClass(s string) *AttributeUpdate {
 	return au
 }
 
+// AddEntityIDs adds the "entities" edge to the Entity entity by IDs.
+func (au *AttributeUpdate) AddEntityIDs(ids ...uint64) *AttributeUpdate {
+	au.mutation.AddEntityIDs(ids...)
+	return au
+}
+
+// AddEntities adds the "entities" edges to the Entity entity.
+func (au *AttributeUpdate) AddEntities(e ...*Entity) *AttributeUpdate {
+	ids := make([]uint64, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return au.AddEntityIDs(ids...)
+}
+
+// AddAttributeOptionIDs adds the "attribute_options" edge to the AttributeOption entity by IDs.
+func (au *AttributeUpdate) AddAttributeOptionIDs(ids ...uint64) *AttributeUpdate {
+	au.mutation.AddAttributeOptionIDs(ids...)
+	return au
+}
+
+// AddAttributeOptions adds the "attribute_options" edges to the AttributeOption entity.
+func (au *AttributeUpdate) AddAttributeOptions(a ...*AttributeOption) *AttributeUpdate {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.AddAttributeOptionIDs(ids...)
+}
+
 // Mutation returns the AttributeMutation object of the builder.
 func (au *AttributeUpdate) Mutation() *AttributeMutation {
 	return au.mutation
+}
+
+// ClearEntities clears all "entities" edges to the Entity entity.
+func (au *AttributeUpdate) ClearEntities() *AttributeUpdate {
+	au.mutation.ClearEntities()
+	return au
+}
+
+// RemoveEntityIDs removes the "entities" edge to Entity entities by IDs.
+func (au *AttributeUpdate) RemoveEntityIDs(ids ...uint64) *AttributeUpdate {
+	au.mutation.RemoveEntityIDs(ids...)
+	return au
+}
+
+// RemoveEntities removes "entities" edges to Entity entities.
+func (au *AttributeUpdate) RemoveEntities(e ...*Entity) *AttributeUpdate {
+	ids := make([]uint64, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return au.RemoveEntityIDs(ids...)
+}
+
+// ClearAttributeOptions clears all "attribute_options" edges to the AttributeOption entity.
+func (au *AttributeUpdate) ClearAttributeOptions() *AttributeUpdate {
+	au.mutation.ClearAttributeOptions()
+	return au
+}
+
+// RemoveAttributeOptionIDs removes the "attribute_options" edge to AttributeOption entities by IDs.
+func (au *AttributeUpdate) RemoveAttributeOptionIDs(ids ...uint64) *AttributeUpdate {
+	au.mutation.RemoveAttributeOptionIDs(ids...)
+	return au
+}
+
+// RemoveAttributeOptions removes "attribute_options" edges to AttributeOption entities.
+func (au *AttributeUpdate) RemoveAttributeOptions(a ...*AttributeOption) *AttributeUpdate {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.RemoveAttributeOptionIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -276,6 +350,96 @@ func (au *AttributeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := au.mutation.RequiredValidateClass(); ok {
 		_spec.SetField(attribute.FieldRequiredValidateClass, field.TypeString, value)
+	}
+	if au.mutation.EntitiesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.EntitiesTable,
+			Columns: []string{attribute.EntitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(entity.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.RemovedEntitiesIDs(); len(nodes) > 0 && !au.mutation.EntitiesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.EntitiesTable,
+			Columns: []string{attribute.EntitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(entity.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.EntitiesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.EntitiesTable,
+			Columns: []string{attribute.EntitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(entity.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if au.mutation.AttributeOptionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.AttributeOptionsTable,
+			Columns: []string{attribute.AttributeOptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(attributeoption.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.RemovedAttributeOptionsIDs(); len(nodes) > 0 && !au.mutation.AttributeOptionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.AttributeOptionsTable,
+			Columns: []string{attribute.AttributeOptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(attributeoption.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.AttributeOptionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.AttributeOptionsTable,
+			Columns: []string{attribute.AttributeOptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(attributeoption.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -439,9 +603,81 @@ func (auo *AttributeUpdateOne) SetRequiredValidateClass(s string) *AttributeUpda
 	return auo
 }
 
+// AddEntityIDs adds the "entities" edge to the Entity entity by IDs.
+func (auo *AttributeUpdateOne) AddEntityIDs(ids ...uint64) *AttributeUpdateOne {
+	auo.mutation.AddEntityIDs(ids...)
+	return auo
+}
+
+// AddEntities adds the "entities" edges to the Entity entity.
+func (auo *AttributeUpdateOne) AddEntities(e ...*Entity) *AttributeUpdateOne {
+	ids := make([]uint64, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return auo.AddEntityIDs(ids...)
+}
+
+// AddAttributeOptionIDs adds the "attribute_options" edge to the AttributeOption entity by IDs.
+func (auo *AttributeUpdateOne) AddAttributeOptionIDs(ids ...uint64) *AttributeUpdateOne {
+	auo.mutation.AddAttributeOptionIDs(ids...)
+	return auo
+}
+
+// AddAttributeOptions adds the "attribute_options" edges to the AttributeOption entity.
+func (auo *AttributeUpdateOne) AddAttributeOptions(a ...*AttributeOption) *AttributeUpdateOne {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.AddAttributeOptionIDs(ids...)
+}
+
 // Mutation returns the AttributeMutation object of the builder.
 func (auo *AttributeUpdateOne) Mutation() *AttributeMutation {
 	return auo.mutation
+}
+
+// ClearEntities clears all "entities" edges to the Entity entity.
+func (auo *AttributeUpdateOne) ClearEntities() *AttributeUpdateOne {
+	auo.mutation.ClearEntities()
+	return auo
+}
+
+// RemoveEntityIDs removes the "entities" edge to Entity entities by IDs.
+func (auo *AttributeUpdateOne) RemoveEntityIDs(ids ...uint64) *AttributeUpdateOne {
+	auo.mutation.RemoveEntityIDs(ids...)
+	return auo
+}
+
+// RemoveEntities removes "entities" edges to Entity entities.
+func (auo *AttributeUpdateOne) RemoveEntities(e ...*Entity) *AttributeUpdateOne {
+	ids := make([]uint64, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return auo.RemoveEntityIDs(ids...)
+}
+
+// ClearAttributeOptions clears all "attribute_options" edges to the AttributeOption entity.
+func (auo *AttributeUpdateOne) ClearAttributeOptions() *AttributeUpdateOne {
+	auo.mutation.ClearAttributeOptions()
+	return auo
+}
+
+// RemoveAttributeOptionIDs removes the "attribute_options" edge to AttributeOption entities by IDs.
+func (auo *AttributeUpdateOne) RemoveAttributeOptionIDs(ids ...uint64) *AttributeUpdateOne {
+	auo.mutation.RemoveAttributeOptionIDs(ids...)
+	return auo
+}
+
+// RemoveAttributeOptions removes "attribute_options" edges to AttributeOption entities.
+func (auo *AttributeUpdateOne) RemoveAttributeOptions(a ...*AttributeOption) *AttributeUpdateOne {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.RemoveAttributeOptionIDs(ids...)
 }
 
 // Where appends a list predicates to the AttributeUpdate builder.
@@ -575,6 +811,96 @@ func (auo *AttributeUpdateOne) sqlSave(ctx context.Context) (_node *Attribute, e
 	}
 	if value, ok := auo.mutation.RequiredValidateClass(); ok {
 		_spec.SetField(attribute.FieldRequiredValidateClass, field.TypeString, value)
+	}
+	if auo.mutation.EntitiesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.EntitiesTable,
+			Columns: []string{attribute.EntitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(entity.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.RemovedEntitiesIDs(); len(nodes) > 0 && !auo.mutation.EntitiesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.EntitiesTable,
+			Columns: []string{attribute.EntitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(entity.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.EntitiesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.EntitiesTable,
+			Columns: []string{attribute.EntitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(entity.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.AttributeOptionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.AttributeOptionsTable,
+			Columns: []string{attribute.AttributeOptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(attributeoption.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.RemovedAttributeOptionsIDs(); len(nodes) > 0 && !auo.mutation.AttributeOptionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.AttributeOptionsTable,
+			Columns: []string{attribute.AttributeOptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(attributeoption.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.AttributeOptionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.AttributeOptionsTable,
+			Columns: []string{attribute.AttributeOptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(attributeoption.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Attribute{config: auo.config}
 	_spec.Assign = _node.assignValues

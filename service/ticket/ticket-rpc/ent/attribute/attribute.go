@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -45,8 +46,26 @@ const (
 	FieldIsRequired = "is_required"
 	// FieldRequiredValidateClass holds the string denoting the required_validate_class field in the database.
 	FieldRequiredValidateClass = "required_validate_class"
+	// EdgeEntities holds the string denoting the entities edge name in mutations.
+	EdgeEntities = "entities"
+	// EdgeAttributeOptions holds the string denoting the attribute_options edge name in mutations.
+	EdgeAttributeOptions = "attribute_options"
 	// Table holds the table name of the attribute in the database.
-	Table = "Attributes"
+	Table = "attributes"
+	// EntitiesTable is the table that holds the entities relation/edge.
+	EntitiesTable = "entities"
+	// EntitiesInverseTable is the table name for the Entity entity.
+	// It exists in this package in order to avoid circular dependency with the "entity" package.
+	EntitiesInverseTable = "entities"
+	// EntitiesColumn is the table column denoting the entities relation/edge.
+	EntitiesColumn = "attribute_entities"
+	// AttributeOptionsTable is the table that holds the attribute_options relation/edge.
+	AttributeOptionsTable = "attribute_options"
+	// AttributeOptionsInverseTable is the table name for the AttributeOption entity.
+	// It exists in this package in order to avoid circular dependency with the "attributeoption" package.
+	AttributeOptionsInverseTable = "attribute_options"
+	// AttributeOptionsColumn is the table column denoting the attribute_options relation/edge.
+	AttributeOptionsColumn = "attribute_attribute_options"
 )
 
 // Columns holds all SQL columns for attribute fields.
@@ -181,4 +200,46 @@ func ByIsRequired(opts ...sql.OrderTermOption) OrderOption {
 // ByRequiredValidateClass orders the results by the required_validate_class field.
 func ByRequiredValidateClass(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRequiredValidateClass, opts...).ToFunc()
+}
+
+// ByEntitiesCount orders the results by entities count.
+func ByEntitiesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newEntitiesStep(), opts...)
+	}
+}
+
+// ByEntities orders the results by entities terms.
+func ByEntities(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newEntitiesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByAttributeOptionsCount orders the results by attribute_options count.
+func ByAttributeOptionsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newAttributeOptionsStep(), opts...)
+	}
+}
+
+// ByAttributeOptions orders the results by attribute_options terms.
+func ByAttributeOptions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAttributeOptionsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newEntitiesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(EntitiesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, EntitiesTable, EntitiesColumn),
+	)
+}
+func newAttributeOptionsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AttributeOptionsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, AttributeOptionsTable, AttributeOptionsColumn),
+	)
 }

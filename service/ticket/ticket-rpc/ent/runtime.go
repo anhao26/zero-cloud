@@ -6,7 +6,11 @@ import (
 	"time"
 
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attribute"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attributegroup"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attributeoption"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attributeset"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entity"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entityattribute"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/schema"
 )
 
@@ -41,6 +45,51 @@ func init() {
 	attributeDescIsRequired := attributeFields[12].Descriptor()
 	// attribute.DefaultIsRequired holds the default value on creation for the is_required field.
 	attribute.DefaultIsRequired = attributeDescIsRequired.Default.(uint8)
+	attributegroupMixin := schema.AttributeGroup{}.Mixin()
+	attributegroupMixinFields0 := attributegroupMixin[0].Fields()
+	_ = attributegroupMixinFields0
+	attributegroupFields := schema.AttributeGroup{}.Fields()
+	_ = attributegroupFields
+	// attributegroupDescCreatedAt is the schema descriptor for created_at field.
+	attributegroupDescCreatedAt := attributegroupMixinFields0[1].Descriptor()
+	// attributegroup.DefaultCreatedAt holds the default value on creation for the created_at field.
+	attributegroup.DefaultCreatedAt = attributegroupDescCreatedAt.Default.(func() time.Time)
+	// attributegroupDescUpdatedAt is the schema descriptor for updated_at field.
+	attributegroupDescUpdatedAt := attributegroupMixinFields0[2].Descriptor()
+	// attributegroup.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	attributegroup.DefaultUpdatedAt = attributegroupDescUpdatedAt.Default.(func() time.Time)
+	// attributegroup.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	attributegroup.UpdateDefaultUpdatedAt = attributegroupDescUpdatedAt.UpdateDefault.(func() time.Time)
+	attributeoptionMixin := schema.AttributeOption{}.Mixin()
+	attributeoptionMixinFields0 := attributeoptionMixin[0].Fields()
+	_ = attributeoptionMixinFields0
+	attributeoptionFields := schema.AttributeOption{}.Fields()
+	_ = attributeoptionFields
+	// attributeoptionDescCreatedAt is the schema descriptor for created_at field.
+	attributeoptionDescCreatedAt := attributeoptionMixinFields0[1].Descriptor()
+	// attributeoption.DefaultCreatedAt holds the default value on creation for the created_at field.
+	attributeoption.DefaultCreatedAt = attributeoptionDescCreatedAt.Default.(func() time.Time)
+	// attributeoptionDescUpdatedAt is the schema descriptor for updated_at field.
+	attributeoptionDescUpdatedAt := attributeoptionMixinFields0[2].Descriptor()
+	// attributeoption.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	attributeoption.DefaultUpdatedAt = attributeoptionDescUpdatedAt.Default.(func() time.Time)
+	// attributeoption.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	attributeoption.UpdateDefaultUpdatedAt = attributeoptionDescUpdatedAt.UpdateDefault.(func() time.Time)
+	attributesetMixin := schema.AttributeSet{}.Mixin()
+	attributesetMixinFields0 := attributesetMixin[0].Fields()
+	_ = attributesetMixinFields0
+	attributesetFields := schema.AttributeSet{}.Fields()
+	_ = attributesetFields
+	// attributesetDescCreatedAt is the schema descriptor for created_at field.
+	attributesetDescCreatedAt := attributesetMixinFields0[1].Descriptor()
+	// attributeset.DefaultCreatedAt holds the default value on creation for the created_at field.
+	attributeset.DefaultCreatedAt = attributesetDescCreatedAt.Default.(func() time.Time)
+	// attributesetDescUpdatedAt is the schema descriptor for updated_at field.
+	attributesetDescUpdatedAt := attributesetMixinFields0[2].Descriptor()
+	// attributeset.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	attributeset.DefaultUpdatedAt = attributesetDescUpdatedAt.Default.(func() time.Time)
+	// attributeset.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	attributeset.UpdateDefaultUpdatedAt = attributesetDescUpdatedAt.UpdateDefault.(func() time.Time)
 	entityMixin := schema.Entity{}.Mixin()
 	entityMixinFields0 := entityMixin[0].Fields()
 	_ = entityMixinFields0
@@ -60,4 +109,19 @@ func init() {
 	entityDescIsFlatEnabled := entityFields[5].Descriptor()
 	// entity.DefaultIsFlatEnabled holds the default value on creation for the is_flat_enabled field.
 	entity.DefaultIsFlatEnabled = entityDescIsFlatEnabled.Default.(uint32)
+	entityattributeMixin := schema.EntityAttribute{}.Mixin()
+	entityattributeMixinFields0 := entityattributeMixin[0].Fields()
+	_ = entityattributeMixinFields0
+	entityattributeFields := schema.EntityAttribute{}.Fields()
+	_ = entityattributeFields
+	// entityattributeDescCreatedAt is the schema descriptor for created_at field.
+	entityattributeDescCreatedAt := entityattributeMixinFields0[1].Descriptor()
+	// entityattribute.DefaultCreatedAt holds the default value on creation for the created_at field.
+	entityattribute.DefaultCreatedAt = entityattributeDescCreatedAt.Default.(func() time.Time)
+	// entityattributeDescUpdatedAt is the schema descriptor for updated_at field.
+	entityattributeDescUpdatedAt := entityattributeMixinFields0[2].Descriptor()
+	// entityattribute.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	entityattribute.DefaultUpdatedAt = entityattributeDescUpdatedAt.Default.(func() time.Time)
+	// entityattribute.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	entityattribute.UpdateDefaultUpdatedAt = entityattributeDescUpdatedAt.UpdateDefault.(func() time.Time)
 }

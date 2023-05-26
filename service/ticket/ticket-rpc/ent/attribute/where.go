@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/predicate"
 )
 
@@ -1022,6 +1023,52 @@ func RequiredValidateClassEqualFold(v string) predicate.Attribute {
 // RequiredValidateClassContainsFold applies the ContainsFold predicate on the "required_validate_class" field.
 func RequiredValidateClassContainsFold(v string) predicate.Attribute {
 	return predicate.Attribute(sql.FieldContainsFold(FieldRequiredValidateClass, v))
+}
+
+// HasEntities applies the HasEdge predicate on the "entities" edge.
+func HasEntities() predicate.Attribute {
+	return predicate.Attribute(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, EntitiesTable, EntitiesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasEntitiesWith applies the HasEdge predicate on the "entities" edge with a given conditions (other predicates).
+func HasEntitiesWith(preds ...predicate.Entity) predicate.Attribute {
+	return predicate.Attribute(func(s *sql.Selector) {
+		step := newEntitiesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasAttributeOptions applies the HasEdge predicate on the "attribute_options" edge.
+func HasAttributeOptions() predicate.Attribute {
+	return predicate.Attribute(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, AttributeOptionsTable, AttributeOptionsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAttributeOptionsWith applies the HasEdge predicate on the "attribute_options" edge with a given conditions (other predicates).
+func HasAttributeOptionsWith(preds ...predicate.AttributeOption) predicate.Attribute {
+	return predicate.Attribute(func(s *sql.Selector) {
+		step := newAttributeOptionsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

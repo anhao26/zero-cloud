@@ -21,6 +21,42 @@ func (f AttributeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, e
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AttributeMutation", m)
 }
 
+// The AttributeGroupFunc type is an adapter to allow the use of ordinary
+// function as AttributeGroup mutator.
+type AttributeGroupFunc func(context.Context, *ent.AttributeGroupMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AttributeGroupFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AttributeGroupMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AttributeGroupMutation", m)
+}
+
+// The AttributeOptionFunc type is an adapter to allow the use of ordinary
+// function as AttributeOption mutator.
+type AttributeOptionFunc func(context.Context, *ent.AttributeOptionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AttributeOptionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AttributeOptionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AttributeOptionMutation", m)
+}
+
+// The AttributeSetFunc type is an adapter to allow the use of ordinary
+// function as AttributeSet mutator.
+type AttributeSetFunc func(context.Context, *ent.AttributeSetMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AttributeSetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AttributeSetMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AttributeSetMutation", m)
+}
+
 // The EntityFunc type is an adapter to allow the use of ordinary
 // function as Entity mutator.
 type EntityFunc func(context.Context, *ent.EntityMutation) (ent.Value, error)
@@ -31,6 +67,18 @@ func (f EntityFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EntityMutation", m)
+}
+
+// The EntityAttributeFunc type is an adapter to allow the use of ordinary
+// function as EntityAttribute mutator.
+type EntityAttributeFunc func(context.Context, *ent.EntityAttributeMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f EntityAttributeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.EntityAttributeMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EntityAttributeMutation", m)
 }
 
 // Condition is a hook condition function.

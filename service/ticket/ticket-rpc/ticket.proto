@@ -3,13 +3,18 @@ syntax = "proto3";
 package ticket;
 option go_package="./ticket";
 
-message UUIDReq {
-  string id = 1;
+message IDReq {
+  uint64 id = 1;
 }
 
-message BaseIDResp {
-  uint64 id = 1;
-  string msg = 2;
+message options {
+  string label = 1;
+  uint64 value = 2;
+}
+
+message AttributeSetListResp {
+  uint64 total = 1;
+  repeated AttributeSetInfo data = 2;
 }
 
 message BaseUUIDResp {
@@ -17,21 +22,25 @@ message BaseUUIDResp {
   string msg = 2;
 }
 
-message EntityListReq {
-  uint64 page = 1;
-  uint64 page_size = 2;
-  string entity_code = 3;
-  string entity_class = 4;
-  string entity_table = 5;
+message AttributeOptionInfo {
+  uint64 id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint64 attribute_id = 4;
+  string label = 5;
+  uint64 value = 6;
 }
 
-message AttributeListReq {
-  uint64 page = 1;
-  uint64 page_size = 2;
-  string attribute_code = 3;
-  string backend_class = 4;
-  string backend_type = 5;
+message AttributeSetInfo {
+  uint64 id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint64 entity_id = 4;
+  string attribute_set_name = 5;
 }
+
+//  base message
+message Empty {}
 
 message IDsReq {
   repeated uint64 ids = 1;
@@ -42,38 +51,58 @@ message EntityListResp {
   repeated EntityInfo data = 2;
 }
 
+message EntityAttributeInfo {
+  uint64 id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint64 attribute_id = 4;
+  uint64 entity_id = 5;
+  uint64 attribute_set_id = 6;
+  uint64 attribute_group_id = 7;
+  uint32 sequence = 8;
+}
+
+message EntityAttributeListResp {
+  uint64 total = 1;
+  repeated EntityAttributeInfo data = 2;
+}
+
+message AttributeListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string attribute_code = 3;
+  string backend_class = 4;
+  string backend_type = 5;
+}
+
+message AttributeGroupListResp {
+  uint64 total = 1;
+  repeated AttributeGroupInfo data = 2;
+}
+
+message BaseIDResp {
+  uint64 id = 1;
+  string msg = 2;
+}
+
 message AttributeListResp {
   uint64 total = 1;
   repeated AttributeInfo data = 2;
 }
 
-message IDReq {
-  uint64 id = 1;
-}
-
-message PageInfoReq {
+message AttributeSetListReq {
   uint64 page = 1;
   uint64 page_size = 2;
+  string attribute_set_name = 3;
 }
 
-message EntityInfo {
-  uint64 id = 1;
-  int64 created_at = 2;
-  int64 updated_at = 3;
-  string entity_code = 4;
-  string entity_class = 5;
-  string entity_table = 6;
-  uint64 default_attribute_set_id = 7;
-  string additional_attribute_table = 8;
-  uint32 is_flat_enabled = 9;
+message UUIDReq {
+  string id = 1;
 }
 
-message UUIDsReq {
-  repeated string ids = 1;
-}
-
-message BaseResp {
-  string msg = 1;
+message EntityAttributeListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
 }
 
 message AttributeInfo {
@@ -94,10 +123,68 @@ message AttributeInfo {
   uint32 is_searchable = 15;
   uint32 is_required = 16;
   string required_validate_class = 17;
+  string temple = 18;
+  repeated options option_data = 19;
 }
 
-//  base message
-message Empty {}
+message BaseResp {
+  string msg = 1;
+}
+
+message EntityInfo {
+  uint64 id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  string entity_code = 4;
+  string entity_class = 5;
+  string entity_table = 6;
+  uint64 default_attribute_set_id = 7;
+  string additional_attribute_table = 8;
+  uint32 is_flat_enabled = 9;
+}
+
+message UUIDsReq {
+  repeated string ids = 1;
+}
+
+message AttributeOptionListResp {
+  uint64 total = 1;
+  repeated AttributeOptionInfo data = 2;
+}
+
+message PageInfoReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+}
+
+message AttributeGroupInfo {
+  uint64 id = 1;
+  int64 created_at = 2;
+  int64 updated_at = 3;
+  uint64 attribute_set_id = 4;
+  string attribute_group_name = 5;
+  uint32 sequence = 6;
+}
+
+message AttributeOptionListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string label = 3;
+}
+
+message EntityListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string entity_code = 3;
+  string entity_class = 4;
+  string entity_table = 5;
+}
+
+message AttributeGroupListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  string attribute_group_name = 3;
+}
 
 service Ticket {
   //  Attribute management
@@ -111,6 +198,39 @@ service Ticket {
   rpc getAttributeById(IDReq) returns (AttributeInfo);
   //  group: attribute
   rpc deleteAttribute(IDsReq) returns (BaseResp);
+  //  AttributeGroup management
+  //  group: attributegroup
+  rpc createAttributeGroup(AttributeGroupInfo) returns (BaseIDResp);
+  //  group: attributegroup
+  rpc updateAttributeGroup(AttributeGroupInfo) returns (BaseResp);
+  //  group: attributegroup
+  rpc getAttributeGroupList(AttributeGroupListReq) returns (AttributeGroupListResp);
+  //  group: attributegroup
+  rpc getAttributeGroupById(IDReq) returns (AttributeGroupInfo);
+  //  group: attributegroup
+  rpc deleteAttributeGroup(IDsReq) returns (BaseResp);
+  //  AttributeOption management
+  //  group: attributeoption
+  rpc createAttributeOption(AttributeOptionInfo) returns (BaseIDResp);
+  //  group: attributeoption
+  rpc updateAttributeOption(AttributeOptionInfo) returns (BaseResp);
+  //  group: attributeoption
+  rpc getAttributeOptionList(AttributeOptionListReq) returns (AttributeOptionListResp);
+  //  group: attributeoption
+  rpc getAttributeOptionById(IDReq) returns (AttributeOptionInfo);
+  //  group: attributeoption
+  rpc deleteAttributeOption(IDsReq) returns (BaseResp);
+  //  AttributeSet management
+  //  group: attributeset
+  rpc createAttributeSet(AttributeSetInfo) returns (BaseIDResp);
+  //  group: attributeset
+  rpc updateAttributeSet(AttributeSetInfo) returns (BaseResp);
+  //  group: attributeset
+  rpc getAttributeSetList(AttributeSetListReq) returns (AttributeSetListResp);
+  //  group: attributeset
+  rpc getAttributeSetById(IDReq) returns (AttributeSetInfo);
+  //  group: attributeset
+  rpc deleteAttributeSet(IDsReq) returns (BaseResp);
   //  group: base
   rpc initDatabase(Empty) returns (BaseResp);
   //  Entity management
@@ -124,5 +244,16 @@ service Ticket {
   rpc getEntityById(IDReq) returns (EntityInfo);
   //  group: entity
   rpc deleteEntity(IDsReq) returns (BaseResp);
+  //  EntityAttribute management
+  //  group: entityattribute
+  rpc createEntityAttribute(EntityAttributeInfo) returns (BaseIDResp);
+  //  group: entityattribute
+  rpc updateEntityAttribute(EntityAttributeInfo) returns (BaseResp);
+  //  group: entityattribute
+  rpc getEntityAttributeList(EntityAttributeListReq) returns (EntityAttributeListResp);
+  //  group: entityattribute
+  rpc getEntityAttributeById(IDReq) returns (EntityAttributeInfo);
+  //  group: entityattribute
+  rpc deleteEntityAttribute(IDsReq) returns (BaseResp);
 }
 

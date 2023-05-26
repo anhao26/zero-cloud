@@ -7,8 +7,12 @@ import (
 	"context"
 
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/logic/attribute"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/logic/attributegroup"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/logic/attributeoption"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/logic/attributeset"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/logic/base"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/logic/entity"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/logic/entityattribute"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/svc"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/types/ticket"
 )
@@ -50,6 +54,84 @@ func (s *TicketServer) DeleteAttribute(ctx context.Context, in *ticket.IDsReq) (
 	return l.DeleteAttribute(in)
 }
 
+// AttributeGroup management
+func (s *TicketServer) CreateAttributeGroup(ctx context.Context, in *ticket.AttributeGroupInfo) (*ticket.BaseIDResp, error) {
+	l := attributegroup.NewCreateAttributeGroupLogic(ctx, s.svcCtx)
+	return l.CreateAttributeGroup(in)
+}
+
+func (s *TicketServer) UpdateAttributeGroup(ctx context.Context, in *ticket.AttributeGroupInfo) (*ticket.BaseResp, error) {
+	l := attributegroup.NewUpdateAttributeGroupLogic(ctx, s.svcCtx)
+	return l.UpdateAttributeGroup(in)
+}
+
+func (s *TicketServer) GetAttributeGroupList(ctx context.Context, in *ticket.AttributeGroupListReq) (*ticket.AttributeGroupListResp, error) {
+	l := attributegroup.NewGetAttributeGroupListLogic(ctx, s.svcCtx)
+	return l.GetAttributeGroupList(in)
+}
+
+func (s *TicketServer) GetAttributeGroupById(ctx context.Context, in *ticket.IDReq) (*ticket.AttributeGroupInfo, error) {
+	l := attributegroup.NewGetAttributeGroupByIdLogic(ctx, s.svcCtx)
+	return l.GetAttributeGroupById(in)
+}
+
+func (s *TicketServer) DeleteAttributeGroup(ctx context.Context, in *ticket.IDsReq) (*ticket.BaseResp, error) {
+	l := attributegroup.NewDeleteAttributeGroupLogic(ctx, s.svcCtx)
+	return l.DeleteAttributeGroup(in)
+}
+
+// AttributeOption management
+func (s *TicketServer) CreateAttributeOption(ctx context.Context, in *ticket.AttributeOptionInfo) (*ticket.BaseIDResp, error) {
+	l := attributeoption.NewCreateAttributeOptionLogic(ctx, s.svcCtx)
+	return l.CreateAttributeOption(in)
+}
+
+func (s *TicketServer) UpdateAttributeOption(ctx context.Context, in *ticket.AttributeOptionInfo) (*ticket.BaseResp, error) {
+	l := attributeoption.NewUpdateAttributeOptionLogic(ctx, s.svcCtx)
+	return l.UpdateAttributeOption(in)
+}
+
+func (s *TicketServer) GetAttributeOptionList(ctx context.Context, in *ticket.AttributeOptionListReq) (*ticket.AttributeOptionListResp, error) {
+	l := attributeoption.NewGetAttributeOptionListLogic(ctx, s.svcCtx)
+	return l.GetAttributeOptionList(in)
+}
+
+func (s *TicketServer) GetAttributeOptionById(ctx context.Context, in *ticket.IDReq) (*ticket.AttributeOptionInfo, error) {
+	l := attributeoption.NewGetAttributeOptionByIdLogic(ctx, s.svcCtx)
+	return l.GetAttributeOptionById(in)
+}
+
+func (s *TicketServer) DeleteAttributeOption(ctx context.Context, in *ticket.IDsReq) (*ticket.BaseResp, error) {
+	l := attributeoption.NewDeleteAttributeOptionLogic(ctx, s.svcCtx)
+	return l.DeleteAttributeOption(in)
+}
+
+// AttributeSet management
+func (s *TicketServer) CreateAttributeSet(ctx context.Context, in *ticket.AttributeSetInfo) (*ticket.BaseIDResp, error) {
+	l := attributeset.NewCreateAttributeSetLogic(ctx, s.svcCtx)
+	return l.CreateAttributeSet(in)
+}
+
+func (s *TicketServer) UpdateAttributeSet(ctx context.Context, in *ticket.AttributeSetInfo) (*ticket.BaseResp, error) {
+	l := attributeset.NewUpdateAttributeSetLogic(ctx, s.svcCtx)
+	return l.UpdateAttributeSet(in)
+}
+
+func (s *TicketServer) GetAttributeSetList(ctx context.Context, in *ticket.AttributeSetListReq) (*ticket.AttributeSetListResp, error) {
+	l := attributeset.NewGetAttributeSetListLogic(ctx, s.svcCtx)
+	return l.GetAttributeSetList(in)
+}
+
+func (s *TicketServer) GetAttributeSetById(ctx context.Context, in *ticket.IDReq) (*ticket.AttributeSetInfo, error) {
+	l := attributeset.NewGetAttributeSetByIdLogic(ctx, s.svcCtx)
+	return l.GetAttributeSetById(in)
+}
+
+func (s *TicketServer) DeleteAttributeSet(ctx context.Context, in *ticket.IDsReq) (*ticket.BaseResp, error) {
+	l := attributeset.NewDeleteAttributeSetLogic(ctx, s.svcCtx)
+	return l.DeleteAttributeSet(in)
+}
+
 func (s *TicketServer) InitDatabase(ctx context.Context, in *ticket.Empty) (*ticket.BaseResp, error) {
 	l := base.NewInitDatabaseLogic(ctx, s.svcCtx)
 	return l.InitDatabase(in)
@@ -79,4 +161,30 @@ func (s *TicketServer) GetEntityById(ctx context.Context, in *ticket.IDReq) (*ti
 func (s *TicketServer) DeleteEntity(ctx context.Context, in *ticket.IDsReq) (*ticket.BaseResp, error) {
 	l := entity.NewDeleteEntityLogic(ctx, s.svcCtx)
 	return l.DeleteEntity(in)
+}
+
+// EntityAttribute management
+func (s *TicketServer) CreateEntityAttribute(ctx context.Context, in *ticket.EntityAttributeInfo) (*ticket.BaseIDResp, error) {
+	l := entityattribute.NewCreateEntityAttributeLogic(ctx, s.svcCtx)
+	return l.CreateEntityAttribute(in)
+}
+
+func (s *TicketServer) UpdateEntityAttribute(ctx context.Context, in *ticket.EntityAttributeInfo) (*ticket.BaseResp, error) {
+	l := entityattribute.NewUpdateEntityAttributeLogic(ctx, s.svcCtx)
+	return l.UpdateEntityAttribute(in)
+}
+
+func (s *TicketServer) GetEntityAttributeList(ctx context.Context, in *ticket.EntityAttributeListReq) (*ticket.EntityAttributeListResp, error) {
+	l := entityattribute.NewGetEntityAttributeListLogic(ctx, s.svcCtx)
+	return l.GetEntityAttributeList(in)
+}
+
+func (s *TicketServer) GetEntityAttributeById(ctx context.Context, in *ticket.IDReq) (*ticket.EntityAttributeInfo, error) {
+	l := entityattribute.NewGetEntityAttributeByIdLogic(ctx, s.svcCtx)
+	return l.GetEntityAttributeById(in)
+}
+
+func (s *TicketServer) DeleteEntityAttribute(ctx context.Context, in *ticket.IDsReq) (*ticket.BaseResp, error) {
+	l := entityattribute.NewDeleteEntityAttributeLogic(ctx, s.svcCtx)
+	return l.DeleteEntityAttribute(in)
 }

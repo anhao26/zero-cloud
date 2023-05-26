@@ -13,7 +13,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attribute"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attributegroup"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attributeoption"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attributeset"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entity"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entityattribute"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -74,8 +78,12 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			attribute.Table: attribute.ValidColumn,
-			entity.Table:    entity.ValidColumn,
+			attribute.Table:       attribute.ValidColumn,
+			attributegroup.Table:  attributegroup.ValidColumn,
+			attributeoption.Table: attributeoption.ValidColumn,
+			attributeset.Table:    attributeset.ValidColumn,
+			entity.Table:          entity.ValidColumn,
+			entityattribute.Table: entityattribute.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

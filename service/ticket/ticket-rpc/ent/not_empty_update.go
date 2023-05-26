@@ -227,6 +227,134 @@ func (a *AttributeUpdateOne) SetNotEmptyRequiredValidateClass(value string) *Att
 }
 
 // set field if value is not empty. e.g. string does not equal to ""
+func (ag *AttributeGroupUpdate) SetNotEmptyAttributeSetID(value uint64) *AttributeGroupUpdate {
+	if value != 0 {
+		return ag.SetAttributeSetID(value)
+	}
+	return ag
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ag *AttributeGroupUpdateOne) SetNotEmptyAttributeSetID(value uint64) *AttributeGroupUpdateOne {
+	if value != 0 {
+		return ag.SetAttributeSetID(value)
+	}
+	return ag
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ag *AttributeGroupUpdate) SetNotEmptyAttributeGroupName(value string) *AttributeGroupUpdate {
+	if value != "" {
+		return ag.SetAttributeGroupName(value)
+	}
+	return ag
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ag *AttributeGroupUpdateOne) SetNotEmptyAttributeGroupName(value string) *AttributeGroupUpdateOne {
+	if value != "" {
+		return ag.SetAttributeGroupName(value)
+	}
+	return ag
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ag *AttributeGroupUpdate) SetNotEmptySequence(value uint8) *AttributeGroupUpdate {
+	if value != 0 {
+		return ag.SetSequence(value)
+	}
+	return ag
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ag *AttributeGroupUpdateOne) SetNotEmptySequence(value uint8) *AttributeGroupUpdateOne {
+	if value != 0 {
+		return ag.SetSequence(value)
+	}
+	return ag
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ao *AttributeOptionUpdate) SetNotEmptyAttributeID(value uint64) *AttributeOptionUpdate {
+	if value != 0 {
+		return ao.SetAttributeID(value)
+	}
+	return ao
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ao *AttributeOptionUpdateOne) SetNotEmptyAttributeID(value uint64) *AttributeOptionUpdateOne {
+	if value != 0 {
+		return ao.SetAttributeID(value)
+	}
+	return ao
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ao *AttributeOptionUpdate) SetNotEmptyLabel(value string) *AttributeOptionUpdate {
+	if value != "" {
+		return ao.SetLabel(value)
+	}
+	return ao
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ao *AttributeOptionUpdateOne) SetNotEmptyLabel(value string) *AttributeOptionUpdateOne {
+	if value != "" {
+		return ao.SetLabel(value)
+	}
+	return ao
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ao *AttributeOptionUpdate) SetNotEmptyValue(value uint64) *AttributeOptionUpdate {
+	if value != 0 {
+		return ao.SetValue(value)
+	}
+	return ao
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ao *AttributeOptionUpdateOne) SetNotEmptyValue(value uint64) *AttributeOptionUpdateOne {
+	if value != 0 {
+		return ao.SetValue(value)
+	}
+	return ao
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (as *AttributeSetUpdate) SetNotEmptyEntityID(value uint64) *AttributeSetUpdate {
+	if value != 0 {
+		return as.SetEntityID(value)
+	}
+	return as
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (as *AttributeSetUpdateOne) SetNotEmptyEntityID(value uint64) *AttributeSetUpdateOne {
+	if value != 0 {
+		return as.SetEntityID(value)
+	}
+	return as
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (as *AttributeSetUpdate) SetNotEmptyAttributeSetName(value string) *AttributeSetUpdate {
+	if value != "" {
+		return as.SetAttributeSetName(value)
+	}
+	return as
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (as *AttributeSetUpdateOne) SetNotEmptyAttributeSetName(value string) *AttributeSetUpdateOne {
+	if value != "" {
+		return as.SetAttributeSetName(value)
+	}
+	return as
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
 func (e *EntityUpdate) SetNotEmptyEntityCode(value string) *EntityUpdate {
 	if value != "" {
 		return e.SetEntityCode(value)
@@ -320,4 +448,84 @@ func (e *EntityUpdateOne) SetNotEmptyIsFlatEnabled(value uint32) *EntityUpdateOn
 		return e.SetIsFlatEnabled(value)
 	}
 	return e
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ea *EntityAttributeUpdate) SetNotEmptyAttributeID(value uint64) *EntityAttributeUpdate {
+	if value != 0 {
+		return ea.SetAttributeID(value)
+	}
+	return ea
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ea *EntityAttributeUpdateOne) SetNotEmptyAttributeID(value uint64) *EntityAttributeUpdateOne {
+	if value != 0 {
+		return ea.SetAttributeID(value)
+	}
+	return ea
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ea *EntityAttributeUpdate) SetNotEmptyEntityID(value uint64) *EntityAttributeUpdate {
+	if value != 0 {
+		return ea.SetEntityID(value)
+	}
+	return ea
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ea *EntityAttributeUpdateOne) SetNotEmptyEntityID(value uint64) *EntityAttributeUpdateOne {
+	if value != 0 {
+		return ea.SetEntityID(value)
+	}
+	return ea
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ea *EntityAttributeUpdate) SetNotEmptyAttributeSetID(value uint64) *EntityAttributeUpdate {
+	if value != 0 {
+		return ea.SetAttributeSetID(value)
+	}
+	return ea
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ea *EntityAttributeUpdateOne) SetNotEmptyAttributeSetID(value uint64) *EntityAttributeUpdateOne {
+	if value != 0 {
+		return ea.SetAttributeSetID(value)
+	}
+	return ea
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ea *EntityAttributeUpdate) SetNotEmptyAttributeGroupID(value uint64) *EntityAttributeUpdate {
+	if value != 0 {
+		return ea.SetAttributeGroupID(value)
+	}
+	return ea
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ea *EntityAttributeUpdateOne) SetNotEmptyAttributeGroupID(value uint64) *EntityAttributeUpdateOne {
+	if value != 0 {
+		return ea.SetAttributeGroupID(value)
+	}
+	return ea
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ea *EntityAttributeUpdate) SetNotEmptySequence(value uint8) *EntityAttributeUpdate {
+	if value != 0 {
+		return ea.SetSequence(value)
+	}
+	return ea
+}
+
+// set field if value is not empty. e.g. string does not equal to ""
+func (ea *EntityAttributeUpdateOne) SetNotEmptySequence(value uint8) *EntityAttributeUpdateOne {
+	if value != 0 {
+		return ea.SetSequence(value)
+	}
+	return ea
 }

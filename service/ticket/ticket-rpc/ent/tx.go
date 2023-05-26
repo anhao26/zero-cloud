@@ -14,8 +14,16 @@ type Tx struct {
 	config
 	// Attribute is the client for interacting with the Attribute builders.
 	Attribute *AttributeClient
+	// AttributeGroup is the client for interacting with the AttributeGroup builders.
+	AttributeGroup *AttributeGroupClient
+	// AttributeOption is the client for interacting with the AttributeOption builders.
+	AttributeOption *AttributeOptionClient
+	// AttributeSet is the client for interacting with the AttributeSet builders.
+	AttributeSet *AttributeSetClient
 	// Entity is the client for interacting with the Entity builders.
 	Entity *EntityClient
+	// EntityAttribute is the client for interacting with the EntityAttribute builders.
+	EntityAttribute *EntityAttributeClient
 
 	// lazily loaded.
 	client     *Client
@@ -148,7 +156,11 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Attribute = NewAttributeClient(tx.config)
+	tx.AttributeGroup = NewAttributeGroupClient(tx.config)
+	tx.AttributeOption = NewAttributeOptionClient(tx.config)
+	tx.AttributeSet = NewAttributeSetClient(tx.config)
 	tx.Entity = NewEntityClient(tx.config)
+	tx.EntityAttribute = NewEntityAttributeClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

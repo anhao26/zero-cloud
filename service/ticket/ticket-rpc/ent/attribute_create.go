@@ -11,6 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attribute"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/attributeoption"
+	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/ent/entity"
 )
 
 // AttributeCreate is the builder for creating a Attribute entity.
@@ -160,6 +162,36 @@ func (ac *AttributeCreate) SetRequiredValidateClass(s string) *AttributeCreate {
 func (ac *AttributeCreate) SetID(u uint64) *AttributeCreate {
 	ac.mutation.SetID(u)
 	return ac
+}
+
+// AddEntityIDs adds the "entities" edge to the Entity entity by IDs.
+func (ac *AttributeCreate) AddEntityIDs(ids ...uint64) *AttributeCreate {
+	ac.mutation.AddEntityIDs(ids...)
+	return ac
+}
+
+// AddEntities adds the "entities" edges to the Entity entity.
+func (ac *AttributeCreate) AddEntities(e ...*Entity) *AttributeCreate {
+	ids := make([]uint64, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return ac.AddEntityIDs(ids...)
+}
+
+// AddAttributeOptionIDs adds the "attribute_options" edge to the AttributeOption entity by IDs.
+func (ac *AttributeCreate) AddAttributeOptionIDs(ids ...uint64) *AttributeCreate {
+	ac.mutation.AddAttributeOptionIDs(ids...)
+	return ac
+}
+
+// AddAttributeOptions adds the "attribute_options" edges to the AttributeOption entity.
+func (ac *AttributeCreate) AddAttributeOptions(a ...*AttributeOption) *AttributeCreate {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ac.AddAttributeOptionIDs(ids...)
 }
 
 // Mutation returns the AttributeMutation object of the builder.
@@ -364,6 +396,38 @@ func (ac *AttributeCreate) createSpec() (*Attribute, *sqlgraph.CreateSpec) {
 	if value, ok := ac.mutation.RequiredValidateClass(); ok {
 		_spec.SetField(attribute.FieldRequiredValidateClass, field.TypeString, value)
 		_node.RequiredValidateClass = value
+	}
+	if nodes := ac.mutation.EntitiesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.EntitiesTable,
+			Columns: []string{attribute.EntitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(entity.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.AttributeOptionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   attribute.AttributeOptionsTable,
+			Columns: []string{attribute.AttributeOptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(attributeoption.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

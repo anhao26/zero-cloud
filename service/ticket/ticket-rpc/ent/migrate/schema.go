@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	// AttributesColumns holds the columns for the "Attributes" table.
+	// AttributesColumns holds the columns for the "attributes" table.
 	AttributesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "created_at", Type: field.TypeTime},
@@ -29,9 +29,9 @@ var (
 		{Name: "is_required", Type: field.TypeUint8, Comment: "Is Required | 是否必填 0不必填 1 必填", Default: 0},
 		{Name: "required_validate_class", Type: field.TypeString, Comment: "Required Validate Class | 必需的验证类"},
 	}
-	// AttributesTable holds the schema information for the "Attributes" table.
+	// AttributesTable holds the schema information for the "attributes" table.
 	AttributesTable = &schema.Table{
-		Name:       "Attributes",
+		Name:       "attributes",
 		Columns:    AttributesColumns,
 		PrimaryKey: []*schema.Column{AttributesColumns[0]},
 		Indexes: []*schema.Index{
@@ -39,6 +39,80 @@ var (
 				Name:    "attribute_entity_id_attribute_code",
 				Unique:  true,
 				Columns: []*schema.Column{AttributesColumns[3], AttributesColumns[4]},
+			},
+		},
+	}
+	// AttributeGroupsColumns holds the columns for the "attribute_groups" table.
+	AttributeGroupsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "attribute_set_id", Type: field.TypeUint64, Comment: "Attribute Set Id | 属性集ID"},
+		{Name: "attribute_group_name", Type: field.TypeString, Comment: "Attribute Group Name | 属性组名"},
+		{Name: "sequence", Type: field.TypeUint8, Comment: "sequence | 顺序"},
+	}
+	// AttributeGroupsTable holds the schema information for the "attribute_groups" table.
+	AttributeGroupsTable = &schema.Table{
+		Name:       "attribute_groups",
+		Columns:    AttributeGroupsColumns,
+		PrimaryKey: []*schema.Column{AttributeGroupsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "attributegroup_attribute_set_id_attribute_group_name",
+				Unique:  true,
+				Columns: []*schema.Column{AttributeGroupsColumns[3], AttributeGroupsColumns[4]},
+			},
+		},
+	}
+	// AttributeOptionsColumns holds the columns for the "attribute_options" table.
+	AttributeOptionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "attribute_id", Type: field.TypeUint64, Comment: "Attribute Id | 属性ID"},
+		{Name: "label", Type: field.TypeString, Comment: "Label | 选项名"},
+		{Name: "value", Type: field.TypeUint64, Comment: "value | 选项值"},
+		{Name: "attribute_attribute_options", Type: field.TypeUint64, Nullable: true},
+	}
+	// AttributeOptionsTable holds the schema information for the "attribute_options" table.
+	AttributeOptionsTable = &schema.Table{
+		Name:       "attribute_options",
+		Columns:    AttributeOptionsColumns,
+		PrimaryKey: []*schema.Column{AttributeOptionsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "attribute_options_attributes_attribute_options",
+				Columns:    []*schema.Column{AttributeOptionsColumns[6]},
+				RefColumns: []*schema.Column{AttributesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "attributeoption_attribute_id",
+				Unique:  false,
+				Columns: []*schema.Column{AttributeOptionsColumns[3]},
+			},
+		},
+	}
+	// AttributeSetsColumns holds the columns for the "attribute_sets" table.
+	AttributeSetsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "entity_id", Type: field.TypeUint64, Comment: "Entity Id | 实体ID"},
+		{Name: "attribute_set_name", Type: field.TypeString, Comment: "Attribute Set Name | 属性集名字"},
+	}
+	// AttributeSetsTable holds the schema information for the "attribute_sets" table.
+	AttributeSetsTable = &schema.Table{
+		Name:       "attribute_sets",
+		Columns:    AttributeSetsColumns,
+		PrimaryKey: []*schema.Column{AttributeSetsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "attributeset_entity_id_attribute_set_name",
+				Unique:  true,
+				Columns: []*schema.Column{AttributeSetsColumns[3], AttributeSetsColumns[4]},
 			},
 		},
 	}
@@ -53,25 +127,91 @@ var (
 		{Name: "default_attribute_set_id", Type: field.TypeUint64, Comment: "Default Attribute Set Id | 默认属性SET ID"},
 		{Name: "additional_attribute_table", Type: field.TypeString, Comment: "Additional Attribute Table | 附加属性表"},
 		{Name: "is_flat_enabled", Type: field.TypeUint32, Comment: "Is Flat Enabled | 是否设置一张表存储", Default: 0},
+		{Name: "attribute_entities", Type: field.TypeUint64, Nullable: true},
 	}
 	// EntitiesTable holds the schema information for the "entities" table.
 	EntitiesTable = &schema.Table{
 		Name:       "entities",
 		Columns:    EntitiesColumns,
 		PrimaryKey: []*schema.Column{EntitiesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "entities_attributes_entities",
+				Columns:    []*schema.Column{EntitiesColumns[9]},
+				RefColumns: []*schema.Column{AttributesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// EntityAttributesColumns holds the columns for the "entity_attributes" table.
+	EntityAttributesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "attribute_id", Type: field.TypeUint64, Comment: "Attribute Id | 属性ID"},
+		{Name: "entity_id", Type: field.TypeUint64, Comment: "Entity Id | 实体ID"},
+		{Name: "attribute_set_id", Type: field.TypeUint64, Comment: "Attribute Set Id | 属性集表ID"},
+		{Name: "attribute_group_id", Type: field.TypeUint64, Comment: "Attribute Group Id | 属性组表ID"},
+		{Name: "sequence", Type: field.TypeUint8, Comment: "sequence | 顺序"},
+	}
+	// EntityAttributesTable holds the schema information for the "entity_attributes" table.
+	EntityAttributesTable = &schema.Table{
+		Name:       "entity_attributes",
+		Columns:    EntityAttributesColumns,
+		PrimaryKey: []*schema.Column{EntityAttributesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "entityattribute_attribute_id",
+				Unique:  false,
+				Columns: []*schema.Column{EntityAttributesColumns[3]},
+			},
+			{
+				Name:    "entityattribute_entity_id",
+				Unique:  false,
+				Columns: []*schema.Column{EntityAttributesColumns[4]},
+			},
+			{
+				Name:    "entityattribute_attribute_set_id",
+				Unique:  false,
+				Columns: []*schema.Column{EntityAttributesColumns[5]},
+			},
+			{
+				Name:    "entityattribute_attribute_group_id",
+				Unique:  false,
+				Columns: []*schema.Column{EntityAttributesColumns[6]},
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		AttributesTable,
+		AttributeGroupsTable,
+		AttributeOptionsTable,
+		AttributeSetsTable,
 		EntitiesTable,
+		EntityAttributesTable,
 	}
 )
 
 func init() {
 	AttributesTable.Annotation = &entsql.Annotation{
-		Table: "Attributes",
+		Table: "attributes",
 	}
+	AttributeGroupsTable.Annotation = &entsql.Annotation{
+		Table: "attribute_groups",
+	}
+	AttributeOptionsTable.ForeignKeys[0].RefTable = AttributesTable
+	AttributeOptionsTable.Annotation = &entsql.Annotation{
+		Table: "attribute_options",
+	}
+	AttributeSetsTable.Annotation = &entsql.Annotation{
+		Table: "attribute_sets",
+	}
+	EntitiesTable.ForeignKeys[0].RefTable = AttributesTable
 	EntitiesTable.Annotation = &entsql.Annotation{
 		Table: "entities",
+	}
+	EntityAttributesTable.Annotation = &entsql.Annotation{
+		Table: "entity_attributes",
 	}
 }

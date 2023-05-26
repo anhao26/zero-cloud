@@ -2,6 +2,7 @@ package attribute
 
 import (
 	"context"
+	"github.com/anhao26/zero-cloud/service/system/system-rpc/types/system"
 
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/svc"
 	"github.com/anhao26/zero-cloud/service/ticket/ticket-rpc/internal/utils/dberrorhandler"
@@ -48,6 +49,7 @@ func (l *GetAttributeByIdLogic) GetAttributeById(in *ticket.IDReq) (*ticket.Attr
 			IsSearchable:	uint32(result.IsSearchable),
 			IsRequired:	uint32(result.IsRequired),
 			RequiredValidateClass:	result.RequiredValidateClass,
+			OptionData:
 	}, nil
 }
 

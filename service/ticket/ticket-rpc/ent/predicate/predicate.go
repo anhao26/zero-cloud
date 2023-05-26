@@ -9,5 +9,17 @@ import (
 // Attribute is the predicate function for attribute builders.
 type Attribute func(*sql.Selector)
 
+// AttributeGroup is the predicate function for attributegroup builders.
+type AttributeGroup func(*sql.Selector)
+
+// AttributeOption is the predicate function for attributeoption builders.
+type AttributeOption func(*sql.Selector)
+
+// AttributeSet is the predicate function for attributeset builders.
+type AttributeSet func(*sql.Selector)
+
 // Entity is the predicate function for entity builders.
 type Entity func(*sql.Selector)
+
+// EntityAttribute is the predicate function for entityattribute builders.
+type EntityAttribute func(*sql.Selector)

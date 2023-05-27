@@ -144,6 +144,13 @@ type AttributeInfo struct {
 	IsRequired uint32 `json:"isRequired,optional"`
 	// RequiredValidateClass
 	RequiredValidateClass string `json:"requiredValidateClass,optional"`
+	// OptionData
+	OptionData Options `json:"optionData,optional"`
+}
+
+type Options struct {
+	Label string `json:"label,optional"`
+	Value uint32 `json:"value,optional"`
 }
 
 // The response data of attribute list | Attribute列表数据
@@ -172,6 +179,12 @@ type AttributeListReq struct {
 	BackendClass string `json:"backendClass,optional"`
 	// BackendType
 	BackendType string `json:"backendType,optional"`
+	// AttributeGroupName
+	AttributeGroupName string `json:"attributeGroupName,optional"`
+	// Label
+	Label string `json:"label,optional"`
+	// AttributeSetName
+	AttributeSetName string `json:"attributeSetName,optional"`
 }
 
 // Attribute information response | Attribute信息返回体

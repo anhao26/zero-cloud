@@ -1025,44 +1025,21 @@ func RequiredValidateClassContainsFold(v string) predicate.Attribute {
 	return predicate.Attribute(sql.FieldContainsFold(FieldRequiredValidateClass, v))
 }
 
-// HasEntities applies the HasEdge predicate on the "entities" edge.
-func HasEntities() predicate.Attribute {
+// HasOptionID applies the HasEdge predicate on the "option_id" edge.
+func HasOptionID() predicate.Attribute {
 	return predicate.Attribute(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, EntitiesTable, EntitiesColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, OptionIDTable, OptionIDColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasEntitiesWith applies the HasEdge predicate on the "entities" edge with a given conditions (other predicates).
-func HasEntitiesWith(preds ...predicate.Entity) predicate.Attribute {
+// HasOptionIDWith applies the HasEdge predicate on the "option_id" edge with a given conditions (other predicates).
+func HasOptionIDWith(preds ...predicate.AttributeOption) predicate.Attribute {
 	return predicate.Attribute(func(s *sql.Selector) {
-		step := newEntitiesStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasAttributeOptions applies the HasEdge predicate on the "attribute_options" edge.
-func HasAttributeOptions() predicate.Attribute {
-	return predicate.Attribute(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, AttributeOptionsTable, AttributeOptionsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasAttributeOptionsWith applies the HasEdge predicate on the "attribute_options" edge with a given conditions (other predicates).
-func HasAttributeOptionsWith(preds ...predicate.AttributeOption) predicate.Attribute {
-	return predicate.Attribute(func(s *sql.Selector) {
-		step := newAttributeOptionsStep()
+		step := newOptionIDStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

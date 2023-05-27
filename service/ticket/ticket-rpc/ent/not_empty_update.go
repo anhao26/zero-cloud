@@ -275,17 +275,17 @@ func (ag *AttributeGroupUpdateOne) SetNotEmptySequence(value uint8) *AttributeGr
 }
 
 // set field if value is not empty. e.g. string does not equal to ""
-func (ao *AttributeOptionUpdate) SetNotEmptyAttributeID(value uint64) *AttributeOptionUpdate {
+func (ao *AttributeOptionUpdate) SetNotEmptyAttributeOptionID(value uint64) *AttributeOptionUpdate {
 	if value != 0 {
-		return ao.SetAttributeID(value)
+		return ao.SetAttributeOptionID(value)
 	}
 	return ao
 }
 
 // set field if value is not empty. e.g. string does not equal to ""
-func (ao *AttributeOptionUpdateOne) SetNotEmptyAttributeID(value uint64) *AttributeOptionUpdateOne {
+func (ao *AttributeOptionUpdateOne) SetNotEmptyAttributeOptionID(value uint64) *AttributeOptionUpdateOne {
 	if value != 0 {
-		return ao.SetAttributeID(value)
+		return ao.SetAttributeOptionID(value)
 	}
 	return ao
 }
@@ -307,7 +307,7 @@ func (ao *AttributeOptionUpdateOne) SetNotEmptyLabel(value string) *AttributeOpt
 }
 
 // set field if value is not empty. e.g. string does not equal to ""
-func (ao *AttributeOptionUpdate) SetNotEmptyValue(value uint64) *AttributeOptionUpdate {
+func (ao *AttributeOptionUpdate) SetNotEmptyValue(value uint32) *AttributeOptionUpdate {
 	if value != 0 {
 		return ao.SetValue(value)
 	}
@@ -315,7 +315,7 @@ func (ao *AttributeOptionUpdate) SetNotEmptyValue(value uint64) *AttributeOption
 }
 
 // set field if value is not empty. e.g. string does not equal to ""
-func (ao *AttributeOptionUpdateOne) SetNotEmptyValue(value uint64) *AttributeOptionUpdateOne {
+func (ao *AttributeOptionUpdateOne) SetNotEmptyValue(value uint32) *AttributeOptionUpdateOne {
 	if value != 0 {
 		return ao.SetValue(value)
 	}

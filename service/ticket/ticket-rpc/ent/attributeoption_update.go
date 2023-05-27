@@ -34,16 +34,16 @@ func (aou *AttributeOptionUpdate) SetUpdatedAt(t time.Time) *AttributeOptionUpda
 	return aou
 }
 
-// SetAttributeID sets the "attribute_id" field.
-func (aou *AttributeOptionUpdate) SetAttributeID(u uint64) *AttributeOptionUpdate {
-	aou.mutation.ResetAttributeID()
-	aou.mutation.SetAttributeID(u)
+// SetAttributeOptionID sets the "attribute_option_id" field.
+func (aou *AttributeOptionUpdate) SetAttributeOptionID(u uint64) *AttributeOptionUpdate {
+	aou.mutation.ResetAttributeOptionID()
+	aou.mutation.SetAttributeOptionID(u)
 	return aou
 }
 
-// AddAttributeID adds u to the "attribute_id" field.
-func (aou *AttributeOptionUpdate) AddAttributeID(u int64) *AttributeOptionUpdate {
-	aou.mutation.AddAttributeID(u)
+// AddAttributeOptionID adds u to the "attribute_option_id" field.
+func (aou *AttributeOptionUpdate) AddAttributeOptionID(u int64) *AttributeOptionUpdate {
+	aou.mutation.AddAttributeOptionID(u)
 	return aou
 }
 
@@ -54,14 +54,14 @@ func (aou *AttributeOptionUpdate) SetLabel(s string) *AttributeOptionUpdate {
 }
 
 // SetValue sets the "value" field.
-func (aou *AttributeOptionUpdate) SetValue(u uint64) *AttributeOptionUpdate {
+func (aou *AttributeOptionUpdate) SetValue(u uint32) *AttributeOptionUpdate {
 	aou.mutation.ResetValue()
 	aou.mutation.SetValue(u)
 	return aou
 }
 
 // AddValue adds u to the "value" field.
-func (aou *AttributeOptionUpdate) AddValue(u int64) *AttributeOptionUpdate {
+func (aou *AttributeOptionUpdate) AddValue(u int32) *AttributeOptionUpdate {
 	aou.mutation.AddValue(u)
 	return aou
 }
@@ -119,20 +119,20 @@ func (aou *AttributeOptionUpdate) sqlSave(ctx context.Context) (n int, err error
 	if value, ok := aou.mutation.UpdatedAt(); ok {
 		_spec.SetField(attributeoption.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := aou.mutation.AttributeID(); ok {
-		_spec.SetField(attributeoption.FieldAttributeID, field.TypeUint64, value)
+	if value, ok := aou.mutation.AttributeOptionID(); ok {
+		_spec.SetField(attributeoption.FieldAttributeOptionID, field.TypeUint64, value)
 	}
-	if value, ok := aou.mutation.AddedAttributeID(); ok {
-		_spec.AddField(attributeoption.FieldAttributeID, field.TypeUint64, value)
+	if value, ok := aou.mutation.AddedAttributeOptionID(); ok {
+		_spec.AddField(attributeoption.FieldAttributeOptionID, field.TypeUint64, value)
 	}
 	if value, ok := aou.mutation.Label(); ok {
 		_spec.SetField(attributeoption.FieldLabel, field.TypeString, value)
 	}
 	if value, ok := aou.mutation.Value(); ok {
-		_spec.SetField(attributeoption.FieldValue, field.TypeUint64, value)
+		_spec.SetField(attributeoption.FieldValue, field.TypeUint32, value)
 	}
 	if value, ok := aou.mutation.AddedValue(); ok {
-		_spec.AddField(attributeoption.FieldValue, field.TypeUint64, value)
+		_spec.AddField(attributeoption.FieldValue, field.TypeUint32, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, aou.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -160,16 +160,16 @@ func (aouo *AttributeOptionUpdateOne) SetUpdatedAt(t time.Time) *AttributeOption
 	return aouo
 }
 
-// SetAttributeID sets the "attribute_id" field.
-func (aouo *AttributeOptionUpdateOne) SetAttributeID(u uint64) *AttributeOptionUpdateOne {
-	aouo.mutation.ResetAttributeID()
-	aouo.mutation.SetAttributeID(u)
+// SetAttributeOptionID sets the "attribute_option_id" field.
+func (aouo *AttributeOptionUpdateOne) SetAttributeOptionID(u uint64) *AttributeOptionUpdateOne {
+	aouo.mutation.ResetAttributeOptionID()
+	aouo.mutation.SetAttributeOptionID(u)
 	return aouo
 }
 
-// AddAttributeID adds u to the "attribute_id" field.
-func (aouo *AttributeOptionUpdateOne) AddAttributeID(u int64) *AttributeOptionUpdateOne {
-	aouo.mutation.AddAttributeID(u)
+// AddAttributeOptionID adds u to the "attribute_option_id" field.
+func (aouo *AttributeOptionUpdateOne) AddAttributeOptionID(u int64) *AttributeOptionUpdateOne {
+	aouo.mutation.AddAttributeOptionID(u)
 	return aouo
 }
 
@@ -180,14 +180,14 @@ func (aouo *AttributeOptionUpdateOne) SetLabel(s string) *AttributeOptionUpdateO
 }
 
 // SetValue sets the "value" field.
-func (aouo *AttributeOptionUpdateOne) SetValue(u uint64) *AttributeOptionUpdateOne {
+func (aouo *AttributeOptionUpdateOne) SetValue(u uint32) *AttributeOptionUpdateOne {
 	aouo.mutation.ResetValue()
 	aouo.mutation.SetValue(u)
 	return aouo
 }
 
 // AddValue adds u to the "value" field.
-func (aouo *AttributeOptionUpdateOne) AddValue(u int64) *AttributeOptionUpdateOne {
+func (aouo *AttributeOptionUpdateOne) AddValue(u int32) *AttributeOptionUpdateOne {
 	aouo.mutation.AddValue(u)
 	return aouo
 }
@@ -275,20 +275,20 @@ func (aouo *AttributeOptionUpdateOne) sqlSave(ctx context.Context) (_node *Attri
 	if value, ok := aouo.mutation.UpdatedAt(); ok {
 		_spec.SetField(attributeoption.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := aouo.mutation.AttributeID(); ok {
-		_spec.SetField(attributeoption.FieldAttributeID, field.TypeUint64, value)
+	if value, ok := aouo.mutation.AttributeOptionID(); ok {
+		_spec.SetField(attributeoption.FieldAttributeOptionID, field.TypeUint64, value)
 	}
-	if value, ok := aouo.mutation.AddedAttributeID(); ok {
-		_spec.AddField(attributeoption.FieldAttributeID, field.TypeUint64, value)
+	if value, ok := aouo.mutation.AddedAttributeOptionID(); ok {
+		_spec.AddField(attributeoption.FieldAttributeOptionID, field.TypeUint64, value)
 	}
 	if value, ok := aouo.mutation.Label(); ok {
 		_spec.SetField(attributeoption.FieldLabel, field.TypeString, value)
 	}
 	if value, ok := aouo.mutation.Value(); ok {
-		_spec.SetField(attributeoption.FieldValue, field.TypeUint64, value)
+		_spec.SetField(attributeoption.FieldValue, field.TypeUint32, value)
 	}
 	if value, ok := aouo.mutation.AddedValue(); ok {
-		_spec.AddField(attributeoption.FieldValue, field.TypeUint64, value)
+		_spec.AddField(attributeoption.FieldValue, field.TypeUint32, value)
 	}
 	_node = &AttributeOption{config: aouo.config}
 	_spec.Assign = _node.assignValues

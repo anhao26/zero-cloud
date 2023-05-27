@@ -331,31 +331,15 @@ func (c *AttributeClient) GetX(ctx context.Context, id uint64) *Attribute {
 	return obj
 }
 
-// QueryEntities queries the entities edge of a Attribute.
-func (c *AttributeClient) QueryEntities(a *Attribute) *EntityQuery {
-	query := (&EntityClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := a.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(attribute.Table, attribute.FieldID, id),
-			sqlgraph.To(entity.Table, entity.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, attribute.EntitiesTable, attribute.EntitiesColumn),
-		)
-		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryAttributeOptions queries the attribute_options edge of a Attribute.
-func (c *AttributeClient) QueryAttributeOptions(a *Attribute) *AttributeOptionQuery {
+// QueryOptionID queries the option_id edge of a Attribute.
+func (c *AttributeClient) QueryOptionID(a *Attribute) *AttributeOptionQuery {
 	query := (&AttributeOptionClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(attribute.Table, attribute.FieldID, id),
 			sqlgraph.To(attributeoption.Table, attributeoption.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, attribute.AttributeOptionsTable, attribute.AttributeOptionsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, attribute.OptionIDTable, attribute.OptionIDColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil

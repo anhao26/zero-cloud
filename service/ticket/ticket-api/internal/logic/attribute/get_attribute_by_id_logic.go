@@ -56,6 +56,7 @@ func (l *GetAttributeByIdLogic) GetAttributeById(req *types.IDReq) (resp *types.
 			IsSearchable:          data.IsSearchable,
 			IsRequired:            data.IsRequired,
 			RequiredValidateClass: data.RequiredValidateClass,
+			OptionData:            data.OptionData,
 		},
 	}, nil
 }

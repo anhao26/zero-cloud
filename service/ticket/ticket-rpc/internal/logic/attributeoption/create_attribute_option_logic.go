@@ -29,7 +29,7 @@ func NewCreateAttributeOptionLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 func (l *CreateAttributeOptionLogic) CreateAttributeOption(in *ticket.AttributeOptionInfo) (*ticket.BaseIDResp, error) {
     result, err := l.svcCtx.DB.AttributeOption.Create().
-			SetAttributeID(in.AttributeId).
+			SetAttributeOptionID(in.AttributeOptionId).
 			SetLabel(in.Label).
 			SetValue(in.Value).
 			Save(l.ctx)

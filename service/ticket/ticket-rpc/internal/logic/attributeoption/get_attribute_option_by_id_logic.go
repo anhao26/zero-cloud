@@ -34,7 +34,7 @@ func (l *GetAttributeOptionByIdLogic) GetAttributeOptionById(in *ticket.IDReq) (
 		Id:          result.ID,
 		CreatedAt:   result.CreatedAt.UnixMilli(),
 		UpdatedAt:   result.UpdatedAt.UnixMilli(),
-			AttributeId:	result.AttributeID,
+			AttributeOptionId:	result.AttributeOptionID,
 			Label:	result.Label,
 			Value:	result.Value,
 	}, nil

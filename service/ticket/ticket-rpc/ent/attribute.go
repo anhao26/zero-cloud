@@ -57,31 +57,20 @@ type Attribute struct {
 
 // AttributeEdges holds the relations/edges for other nodes in the graph.
 type AttributeEdges struct {
-	// Entities holds the value of the entities edge.
-	Entities []*Entity `json:"entities,omitempty"`
-	// AttributeOptions holds the value of the attribute_options edge.
-	AttributeOptions []*AttributeOption `json:"attribute_options,omitempty"`
+	// OptionID holds the value of the option_id edge.
+	OptionID []*AttributeOption `json:"option_id,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [1]bool
 }
 
-// EntitiesOrErr returns the Entities value or an error if the edge
+// OptionIDOrErr returns the OptionID value or an error if the edge
 // was not loaded in eager-loading.
-func (e AttributeEdges) EntitiesOrErr() ([]*Entity, error) {
+func (e AttributeEdges) OptionIDOrErr() ([]*AttributeOption, error) {
 	if e.loadedTypes[0] {
-		return e.Entities, nil
+		return e.OptionID, nil
 	}
-	return nil, &NotLoadedError{edge: "entities"}
-}
-
-// AttributeOptionsOrErr returns the AttributeOptions value or an error if the edge
-// was not loaded in eager-loading.
-func (e AttributeEdges) AttributeOptionsOrErr() ([]*AttributeOption, error) {
-	if e.loadedTypes[1] {
-		return e.AttributeOptions, nil
-	}
-	return nil, &NotLoadedError{edge: "attribute_options"}
+	return nil, &NotLoadedError{edge: "option_id"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -225,14 +214,9 @@ func (a *Attribute) Value(name string) (ent.Value, error) {
 	return a.selectValues.Get(name)
 }
 
-// QueryEntities queries the "entities" edge of the Attribute entity.
-func (a *Attribute) QueryEntities() *EntityQuery {
-	return NewAttributeClient(a.config).QueryEntities(a)
-}
-
-// QueryAttributeOptions queries the "attribute_options" edge of the Attribute entity.
-func (a *Attribute) QueryAttributeOptions() *AttributeOptionQuery {
-	return NewAttributeClient(a.config).QueryAttributeOptions(a)
+// QueryOptionID queries the "option_id" edge of the Attribute entity.
+func (a *Attribute) QueryOptionID() *AttributeOptionQuery {
+	return NewAttributeClient(a.config).QueryOptionID(a)
 }
 
 // Update returns a builder for updating this Attribute.

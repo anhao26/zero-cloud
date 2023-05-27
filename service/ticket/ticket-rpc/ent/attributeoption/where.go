@@ -64,13 +64,13 @@ func UpdatedAt(v time.Time) predicate.AttributeOption {
 	return predicate.AttributeOption(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// AttributeID applies equality check predicate on the "attribute_id" field. It's identical to AttributeIDEQ.
-func AttributeID(v uint64) predicate.AttributeOption {
-	return predicate.AttributeOption(sql.FieldEQ(FieldAttributeID, v))
+// AttributeOptionID applies equality check predicate on the "attribute_option_id" field. It's identical to AttributeOptionIDEQ.
+func AttributeOptionID(v uint64) predicate.AttributeOption {
+	return predicate.AttributeOption(sql.FieldEQ(FieldAttributeOptionID, v))
 }
 
 // Value applies equality check predicate on the "value" field. It's identical to ValueEQ.
-func Value(v uint64) predicate.AttributeOption {
+func Value(v uint32) predicate.AttributeOption {
 	return predicate.AttributeOption(sql.FieldEQ(FieldValue, v))
 }
 
@@ -154,44 +154,44 @@ func UpdatedAtLTE(v time.Time) predicate.AttributeOption {
 	return predicate.AttributeOption(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
-// AttributeIDEQ applies the EQ predicate on the "attribute_id" field.
-func AttributeIDEQ(v uint64) predicate.AttributeOption {
-	return predicate.AttributeOption(sql.FieldEQ(FieldAttributeID, v))
+// AttributeOptionIDEQ applies the EQ predicate on the "attribute_option_id" field.
+func AttributeOptionIDEQ(v uint64) predicate.AttributeOption {
+	return predicate.AttributeOption(sql.FieldEQ(FieldAttributeOptionID, v))
 }
 
-// AttributeIDNEQ applies the NEQ predicate on the "attribute_id" field.
-func AttributeIDNEQ(v uint64) predicate.AttributeOption {
-	return predicate.AttributeOption(sql.FieldNEQ(FieldAttributeID, v))
+// AttributeOptionIDNEQ applies the NEQ predicate on the "attribute_option_id" field.
+func AttributeOptionIDNEQ(v uint64) predicate.AttributeOption {
+	return predicate.AttributeOption(sql.FieldNEQ(FieldAttributeOptionID, v))
 }
 
-// AttributeIDIn applies the In predicate on the "attribute_id" field.
-func AttributeIDIn(vs ...uint64) predicate.AttributeOption {
-	return predicate.AttributeOption(sql.FieldIn(FieldAttributeID, vs...))
+// AttributeOptionIDIn applies the In predicate on the "attribute_option_id" field.
+func AttributeOptionIDIn(vs ...uint64) predicate.AttributeOption {
+	return predicate.AttributeOption(sql.FieldIn(FieldAttributeOptionID, vs...))
 }
 
-// AttributeIDNotIn applies the NotIn predicate on the "attribute_id" field.
-func AttributeIDNotIn(vs ...uint64) predicate.AttributeOption {
-	return predicate.AttributeOption(sql.FieldNotIn(FieldAttributeID, vs...))
+// AttributeOptionIDNotIn applies the NotIn predicate on the "attribute_option_id" field.
+func AttributeOptionIDNotIn(vs ...uint64) predicate.AttributeOption {
+	return predicate.AttributeOption(sql.FieldNotIn(FieldAttributeOptionID, vs...))
 }
 
-// AttributeIDGT applies the GT predicate on the "attribute_id" field.
-func AttributeIDGT(v uint64) predicate.AttributeOption {
-	return predicate.AttributeOption(sql.FieldGT(FieldAttributeID, v))
+// AttributeOptionIDGT applies the GT predicate on the "attribute_option_id" field.
+func AttributeOptionIDGT(v uint64) predicate.AttributeOption {
+	return predicate.AttributeOption(sql.FieldGT(FieldAttributeOptionID, v))
 }
 
-// AttributeIDGTE applies the GTE predicate on the "attribute_id" field.
-func AttributeIDGTE(v uint64) predicate.AttributeOption {
-	return predicate.AttributeOption(sql.FieldGTE(FieldAttributeID, v))
+// AttributeOptionIDGTE applies the GTE predicate on the "attribute_option_id" field.
+func AttributeOptionIDGTE(v uint64) predicate.AttributeOption {
+	return predicate.AttributeOption(sql.FieldGTE(FieldAttributeOptionID, v))
 }
 
-// AttributeIDLT applies the LT predicate on the "attribute_id" field.
-func AttributeIDLT(v uint64) predicate.AttributeOption {
-	return predicate.AttributeOption(sql.FieldLT(FieldAttributeID, v))
+// AttributeOptionIDLT applies the LT predicate on the "attribute_option_id" field.
+func AttributeOptionIDLT(v uint64) predicate.AttributeOption {
+	return predicate.AttributeOption(sql.FieldLT(FieldAttributeOptionID, v))
 }
 
-// AttributeIDLTE applies the LTE predicate on the "attribute_id" field.
-func AttributeIDLTE(v uint64) predicate.AttributeOption {
-	return predicate.AttributeOption(sql.FieldLTE(FieldAttributeID, v))
+// AttributeOptionIDLTE applies the LTE predicate on the "attribute_option_id" field.
+func AttributeOptionIDLTE(v uint64) predicate.AttributeOption {
+	return predicate.AttributeOption(sql.FieldLTE(FieldAttributeOptionID, v))
 }
 
 // LabelEQ applies the EQ predicate on the "label" field.
@@ -260,42 +260,42 @@ func LabelContainsFold(v string) predicate.AttributeOption {
 }
 
 // ValueEQ applies the EQ predicate on the "value" field.
-func ValueEQ(v uint64) predicate.AttributeOption {
+func ValueEQ(v uint32) predicate.AttributeOption {
 	return predicate.AttributeOption(sql.FieldEQ(FieldValue, v))
 }
 
 // ValueNEQ applies the NEQ predicate on the "value" field.
-func ValueNEQ(v uint64) predicate.AttributeOption {
+func ValueNEQ(v uint32) predicate.AttributeOption {
 	return predicate.AttributeOption(sql.FieldNEQ(FieldValue, v))
 }
 
 // ValueIn applies the In predicate on the "value" field.
-func ValueIn(vs ...uint64) predicate.AttributeOption {
+func ValueIn(vs ...uint32) predicate.AttributeOption {
 	return predicate.AttributeOption(sql.FieldIn(FieldValue, vs...))
 }
 
 // ValueNotIn applies the NotIn predicate on the "value" field.
-func ValueNotIn(vs ...uint64) predicate.AttributeOption {
+func ValueNotIn(vs ...uint32) predicate.AttributeOption {
 	return predicate.AttributeOption(sql.FieldNotIn(FieldValue, vs...))
 }
 
 // ValueGT applies the GT predicate on the "value" field.
-func ValueGT(v uint64) predicate.AttributeOption {
+func ValueGT(v uint32) predicate.AttributeOption {
 	return predicate.AttributeOption(sql.FieldGT(FieldValue, v))
 }
 
 // ValueGTE applies the GTE predicate on the "value" field.
-func ValueGTE(v uint64) predicate.AttributeOption {
+func ValueGTE(v uint32) predicate.AttributeOption {
 	return predicate.AttributeOption(sql.FieldGTE(FieldValue, v))
 }
 
 // ValueLT applies the LT predicate on the "value" field.
-func ValueLT(v uint64) predicate.AttributeOption {
+func ValueLT(v uint32) predicate.AttributeOption {
 	return predicate.AttributeOption(sql.FieldLT(FieldValue, v))
 }
 
 // ValueLTE applies the LTE predicate on the "value" field.
-func ValueLTE(v uint64) predicate.AttributeOption {
+func ValueLTE(v uint32) predicate.AttributeOption {
 	return predicate.AttributeOption(sql.FieldLTE(FieldValue, v))
 }
 

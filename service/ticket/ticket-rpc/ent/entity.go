@@ -32,9 +32,8 @@ type Entity struct {
 	// Additional Attribute Table | 附加属性表
 	AdditionalAttributeTable string `json:"additional_attribute_table,omitempty"`
 	// Is Flat Enabled | 是否设置一张表存储
-	IsFlatEnabled      uint32 `json:"is_flat_enabled,omitempty"`
-	attribute_entities *uint64
-	selectValues       sql.SelectValues
+	IsFlatEnabled uint32 `json:"is_flat_enabled,omitempty"`
+	selectValues  sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -48,8 +47,6 @@ func (*Entity) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case entity.FieldCreatedAt, entity.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case entity.ForeignKeys[0]: // attribute_entities
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -118,13 +115,6 @@ func (e *Entity) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field is_flat_enabled", values[i])
 			} else if value.Valid {
 				e.IsFlatEnabled = uint32(value.Int64)
-			}
-		case entity.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field attribute_entities", value)
-			} else if value.Valid {
-				e.attribute_entities = new(uint64)
-				*e.attribute_entities = uint64(value.Int64)
 			}
 		default:
 			e.selectValues.Set(columns[i], values[i])

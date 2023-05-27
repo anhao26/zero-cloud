@@ -21,14 +21,14 @@ type AttributeOption struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// Attribute Id | 属性ID
-	AttributeID uint64 `json:"attribute_id,omitempty"`
+	// Attribute Option Id | 属性ID
+	AttributeOptionID uint64 `json:"attribute_option_id,omitempty"`
 	// Label | 选项名
 	Label string `json:"label,omitempty"`
 	// value | 选项值
-	Value                       uint64 `json:"value,omitempty"`
-	attribute_attribute_options *uint64
-	selectValues                sql.SelectValues
+	Value               uint32 `json:"value,omitempty"`
+	attribute_option_id *uint64
+	selectValues        sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -36,13 +36,13 @@ func (*AttributeOption) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case attributeoption.FieldID, attributeoption.FieldAttributeID, attributeoption.FieldValue:
+		case attributeoption.FieldID, attributeoption.FieldAttributeOptionID, attributeoption.FieldValue:
 			values[i] = new(sql.NullInt64)
 		case attributeoption.FieldLabel:
 			values[i] = new(sql.NullString)
 		case attributeoption.FieldCreatedAt, attributeoption.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case attributeoption.ForeignKeys[0]: // attribute_attribute_options
+		case attributeoption.ForeignKeys[0]: // attribute_option_id
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -77,11 +77,11 @@ func (ao *AttributeOption) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ao.UpdatedAt = value.Time
 			}
-		case attributeoption.FieldAttributeID:
+		case attributeoption.FieldAttributeOptionID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field attribute_id", values[i])
+				return fmt.Errorf("unexpected type %T for field attribute_option_id", values[i])
 			} else if value.Valid {
-				ao.AttributeID = uint64(value.Int64)
+				ao.AttributeOptionID = uint64(value.Int64)
 			}
 		case attributeoption.FieldLabel:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -93,14 +93,14 @@ func (ao *AttributeOption) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field value", values[i])
 			} else if value.Valid {
-				ao.Value = uint64(value.Int64)
+				ao.Value = uint32(value.Int64)
 			}
 		case attributeoption.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field attribute_attribute_options", value)
+				return fmt.Errorf("unexpected type %T for edge-field attribute_option_id", value)
 			} else if value.Valid {
-				ao.attribute_attribute_options = new(uint64)
-				*ao.attribute_attribute_options = uint64(value.Int64)
+				ao.attribute_option_id = new(uint64)
+				*ao.attribute_option_id = uint64(value.Int64)
 			}
 		default:
 			ao.selectValues.Set(columns[i], values[i])
@@ -144,8 +144,8 @@ func (ao *AttributeOption) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(ao.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("attribute_id=")
-	builder.WriteString(fmt.Sprintf("%v", ao.AttributeID))
+	builder.WriteString("attribute_option_id=")
+	builder.WriteString(fmt.Sprintf("%v", ao.AttributeOptionID))
 	builder.WriteString(", ")
 	builder.WriteString("label=")
 	builder.WriteString(ao.Label)

@@ -17,8 +17,8 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldAttributeID holds the string denoting the attribute_id field in the database.
-	FieldAttributeID = "attribute_id"
+	// FieldAttributeOptionID holds the string denoting the attribute_option_id field in the database.
+	FieldAttributeOptionID = "attribute_option_id"
 	// FieldLabel holds the string denoting the label field in the database.
 	FieldLabel = "label"
 	// FieldValue holds the string denoting the value field in the database.
@@ -32,7 +32,7 @@ var Columns = []string{
 	FieldID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldAttributeID,
+	FieldAttributeOptionID,
 	FieldLabel,
 	FieldValue,
 }
@@ -40,7 +40,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "attribute_options"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"attribute_attribute_options",
+	"attribute_option_id",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -85,9 +85,9 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByAttributeID orders the results by the attribute_id field.
-func ByAttributeID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAttributeID, opts...).ToFunc()
+// ByAttributeOptionID orders the results by the attribute_option_id field.
+func ByAttributeOptionID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAttributeOptionID, opts...).ToFunc()
 }
 
 // ByLabel orders the results by the label field.

@@ -29,7 +29,7 @@ func NewUpdateAttributeOptionLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 func (l *UpdateAttributeOptionLogic) UpdateAttributeOption(in *ticket.AttributeOptionInfo) (*ticket.BaseResp, error) {
     err := l.svcCtx.DB.AttributeOption.UpdateOneID(in.Id).
-			SetNotEmptyAttributeID(in.AttributeId).
+			SetNotEmptyAttributeOptionID(in.AttributeOptionId).
 			SetNotEmptyLabel(in.Label).
 			SetNotEmptyValue(in.Value).
 			Exec(l.ctx)

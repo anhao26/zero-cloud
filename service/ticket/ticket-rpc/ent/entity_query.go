@@ -21,7 +21,6 @@ type EntityQuery struct {
 	order      []entity.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Entity
-	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -332,13 +331,9 @@ func (eq *EntityQuery) prepareQuery(ctx context.Context) error {
 
 func (eq *EntityQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Entity, error) {
 	var (
-		nodes   = []*Entity{}
-		withFKs = eq.withFKs
-		_spec   = eq.querySpec()
+		nodes = []*Entity{}
+		_spec = eq.querySpec()
 	)
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, entity.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Entity).scanValues(nil, columns)
 	}

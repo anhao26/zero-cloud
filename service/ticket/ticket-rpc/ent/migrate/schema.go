@@ -69,10 +69,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "attribute_id", Type: field.TypeUint64, Comment: "Attribute Id | 属性ID"},
+		{Name: "attribute_option_id", Type: field.TypeUint64, Comment: "Attribute Option Id | 属性ID"},
 		{Name: "label", Type: field.TypeString, Comment: "Label | 选项名"},
-		{Name: "value", Type: field.TypeUint64, Comment: "value | 选项值"},
-		{Name: "attribute_attribute_options", Type: field.TypeUint64, Nullable: true},
+		{Name: "value", Type: field.TypeUint32, Comment: "value | 选项值"},
 	}
 	// AttributeOptionsTable holds the schema information for the "attribute_options" table.
 	AttributeOptionsTable = &schema.Table{
@@ -81,15 +80,15 @@ var (
 		PrimaryKey: []*schema.Column{AttributeOptionsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "attribute_options_attributes_attribute_options",
-				Columns:    []*schema.Column{AttributeOptionsColumns[6]},
+				Symbol:     "attribute_options_attributes_option_id",
+				Columns:    []*schema.Column{AttributeOptionsColumns[3]},
 				RefColumns: []*schema.Column{AttributesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "attributeoption_attribute_id",
+				Name:    "attributeoption_attribute_option_id",
 				Unique:  false,
 				Columns: []*schema.Column{AttributeOptionsColumns[3]},
 			},
@@ -127,21 +126,12 @@ var (
 		{Name: "default_attribute_set_id", Type: field.TypeUint64, Comment: "Default Attribute Set Id | 默认属性SET ID"},
 		{Name: "additional_attribute_table", Type: field.TypeString, Comment: "Additional Attribute Table | 附加属性表"},
 		{Name: "is_flat_enabled", Type: field.TypeUint32, Comment: "Is Flat Enabled | 是否设置一张表存储", Default: 0},
-		{Name: "attribute_entities", Type: field.TypeUint64, Nullable: true},
 	}
 	// EntitiesTable holds the schema information for the "entities" table.
 	EntitiesTable = &schema.Table{
 		Name:       "entities",
 		Columns:    EntitiesColumns,
 		PrimaryKey: []*schema.Column{EntitiesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "entities_attributes_entities",
-				Columns:    []*schema.Column{EntitiesColumns[9]},
-				RefColumns: []*schema.Column{AttributesColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
 	}
 	// EntityAttributesColumns holds the columns for the "entity_attributes" table.
 	EntityAttributesColumns = []*schema.Column{
@@ -207,7 +197,6 @@ func init() {
 	AttributeSetsTable.Annotation = &entsql.Annotation{
 		Table: "attribute_sets",
 	}
-	EntitiesTable.ForeignKeys[0].RefTable = AttributesTable
 	EntitiesTable.Annotation = &entsql.Annotation{
 		Table: "entities",
 	}

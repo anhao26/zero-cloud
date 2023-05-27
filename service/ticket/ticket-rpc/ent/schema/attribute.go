@@ -69,8 +69,7 @@ func (Attribute) Mixin() []ent.Mixin {
 
 func (Attribute) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("entities", Entity.Type),
-		edge.To("attribute_options", AttributeOption.Type),
+		edge.To("option_id", AttributeOption.Type),
 	}
 }
 

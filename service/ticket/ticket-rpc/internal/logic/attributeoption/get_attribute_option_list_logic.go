@@ -45,7 +45,7 @@ func (l *GetAttributeOptionListLogic) GetAttributeOptionList(in *ticket.Attribut
 			Id:          v.ID,
 			CreatedAt:   v.CreatedAt.UnixMilli(),
 			UpdatedAt:   v.UpdatedAt.UnixMilli(),
-			AttributeId:	v.AttributeID,
+			AttributeOptionId:	v.AttributeOptionID,
 			Label:	v.Label,
 			Value:	v.Value,
 		})

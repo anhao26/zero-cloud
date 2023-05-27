@@ -40,39 +40,36 @@ const (
 // AttributeMutation represents an operation that mutates the Attribute nodes in the graph.
 type AttributeMutation struct {
 	config
-	op                       Op
-	typ                      string
-	id                       *uint64
-	created_at               *time.Time
-	updated_at               *time.Time
-	entity_id                *uint64
-	addentity_id             *int64
-	attribute_code           *string
-	backend_class            *string
-	backend_type             *string
-	backend_table            *string
-	frontend_class           *string
-	frontend_type            *string
-	frontend_label           *string
-	source_class             *string
-	default_value            *string
-	is_filterable            *uint8
-	addis_filterable         *int8
-	is_searchable            *uint8
-	addis_searchable         *int8
-	is_required              *uint8
-	addis_required           *int8
-	required_validate_class  *string
-	clearedFields            map[string]struct{}
-	entities                 map[uint64]struct{}
-	removedentities          map[uint64]struct{}
-	clearedentities          bool
-	attribute_options        map[uint64]struct{}
-	removedattribute_options map[uint64]struct{}
-	clearedattribute_options bool
-	done                     bool
-	oldValue                 func(context.Context) (*Attribute, error)
-	predicates               []predicate.Attribute
+	op                      Op
+	typ                     string
+	id                      *uint64
+	created_at              *time.Time
+	updated_at              *time.Time
+	entity_id               *uint64
+	addentity_id            *int64
+	attribute_code          *string
+	backend_class           *string
+	backend_type            *string
+	backend_table           *string
+	frontend_class          *string
+	frontend_type           *string
+	frontend_label          *string
+	source_class            *string
+	default_value           *string
+	is_filterable           *uint8
+	addis_filterable        *int8
+	is_searchable           *uint8
+	addis_searchable        *int8
+	is_required             *uint8
+	addis_required          *int8
+	required_validate_class *string
+	clearedFields           map[string]struct{}
+	option_id               map[uint64]struct{}
+	removedoption_id        map[uint64]struct{}
+	clearedoption_id        bool
+	done                    bool
+	oldValue                func(context.Context) (*Attribute, error)
+	predicates              []predicate.Attribute
 }
 
 var _ ent.Mutation = (*AttributeMutation)(nil)
@@ -835,112 +832,58 @@ func (m *AttributeMutation) ResetRequiredValidateClass() {
 	m.required_validate_class = nil
 }
 
-// AddEntityIDs adds the "entities" edge to the Entity entity by ids.
-func (m *AttributeMutation) AddEntityIDs(ids ...uint64) {
-	if m.entities == nil {
-		m.entities = make(map[uint64]struct{})
+// AddOptionIDIDs adds the "option_id" edge to the AttributeOption entity by ids.
+func (m *AttributeMutation) AddOptionIDIDs(ids ...uint64) {
+	if m.option_id == nil {
+		m.option_id = make(map[uint64]struct{})
 	}
 	for i := range ids {
-		m.entities[ids[i]] = struct{}{}
+		m.option_id[ids[i]] = struct{}{}
 	}
 }
 
-// ClearEntities clears the "entities" edge to the Entity entity.
-func (m *AttributeMutation) ClearEntities() {
-	m.clearedentities = true
+// ClearOptionID clears the "option_id" edge to the AttributeOption entity.
+func (m *AttributeMutation) ClearOptionID() {
+	m.clearedoption_id = true
 }
 
-// EntitiesCleared reports if the "entities" edge to the Entity entity was cleared.
-func (m *AttributeMutation) EntitiesCleared() bool {
-	return m.clearedentities
+// OptionIDCleared reports if the "option_id" edge to the AttributeOption entity was cleared.
+func (m *AttributeMutation) OptionIDCleared() bool {
+	return m.clearedoption_id
 }
 
-// RemoveEntityIDs removes the "entities" edge to the Entity entity by IDs.
-func (m *AttributeMutation) RemoveEntityIDs(ids ...uint64) {
-	if m.removedentities == nil {
-		m.removedentities = make(map[uint64]struct{})
+// RemoveOptionIDIDs removes the "option_id" edge to the AttributeOption entity by IDs.
+func (m *AttributeMutation) RemoveOptionIDIDs(ids ...uint64) {
+	if m.removedoption_id == nil {
+		m.removedoption_id = make(map[uint64]struct{})
 	}
 	for i := range ids {
-		delete(m.entities, ids[i])
-		m.removedentities[ids[i]] = struct{}{}
+		delete(m.option_id, ids[i])
+		m.removedoption_id[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedEntities returns the removed IDs of the "entities" edge to the Entity entity.
-func (m *AttributeMutation) RemovedEntitiesIDs() (ids []uint64) {
-	for id := range m.removedentities {
+// RemovedOptionID returns the removed IDs of the "option_id" edge to the AttributeOption entity.
+func (m *AttributeMutation) RemovedOptionIDIDs() (ids []uint64) {
+	for id := range m.removedoption_id {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// EntitiesIDs returns the "entities" edge IDs in the mutation.
-func (m *AttributeMutation) EntitiesIDs() (ids []uint64) {
-	for id := range m.entities {
+// OptionIDIDs returns the "option_id" edge IDs in the mutation.
+func (m *AttributeMutation) OptionIDIDs() (ids []uint64) {
+	for id := range m.option_id {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetEntities resets all changes to the "entities" edge.
-func (m *AttributeMutation) ResetEntities() {
-	m.entities = nil
-	m.clearedentities = false
-	m.removedentities = nil
-}
-
-// AddAttributeOptionIDs adds the "attribute_options" edge to the AttributeOption entity by ids.
-func (m *AttributeMutation) AddAttributeOptionIDs(ids ...uint64) {
-	if m.attribute_options == nil {
-		m.attribute_options = make(map[uint64]struct{})
-	}
-	for i := range ids {
-		m.attribute_options[ids[i]] = struct{}{}
-	}
-}
-
-// ClearAttributeOptions clears the "attribute_options" edge to the AttributeOption entity.
-func (m *AttributeMutation) ClearAttributeOptions() {
-	m.clearedattribute_options = true
-}
-
-// AttributeOptionsCleared reports if the "attribute_options" edge to the AttributeOption entity was cleared.
-func (m *AttributeMutation) AttributeOptionsCleared() bool {
-	return m.clearedattribute_options
-}
-
-// RemoveAttributeOptionIDs removes the "attribute_options" edge to the AttributeOption entity by IDs.
-func (m *AttributeMutation) RemoveAttributeOptionIDs(ids ...uint64) {
-	if m.removedattribute_options == nil {
-		m.removedattribute_options = make(map[uint64]struct{})
-	}
-	for i := range ids {
-		delete(m.attribute_options, ids[i])
-		m.removedattribute_options[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedAttributeOptions returns the removed IDs of the "attribute_options" edge to the AttributeOption entity.
-func (m *AttributeMutation) RemovedAttributeOptionsIDs() (ids []uint64) {
-	for id := range m.removedattribute_options {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// AttributeOptionsIDs returns the "attribute_options" edge IDs in the mutation.
-func (m *AttributeMutation) AttributeOptionsIDs() (ids []uint64) {
-	for id := range m.attribute_options {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetAttributeOptions resets all changes to the "attribute_options" edge.
-func (m *AttributeMutation) ResetAttributeOptions() {
-	m.attribute_options = nil
-	m.clearedattribute_options = false
-	m.removedattribute_options = nil
+// ResetOptionID resets all changes to the "option_id" edge.
+func (m *AttributeMutation) ResetOptionID() {
+	m.option_id = nil
+	m.clearedoption_id = false
+	m.removedoption_id = nil
 }
 
 // Where appends a list predicates to the AttributeMutation builder.
@@ -1382,12 +1325,9 @@ func (m *AttributeMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AttributeMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.entities != nil {
-		edges = append(edges, attribute.EdgeEntities)
-	}
-	if m.attribute_options != nil {
-		edges = append(edges, attribute.EdgeAttributeOptions)
+	edges := make([]string, 0, 1)
+	if m.option_id != nil {
+		edges = append(edges, attribute.EdgeOptionID)
 	}
 	return edges
 }
@@ -1396,15 +1336,9 @@ func (m *AttributeMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *AttributeMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case attribute.EdgeEntities:
-		ids := make([]ent.Value, 0, len(m.entities))
-		for id := range m.entities {
-			ids = append(ids, id)
-		}
-		return ids
-	case attribute.EdgeAttributeOptions:
-		ids := make([]ent.Value, 0, len(m.attribute_options))
-		for id := range m.attribute_options {
+	case attribute.EdgeOptionID:
+		ids := make([]ent.Value, 0, len(m.option_id))
+		for id := range m.option_id {
 			ids = append(ids, id)
 		}
 		return ids
@@ -1414,12 +1348,9 @@ func (m *AttributeMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AttributeMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.removedentities != nil {
-		edges = append(edges, attribute.EdgeEntities)
-	}
-	if m.removedattribute_options != nil {
-		edges = append(edges, attribute.EdgeAttributeOptions)
+	edges := make([]string, 0, 1)
+	if m.removedoption_id != nil {
+		edges = append(edges, attribute.EdgeOptionID)
 	}
 	return edges
 }
@@ -1428,15 +1359,9 @@ func (m *AttributeMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *AttributeMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case attribute.EdgeEntities:
-		ids := make([]ent.Value, 0, len(m.removedentities))
-		for id := range m.removedentities {
-			ids = append(ids, id)
-		}
-		return ids
-	case attribute.EdgeAttributeOptions:
-		ids := make([]ent.Value, 0, len(m.removedattribute_options))
-		for id := range m.removedattribute_options {
+	case attribute.EdgeOptionID:
+		ids := make([]ent.Value, 0, len(m.removedoption_id))
+		for id := range m.removedoption_id {
 			ids = append(ids, id)
 		}
 		return ids
@@ -1446,12 +1371,9 @@ func (m *AttributeMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AttributeMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.clearedentities {
-		edges = append(edges, attribute.EdgeEntities)
-	}
-	if m.clearedattribute_options {
-		edges = append(edges, attribute.EdgeAttributeOptions)
+	edges := make([]string, 0, 1)
+	if m.clearedoption_id {
+		edges = append(edges, attribute.EdgeOptionID)
 	}
 	return edges
 }
@@ -1460,10 +1382,8 @@ func (m *AttributeMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *AttributeMutation) EdgeCleared(name string) bool {
 	switch name {
-	case attribute.EdgeEntities:
-		return m.clearedentities
-	case attribute.EdgeAttributeOptions:
-		return m.clearedattribute_options
+	case attribute.EdgeOptionID:
+		return m.clearedoption_id
 	}
 	return false
 }
@@ -1480,11 +1400,8 @@ func (m *AttributeMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *AttributeMutation) ResetEdge(name string) error {
 	switch name {
-	case attribute.EdgeEntities:
-		m.ResetEntities()
-		return nil
-	case attribute.EdgeAttributeOptions:
-		m.ResetAttributeOptions()
+	case attribute.EdgeOptionID:
+		m.ResetOptionID()
 		return nil
 	}
 	return fmt.Errorf("unknown Attribute edge %s", name)
@@ -2110,20 +2027,20 @@ func (m *AttributeGroupMutation) ResetEdge(name string) error {
 // AttributeOptionMutation represents an operation that mutates the AttributeOption nodes in the graph.
 type AttributeOptionMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *uint64
-	created_at      *time.Time
-	updated_at      *time.Time
-	attribute_id    *uint64
-	addattribute_id *int64
-	label           *string
-	value           *uint64
-	addvalue        *int64
-	clearedFields   map[string]struct{}
-	done            bool
-	oldValue        func(context.Context) (*AttributeOption, error)
-	predicates      []predicate.AttributeOption
+	op                     Op
+	typ                    string
+	id                     *uint64
+	created_at             *time.Time
+	updated_at             *time.Time
+	attribute_option_id    *uint64
+	addattribute_option_id *int64
+	label                  *string
+	value                  *uint32
+	addvalue               *int32
+	clearedFields          map[string]struct{}
+	done                   bool
+	oldValue               func(context.Context) (*AttributeOption, error)
+	predicates             []predicate.AttributeOption
 }
 
 var _ ent.Mutation = (*AttributeOptionMutation)(nil)
@@ -2302,60 +2219,60 @@ func (m *AttributeOptionMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetAttributeID sets the "attribute_id" field.
-func (m *AttributeOptionMutation) SetAttributeID(u uint64) {
-	m.attribute_id = &u
-	m.addattribute_id = nil
+// SetAttributeOptionID sets the "attribute_option_id" field.
+func (m *AttributeOptionMutation) SetAttributeOptionID(u uint64) {
+	m.attribute_option_id = &u
+	m.addattribute_option_id = nil
 }
 
-// AttributeID returns the value of the "attribute_id" field in the mutation.
-func (m *AttributeOptionMutation) AttributeID() (r uint64, exists bool) {
-	v := m.attribute_id
+// AttributeOptionID returns the value of the "attribute_option_id" field in the mutation.
+func (m *AttributeOptionMutation) AttributeOptionID() (r uint64, exists bool) {
+	v := m.attribute_option_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAttributeID returns the old "attribute_id" field's value of the AttributeOption entity.
+// OldAttributeOptionID returns the old "attribute_option_id" field's value of the AttributeOption entity.
 // If the AttributeOption object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AttributeOptionMutation) OldAttributeID(ctx context.Context) (v uint64, err error) {
+func (m *AttributeOptionMutation) OldAttributeOptionID(ctx context.Context) (v uint64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAttributeID is only allowed on UpdateOne operations")
+		return v, errors.New("OldAttributeOptionID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAttributeID requires an ID field in the mutation")
+		return v, errors.New("OldAttributeOptionID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAttributeID: %w", err)
+		return v, fmt.Errorf("querying old value for OldAttributeOptionID: %w", err)
 	}
-	return oldValue.AttributeID, nil
+	return oldValue.AttributeOptionID, nil
 }
 
-// AddAttributeID adds u to the "attribute_id" field.
-func (m *AttributeOptionMutation) AddAttributeID(u int64) {
-	if m.addattribute_id != nil {
-		*m.addattribute_id += u
+// AddAttributeOptionID adds u to the "attribute_option_id" field.
+func (m *AttributeOptionMutation) AddAttributeOptionID(u int64) {
+	if m.addattribute_option_id != nil {
+		*m.addattribute_option_id += u
 	} else {
-		m.addattribute_id = &u
+		m.addattribute_option_id = &u
 	}
 }
 
-// AddedAttributeID returns the value that was added to the "attribute_id" field in this mutation.
-func (m *AttributeOptionMutation) AddedAttributeID() (r int64, exists bool) {
-	v := m.addattribute_id
+// AddedAttributeOptionID returns the value that was added to the "attribute_option_id" field in this mutation.
+func (m *AttributeOptionMutation) AddedAttributeOptionID() (r int64, exists bool) {
+	v := m.addattribute_option_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetAttributeID resets all changes to the "attribute_id" field.
-func (m *AttributeOptionMutation) ResetAttributeID() {
-	m.attribute_id = nil
-	m.addattribute_id = nil
+// ResetAttributeOptionID resets all changes to the "attribute_option_id" field.
+func (m *AttributeOptionMutation) ResetAttributeOptionID() {
+	m.attribute_option_id = nil
+	m.addattribute_option_id = nil
 }
 
 // SetLabel sets the "label" field.
@@ -2395,13 +2312,13 @@ func (m *AttributeOptionMutation) ResetLabel() {
 }
 
 // SetValue sets the "value" field.
-func (m *AttributeOptionMutation) SetValue(u uint64) {
+func (m *AttributeOptionMutation) SetValue(u uint32) {
 	m.value = &u
 	m.addvalue = nil
 }
 
 // Value returns the value of the "value" field in the mutation.
-func (m *AttributeOptionMutation) Value() (r uint64, exists bool) {
+func (m *AttributeOptionMutation) Value() (r uint32, exists bool) {
 	v := m.value
 	if v == nil {
 		return
@@ -2412,7 +2329,7 @@ func (m *AttributeOptionMutation) Value() (r uint64, exists bool) {
 // OldValue returns the old "value" field's value of the AttributeOption entity.
 // If the AttributeOption object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AttributeOptionMutation) OldValue(ctx context.Context) (v uint64, err error) {
+func (m *AttributeOptionMutation) OldValue(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldValue is only allowed on UpdateOne operations")
 	}
@@ -2427,7 +2344,7 @@ func (m *AttributeOptionMutation) OldValue(ctx context.Context) (v uint64, err e
 }
 
 // AddValue adds u to the "value" field.
-func (m *AttributeOptionMutation) AddValue(u int64) {
+func (m *AttributeOptionMutation) AddValue(u int32) {
 	if m.addvalue != nil {
 		*m.addvalue += u
 	} else {
@@ -2436,7 +2353,7 @@ func (m *AttributeOptionMutation) AddValue(u int64) {
 }
 
 // AddedValue returns the value that was added to the "value" field in this mutation.
-func (m *AttributeOptionMutation) AddedValue() (r int64, exists bool) {
+func (m *AttributeOptionMutation) AddedValue() (r int32, exists bool) {
 	v := m.addvalue
 	if v == nil {
 		return
@@ -2491,8 +2408,8 @@ func (m *AttributeOptionMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, attributeoption.FieldUpdatedAt)
 	}
-	if m.attribute_id != nil {
-		fields = append(fields, attributeoption.FieldAttributeID)
+	if m.attribute_option_id != nil {
+		fields = append(fields, attributeoption.FieldAttributeOptionID)
 	}
 	if m.label != nil {
 		fields = append(fields, attributeoption.FieldLabel)
@@ -2512,8 +2429,8 @@ func (m *AttributeOptionMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case attributeoption.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case attributeoption.FieldAttributeID:
-		return m.AttributeID()
+	case attributeoption.FieldAttributeOptionID:
+		return m.AttributeOptionID()
 	case attributeoption.FieldLabel:
 		return m.Label()
 	case attributeoption.FieldValue:
@@ -2531,8 +2448,8 @@ func (m *AttributeOptionMutation) OldField(ctx context.Context, name string) (en
 		return m.OldCreatedAt(ctx)
 	case attributeoption.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case attributeoption.FieldAttributeID:
-		return m.OldAttributeID(ctx)
+	case attributeoption.FieldAttributeOptionID:
+		return m.OldAttributeOptionID(ctx)
 	case attributeoption.FieldLabel:
 		return m.OldLabel(ctx)
 	case attributeoption.FieldValue:
@@ -2560,12 +2477,12 @@ func (m *AttributeOptionMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case attributeoption.FieldAttributeID:
+	case attributeoption.FieldAttributeOptionID:
 		v, ok := value.(uint64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAttributeID(v)
+		m.SetAttributeOptionID(v)
 		return nil
 	case attributeoption.FieldLabel:
 		v, ok := value.(string)
@@ -2575,7 +2492,7 @@ func (m *AttributeOptionMutation) SetField(name string, value ent.Value) error {
 		m.SetLabel(v)
 		return nil
 	case attributeoption.FieldValue:
-		v, ok := value.(uint64)
+		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -2589,8 +2506,8 @@ func (m *AttributeOptionMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *AttributeOptionMutation) AddedFields() []string {
 	var fields []string
-	if m.addattribute_id != nil {
-		fields = append(fields, attributeoption.FieldAttributeID)
+	if m.addattribute_option_id != nil {
+		fields = append(fields, attributeoption.FieldAttributeOptionID)
 	}
 	if m.addvalue != nil {
 		fields = append(fields, attributeoption.FieldValue)
@@ -2603,8 +2520,8 @@ func (m *AttributeOptionMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *AttributeOptionMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case attributeoption.FieldAttributeID:
-		return m.AddedAttributeID()
+	case attributeoption.FieldAttributeOptionID:
+		return m.AddedAttributeOptionID()
 	case attributeoption.FieldValue:
 		return m.AddedValue()
 	}
@@ -2616,15 +2533,15 @@ func (m *AttributeOptionMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *AttributeOptionMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case attributeoption.FieldAttributeID:
+	case attributeoption.FieldAttributeOptionID:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddAttributeID(v)
+		m.AddAttributeOptionID(v)
 		return nil
 	case attributeoption.FieldValue:
-		v, ok := value.(int64)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -2663,8 +2580,8 @@ func (m *AttributeOptionMutation) ResetField(name string) error {
 	case attributeoption.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case attributeoption.FieldAttributeID:
-		m.ResetAttributeID()
+	case attributeoption.FieldAttributeOptionID:
+		m.ResetAttributeOptionID()
 		return nil
 	case attributeoption.FieldLabel:
 		m.ResetLabel()

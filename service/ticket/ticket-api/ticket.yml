@@ -67,6 +67,8 @@ definitions:
                 format: uint32
                 type: integer
                 x-go-name: IsSearchable
+            optionData:
+                $ref: '#/definitions/Options'
             requiredValidateClass:
                 description: RequiredValidateClass
                 type: string
@@ -124,6 +126,14 @@ definitions:
                 description: AttributeCode
                 type: string
                 x-go-name: AttributeCode
+            attributeGroupName:
+                description: AttributeGroupName
+                type: string
+                x-go-name: AttributeGroupName
+            attributeSetName:
+                description: AttributeSetName
+                type: string
+                x-go-name: AttributeSetName
             backendClass:
                 description: BackendClass
                 type: string
@@ -132,6 +142,10 @@ definitions:
                 description: BackendType
                 type: string
                 x-go-name: BackendType
+            label:
+                description: Label
+                type: string
+                x-go-name: Label
             page:
                 description: Page number | 第几页
                 format: uint64
@@ -418,6 +432,17 @@ definitions:
                 x-go-name: Ids
         required:
             - ids
+        type: object
+        x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
+    Options:
+        properties:
+            label:
+                type: string
+                x-go-name: Label
+            value:
+                format: uint32
+                type: integer
+                x-go-name: Value
         type: object
         x-go-package: github.com/anhao26/zero-cloud/service/ticket/ticket-api/internal/types
     PageInfo:

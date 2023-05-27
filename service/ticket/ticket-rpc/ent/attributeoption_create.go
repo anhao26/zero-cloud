@@ -48,9 +48,9 @@ func (aoc *AttributeOptionCreate) SetNillableUpdatedAt(t *time.Time) *AttributeO
 	return aoc
 }
 
-// SetAttributeID sets the "attribute_id" field.
-func (aoc *AttributeOptionCreate) SetAttributeID(u uint64) *AttributeOptionCreate {
-	aoc.mutation.SetAttributeID(u)
+// SetAttributeOptionID sets the "attribute_option_id" field.
+func (aoc *AttributeOptionCreate) SetAttributeOptionID(u uint64) *AttributeOptionCreate {
+	aoc.mutation.SetAttributeOptionID(u)
 	return aoc
 }
 
@@ -61,7 +61,7 @@ func (aoc *AttributeOptionCreate) SetLabel(s string) *AttributeOptionCreate {
 }
 
 // SetValue sets the "value" field.
-func (aoc *AttributeOptionCreate) SetValue(u uint64) *AttributeOptionCreate {
+func (aoc *AttributeOptionCreate) SetValue(u uint32) *AttributeOptionCreate {
 	aoc.mutation.SetValue(u)
 	return aoc
 }
@@ -125,8 +125,8 @@ func (aoc *AttributeOptionCreate) check() error {
 	if _, ok := aoc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AttributeOption.updated_at"`)}
 	}
-	if _, ok := aoc.mutation.AttributeID(); !ok {
-		return &ValidationError{Name: "attribute_id", err: errors.New(`ent: missing required field "AttributeOption.attribute_id"`)}
+	if _, ok := aoc.mutation.AttributeOptionID(); !ok {
+		return &ValidationError{Name: "attribute_option_id", err: errors.New(`ent: missing required field "AttributeOption.attribute_option_id"`)}
 	}
 	if _, ok := aoc.mutation.Label(); !ok {
 		return &ValidationError{Name: "label", err: errors.New(`ent: missing required field "AttributeOption.label"`)}
@@ -174,16 +174,16 @@ func (aoc *AttributeOptionCreate) createSpec() (*AttributeOption, *sqlgraph.Crea
 		_spec.SetField(attributeoption.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := aoc.mutation.AttributeID(); ok {
-		_spec.SetField(attributeoption.FieldAttributeID, field.TypeUint64, value)
-		_node.AttributeID = value
+	if value, ok := aoc.mutation.AttributeOptionID(); ok {
+		_spec.SetField(attributeoption.FieldAttributeOptionID, field.TypeUint64, value)
+		_node.AttributeOptionID = value
 	}
 	if value, ok := aoc.mutation.Label(); ok {
 		_spec.SetField(attributeoption.FieldLabel, field.TypeString, value)
 		_node.Label = value
 	}
 	if value, ok := aoc.mutation.Value(); ok {
-		_spec.SetField(attributeoption.FieldValue, field.TypeUint64, value)
+		_spec.SetField(attributeoption.FieldValue, field.TypeUint32, value)
 		_node.Value = value
 	}
 	return _node, _spec

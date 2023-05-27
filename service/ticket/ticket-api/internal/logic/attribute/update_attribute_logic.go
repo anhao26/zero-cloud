@@ -42,6 +42,7 @@ func (l *UpdateAttributeLogic) UpdateAttribute(req *types.AttributeInfo) (resp *
         	IsSearchable: req.IsSearchable,
         	IsRequired: req.IsRequired,
         	RequiredValidateClass: req.RequiredValidateClass,
+        	OptionData: req.OptionData,
 		})
 	if err != nil {
 		return nil, err

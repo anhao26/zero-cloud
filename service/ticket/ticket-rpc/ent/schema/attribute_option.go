@@ -15,13 +15,13 @@ type AttributeOption struct {
 
 func (AttributeOption) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint64("attribute_id").
-			Comment("Attribute Id | 属性ID").
+		field.Uint64("attribute_option_id").
+			Comment("Attribute Option Id | 属性ID").
 			Annotations(entsql.WithComments(true)),
 		field.String("label").
 			Comment("Label | 选项名").
 			Annotations(entsql.WithComments(true)),
-		field.Uint64("value").
+		field.Uint32("value").
 			Comment("value | 选项值").
 			Annotations(entsql.WithComments(true)),
 	}
@@ -39,7 +39,7 @@ func (AttributeOption) Edges() []ent.Edge {
 
 func (AttributeOption) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("attribute_id"),
+		index.Fields("attribute_option_id"),
 	}
 }
 

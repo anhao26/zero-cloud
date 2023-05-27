@@ -20,13 +20,12 @@ message AttributeInfo {
   uint32 is_searchable = 15;
   uint32 is_required = 16;
   string required_validate_class = 17;
-  string temple = 18;
-  repeated options option_data = 19;
+  repeated Options option_data = 18;
 }
 
-message options {
-  string label = 1;
-  uint64 value = 2;
+message Options{
+  string Label = 1;
+  uint32 Value = 2;
 }
 
 message AttributeListResp {

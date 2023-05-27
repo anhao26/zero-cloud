@@ -26,22 +26,22 @@ func NewCreateAttributeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *C
 
 func (l *CreateAttributeLogic) CreateAttribute(req *types.AttributeInfo) (resp *types.BaseMsgResp, err error) {
 	data, err := l.svcCtx.TicketRpc.CreateAttribute(l.ctx,
-		&ticket.AttributeInfo{ 
-        	EntityId: req.EntityId,
-        	AttributeCode: req.AttributeCode,
-        	BackendClass: req.BackendClass,
-        	BackendType: req.BackendType,
-        	BackendTable: req.BackendTable,
-        	FrontendClass: req.FrontendClass,
-        	FrontendType: req.FrontendType,
-        	FrontendLabel: req.FrontendLabel,
-        	SourceClass: req.SourceClass,
-        	DefaultValue: req.DefaultValue,
-        	IsFilterable: req.IsFilterable,
-        	IsSearchable: req.IsSearchable,
-        	IsRequired: req.IsRequired,
-        	RequiredValidateClass: req.RequiredValidateClass,
-        	OptionData: req.OptionData,
+		&ticket.AttributeInfo{
+			EntityId:              req.EntityId,
+			AttributeCode:         req.AttributeCode,
+			BackendClass:          req.BackendClass,
+			BackendType:           req.BackendType,
+			BackendTable:          req.BackendTable,
+			FrontendClass:         req.FrontendClass,
+			FrontendType:          req.FrontendType,
+			FrontendLabel:         req.FrontendLabel,
+			SourceClass:           req.SourceClass,
+			DefaultValue:          req.DefaultValue,
+			IsFilterable:          req.IsFilterable,
+			IsSearchable:          req.IsSearchable,
+			IsRequired:            req.IsRequired,
+			RequiredValidateClass: req.RequiredValidateClass,
+			//OptionData: req.OptionData,
 		})
 	if err != nil {
 		return nil, err

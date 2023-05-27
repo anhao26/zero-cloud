@@ -31,7 +31,7 @@ func (l *GetAttributeByIdLogic) GetAttributeById(req *types.IDReq) (resp *types.
 		return nil, err
 	}
 
-	return &types.AttributeInfoResp{
+	resp = &types.AttributeInfoResp{
 		BaseDataInfo: types.BaseDataInfo{
 			Code: 0,
 			Msg:  l.svcCtx.Trans.Trans(l.ctx, i18n.Success),
@@ -56,7 +56,18 @@ func (l *GetAttributeByIdLogic) GetAttributeById(req *types.IDReq) (resp *types.
 			IsSearchable:          data.IsSearchable,
 			IsRequired:            data.IsRequired,
 			RequiredValidateClass: data.RequiredValidateClass,
-			OptionData:            data.OptionData,
 		},
-	}, nil
+	}
+
+	// 下拉特殊处理
+	if "select" == data.FrontendType {
+		for _, v := range data.OptionData {
+			resp.Data.OptionData = append(resp.Data.OptionData,
+				types.Options{
+					Label: v.Label,
+					Value: v.Value,
+				})
+		}
+	}
+	return resp, nil
 }

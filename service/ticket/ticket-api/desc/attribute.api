@@ -48,7 +48,7 @@ type (
         RequiredValidateClass  string `json:"requiredValidateClass,optional"`
 
         // OptionData
-        OptionData  Options `json:"optionData,optional"`
+        OptionData  []Options `json:"optionData,optional"`
     }
 
     Options {

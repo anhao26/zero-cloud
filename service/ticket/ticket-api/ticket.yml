@@ -68,7 +68,11 @@ definitions:
                 type: integer
                 x-go-name: IsSearchable
             optionData:
-                $ref: '#/definitions/Options'
+                description: OptionData
+                items:
+                    $ref: '#/definitions/Options'
+                type: array
+                x-go-name: OptionData
             requiredValidateClass:
                 description: RequiredValidateClass
                 type: string

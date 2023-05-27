@@ -145,7 +145,7 @@ type AttributeInfo struct {
 	// RequiredValidateClass
 	RequiredValidateClass string `json:"requiredValidateClass,optional"`
 	// OptionData
-	OptionData Options `json:"optionData,optional"`
+	OptionData []Options `json:"optionData,optional"`
 }
 
 type Options struct {

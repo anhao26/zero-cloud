@@ -90,18 +90,18 @@ services:
           cpus: '0.05'
           memory: 200M
 
-    ticket-api:
-      build:
-        context: ./service/ticket/ticket-api
-      container_name: ticket-api
-      restart: always
-      ports:
-        - '8071:8071'
-      deploy:
-        resources:
-          limits:
-            cpus: '0.5'
-            memory: 500M
-          reservations:
-            cpus: '0.05'
-            memory: 200M
+  ticket-api:
+    build:
+      context: ./service/ticket/ticket-api
+    container_name: ticket-api
+    restart: always
+    ports:
+      - '8071:8071'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
+        reservations:
+          cpus: '0.05'
+          memory: 200M

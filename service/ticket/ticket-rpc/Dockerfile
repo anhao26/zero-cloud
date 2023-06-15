@@ -6,7 +6,8 @@ ARG PROJECT=ticket
 WORKDIR /build
 COPY . .
 
-RUN go env -w GO111MODULE=on \
+RUN go env -w GOPROXY=https://goproxy.cn,direct \
+    && go env -w GO111MODULE=on \
     && go env -w CGO_ENABLED=0 \
     && go env \
     && go mod tidy \

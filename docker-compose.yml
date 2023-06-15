@@ -1,0 +1,107 @@
+version: "3"
+
+services:
+  mysql57: # 相关文档 https://hub.docker.com/_/mysql
+    build:
+      context: ./deploy/mysql
+      args:
+        - MYSQL_VER=5.7
+    container_name: docker_mysql57
+    hostname: mysql57
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./deploy/mysql/my57.cnf:/etc/mysql/my.cnf
+      - ./deploy/mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./data/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: yunliankc@!anhao1226
+    restart: always
+
+#  memcached:
+#    image: memcached:1.6-alpine
+#    container_name: docker_memcached
+#    hostname: memcached
+#    ports:
+#      - "11211:11211"
+#    environment:
+#      TZ: "Asia/Shanghai"
+#    restart: always
+
+  redis:
+    build:
+      context: ./deploy/redis
+    container_name: docker_redis
+    hostname: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - ./deploy/redis/redis.conf:/etc/redis.conf
+      - ./data/redis:/data/
+    environment:
+      TZ: "Asia/Shanghai"
+    entrypoint: [ "redis-server", "/etc/redis.conf" ]
+
+  system-rpc:
+    build:
+      context: ./service/system/system-rpc
+    container_name: system-rpc
+    restart: always
+    ports:
+      - '8080:8080'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
+        reservations:
+          cpus: '0.05'
+          memory: 200M
+
+    system-api:
+      build:
+        context: ./service/system/system-api
+      container_name: system-api
+      restart: always
+      ports:
+        - '8081:8081'
+      deploy:
+        resources:
+          limits:
+            cpus: '0.5'
+            memory: 500M
+          reservations:
+            cpus: '0.05'
+            memory: 200M
+
+    ticket-rpc:
+      build:
+        context: ./service/ticket/ticket-rpc
+      container_name: ticket-rpc
+      restart: always
+      ports:
+        - '8070:8070'
+      deploy:
+        resources:
+          limits:
+            cpus: '0.5'
+            memory: 500M
+          reservations:
+            cpus: '0.05'
+            memory: 200M
+
+      ticket-api:
+        build:
+          context: ./service/ticket/ticket-api
+        container_name: ticket-api
+        restart: always
+        ports:
+          - '8071:8071'
+        deploy:
+          resources:
+            limits:
+              cpus: '0.5'
+              memory: 500M
+            reservations:
+              cpus: '0.05'
+              memory: 200M

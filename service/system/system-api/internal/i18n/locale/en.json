@@ -145,6 +145,10 @@
 		"positionManagement": "Position",
 		"memberManagement": "Member",
 		"memberRankManagement": "Member Rank",
+		"ticketManagementTitle": "Ticket",
+		"customFieldsManagementTitle": "Custom Fields",
+		"ticketTemplateManagementTitle": "Ticket Template",
+		"workflowManagementTitle": "Workflow",
 		"taskManagement": "Scheduled Task"
 	},
 	"login": {

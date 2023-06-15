@@ -151,6 +151,10 @@
 		"positionManagement": "职位管理",
 		"memberManagement": "会员管理",
 		"memberRankManagement": "会员等级管理",
+		"ticketManagementTitle": "工单管理",
+		"customFieldsManagementTitle": "自定义字段",
+		"ticketTemplateManagementTitle": "工单模板",
+		"workflowManagementTitle": "工作流",
 		"taskManagement": "定时任务管理"
 	},
 	"login": {

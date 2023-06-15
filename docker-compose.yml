@@ -58,13 +58,45 @@ services:
           cpus: '0.05'
           memory: 200M
 
-    system-api:
+  system-api:
+    build:
+      context: ./service/system/system-api
+    container_name: system-api
+    restart: always
+    ports:
+      - '8081:8081'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
+        reservations:
+          cpus: '0.05'
+          memory: 200M
+
+  ticket-rpc:
+    build:
+      context: ./service/ticket/ticket-rpc
+    container_name: ticket-rpc
+    restart: always
+    ports:
+      - '8070:8070'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
+        reservations:
+          cpus: '0.05'
+          memory: 200M
+
+    ticket-api:
       build:
-        context: ./service/system/system-api
-      container_name: system-api
+        context: ./service/ticket/ticket-api
+      container_name: ticket-api
       restart: always
       ports:
-        - '8081:8081'
+        - '8071:8071'
       deploy:
         resources:
           limits:
@@ -73,35 +105,3 @@ services:
           reservations:
             cpus: '0.05'
             memory: 200M
-
-    ticket-rpc:
-      build:
-        context: ./service/ticket/ticket-rpc
-      container_name: ticket-rpc
-      restart: always
-      ports:
-        - '8070:8070'
-      deploy:
-        resources:
-          limits:
-            cpus: '0.5'
-            memory: 500M
-          reservations:
-            cpus: '0.05'
-            memory: 200M
-
-      ticket-api:
-        build:
-          context: ./service/ticket/ticket-api
-        container_name: ticket-api
-        restart: always
-        ports:
-          - '8071:8071'
-        deploy:
-          resources:
-            limits:
-              cpus: '0.5'
-              memory: 500M
-            reservations:
-              cpus: '0.05'
-              memory: 200M
